@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .styled-message {
+    color: rgb(255, 0, 0); /* Text color for error messages */
+    font-size: 1rem; /* Adjust font size as needed */
+    margin-top: 10px; /* Space between the message and the form */
+    padding: 10px; /* Padding around the message */
+    border: 1px solid rgb(255, 255, 255); /* Optional: Border around the message */
+    border-radius: 4px; /* Optional: Rounded corners for the border */
+    background-color: rgb(255, 255, 255); /* Optional: Light red background for visibility */
+}
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <a href="userLogin" class="login-btn">Login</a>
+    </div>
+    <div class="container">
+        <h1>Sign up</h1>
+        <div id="messageContainer"></div> 
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var messageContent = document.getElementById('temporaryMessage');
+                if (messageContent) {
+                    setTimeout(() => {
+                        messageContent.style.display = 'none';
+                    }, 3000); 
+                }
+            });
+        </script>
+
+        <form id="registerForm" novalidate>
+            <div class="form-control">
+                <input type="text" name="name" required>
+                <label>Full Name</label>
+            </div>
+            
+            <div class="form-control">
+                <input type="email" name="email" required>
+                <label>Email</label>
+            </div>
+            
+            <div class="form-control">
+                <input type="text" name="mobile" required>
+                <label>Mobile</label>
+            </div>
+
+            <div class="form-control">
+                <input type="password" name="password" required>
+                <label>Password</label>
+            </div>
+            
+            <div class="form-control">
+                <input type="password" name="cpassword" required>
+                <label>Confirm Password</label>
+            </div>
+        
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+<script>
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registerForm');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        try {
+            const response = await fetch('/verifyRegister', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                window.location.href = result.redirect;
+            } else {
+                displayMessage(result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    const displayMessage = (message) => {
+        const messageContainer = document.getElementById('messageContainer');
+        messageContainer.innerHTML = ''; // Clear previous messages
+
+        const messageElement = document.createElement('p');
+        messageElement.id = 'temporaryMessage';
+        messageElement.className = 'styled-message';
+        messageElement.textContent = message;
+        messageContainer.appendChild(messageElement);
+
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 3000);
+    };
+});
+
+
+
+
+
+
+
+
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Muli');
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-image: linear-gradient(120deg, #ffffff 0%, #a8a8a8 100%);
+    color: #000;
+    font-family: 'Muli', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative; /* Add this to position the login button */
+}
+
+.error {
+    color: red;
+    font-size: 10px;
+}
+
+.container{
+    background-color:#fffefe;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.container h1{
+    text-align: center;
+    padding-bottom:10px;
+    margin-bottom: 15px;
+}
+
+.container a{
+    text-decoration: none;
+    color: rgb(154, 163, 255);
+}
+
+.btn{
+    cursor: pointer;
+    display: inline;
+    width: 100%;
+    background-color: rgb(156, 165, 255);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    border: 0;
+    border-radius: 5px;
+}
+
+.form-control{
+    position: relative;
+    margin: 15px 0 35px;
+    width: 300px;
+}
+
+.btn:focus{
+    outline: 0;
+}
+
+.btn:active{
+    transform: scale(0.98);
+}
+
+.text{
+    margin-top: 20px;
+}
+
+.form-control input{
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px #000 solid;
+    display: block;
+    width: 100%;
+    padding: 9px 0;
+    font-size: 18px;
+    color:#000;
+}
+
+.form-control input:focus,
+.form-control input:valid{
+    outline: 0;
+    border-bottom-color:#4facfe ;
+}
+
+.form-control label {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    pointer-events: none;
+}
+
+.form-control label span{
+    display: inline-block;
+    font-size: 15px;
+    min-width: 5px;
+    transition: 0.3s cubic-bezier(0.58,-0.45,0.245,1.55);
+}
+
+.form-control input:focus + label span,
+.form-control input:valid + label span {
+    color: #4facfe;
+    transform: translateY(-30px);
+}
+
+/* New styles for login button */
+.login-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.login-btn {
+    background-color: #4facfe;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background-color: #3a8fbd;
+}
+
+</style>
+
+<script>
+    const labels=document.querySelectorAll('.form-control label')
+
+labels.forEach(label=>{
+    label.innerHTML=label.innerText.split('')
+    .map((letter,    idx)=>`<span style="transition-delay:${idx*10}ms">${letter}</span>`
+).join('')
+})
+</script>

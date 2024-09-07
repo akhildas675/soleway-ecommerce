@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Shoping Cart</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+	<%- include('./partials/solewayCss.ejs') %>
+
+
+
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</head>
+<style>
+	.btn-danger {
+		color: #6436ff;
+		background-color: #dc354500;
+		border-color: #dc354500;
+	}
+</style>
+
+<body class="animsition">
+
+	<!-- Header -->
+	<header class="header-v4">
+		<!-- Header desktop -->
+		<div class="container-menu-desktop">
+
+			<!-- Topbar -->
+			<%- include('./partials/solewayTopBar.ejs') %>
+				<!-- Topbar end -->
+
+				<div class="wrap-menu-desktop how-shadow1">
+					<nav class="limiter-menu-desktop container">
+
+						<!-- Logo desktop -->
+						<a href="/" class="logo">
+							<img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO">
+						</a>
+
+						<!-- Menu desktop -->
+						<div class="menu-desktop">
+							<ul class="main-menu">
+								<li>
+									<a href="/">Home</a>
+
+								</li>
+
+								<li class="active-menu">
+									<a href="/productShop">Shop</a>
+								</li>
+
+								<li class="label1" data-label1="hot">
+									<a href="shoping-cart.html">Features</a>
+								</li>
+
+								<li>
+									<a href="blog.html">Blog</a>
+								</li>
+
+								<li>
+									<a href="about.html">About</a>
+								</li>
+
+								<li>
+									<a href="contact.html">Contact</a>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Icon header -->
+						<div class="wrap-icon-header flex-w flex-r-m">
+							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+
+							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+								data-notify="2">
+								<i class="zmdi zmdi-shopping-cart"></i>
+							</div>
+
+							<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+								data-notify="0">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						</div>
+					</nav>
+				</div>
+		</div>
+
+		<!-- Header Mobile -->
+		<div class="wrap-header-mobile">
+			<!-- Logo moblie -->
+			<div class="logo-mobile">
+				<a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
+			</div>
+
+			<!-- Icon header -->
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+					<i class="zmdi zmdi-search"></i>
+				</div>
+
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+					data-notify="2">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</div>
+
+				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+					data-notify="0">
+					<i class="zmdi zmdi-favorite-outline"></i>
+				</a>
+			</div>
+
+			<!-- Button show menu -->
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+
+		<!-- Menu Mobile -->
+		<div class="menu-mobile">
+			<ul class="topbar-mobile">
+				<li>
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+				</li>
+
+				<li>
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							Help & FAQs
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							My Account
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							USD
+						</a>
+					</div>
+				</li>
+			</ul>
+
+			<ul class="main-menu-m">
+				<li>
+					<a href="index.html">Home</a>
+					<ul class="sub-menu-m">
+						<li><a href="index.html">Homepage 1</a></li>
+						<li><a href="home-02.html">Homepage 2</a></li>
+						<li><a href="home-03.html">Homepage 3</a></li>
+					</ul>
+					<span class="arrow-main-menu-m">
+						<i class="fa fa-angle-right" aria-hidden="true"></i>
+					</span>
+				</li>
+
+				<li>
+					<a href="product.html">Shop</a>
+				</li>
+
+				<li>
+					<a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
+				</li>
+
+				<li>
+					<a href="blog.html">Blog</a>
+				</li>
+
+				<li>
+					<a href="about.html">About</a>
+				</li>
+
+				<li>
+					<a href="contact.html">Contact</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Modal Search -->
+		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+			<div class="container-search-header">
+				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+					<img src="images/icons/icon-close2.png" alt="CLOSE">
+				</button>
+
+				<form class="wrap-search-header flex-w p-l-15">
+					<button class="flex-c-m trans-04">
+						<i class="zmdi zmdi-search"></i>
+					</button>
+					<input class="plh3" type="text" name="search" placeholder="Search...">
+				</form>
+			</div>
+		</div>
+	</header>
+
+	<!-- Cart -->
+	<div class="wrap-header-cart js-panel-cart">
+		<div class="s-full js-hide-cart"></div>
+
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					Your Cart
+				</span>
+
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
+
+			<div class="header-cart-content flex-w js-pscroll">
+				<ul class="header-cart-wrapitem w-full">
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img">
+							<img src="images/item-cart-01.jpg" alt="IMG">
+						</div>
+
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								White Shirt Pleat
+							</a>
+
+							<span class="header-cart-item-info">
+								1 x $19.00
+							</span>
+						</div>
+					</li>
+
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img">
+							<img src="images/item-cart-02.jpg" alt="IMG">
+						</div>
+
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								Converse All Star
+							</a>
+
+							<span class="header-cart-item-info">
+								1 x $39.00
+							</span>
+						</div>
+					</li>
+
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img">
+							<img src="images/item-cart-03.jpg" alt="IMG">
+						</div>
+
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								Nixon Porter Leather
+							</a>
+
+							<span class="header-cart-item-info">
+								1 x $17.00
+							</span>
+						</div>
+					</li>
+				</ul>
+
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40">
+						Total: $75.00
+					</div>
+
+					<div class="header-cart-buttons flex-w w-full">
+						<a href="shoping-cart.html"
+							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
+
+						<a href="shoping-cart.html"
+							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+							Check Out
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- breadcrumb -->
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="/" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+
+			<span class="stext-109 cl4">
+				Shoping Cart
+			</span>
+		</div>
+	</div>
+
+
+	<!-- Shoping Cart -->
+
+
+
+
+
+
+	<% if (locals.cartData && cartData.cartProducts.length> 0) { %>
+		<form class="bg0 p-t-75 p-b-85" method="post" action="/orderData">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 col-xl-8 m-lr-auto m-b-50">
+						<div class="m-l-25 m-r--38 m-lr-0-xl">
+							<div class="wrap-table-shopping-cart">
+								<table class="table-shopping-cart">
+									<tr class="table_head">
+										<th class="column-1">Product</th>
+										<th class="column-3">Price</th>
+										<th class="column-2">Size</th>
+										<th class="column-4">Quantity</th>
+										<th class="column-5">Total</th>
+										<th class="column-6">Action</th>
+									</tr>
+									<% for(let i=0; i < cartData.cartProducts.length; i++) { %>
+										<% if(cartData.cartProducts[i].productId) { %>
+											<tr class="table_row">
+												<td class="column-1">
+													<div class="product-info">
+														<div class="how-itemcart1">
+															<img src="../<%= cartData.cartProducts[i].productId.images ? cartData.cartProducts[i].productId.images[0] : 'default-image.jpg' %>"
+																alt="IMG">
+														</div>
+														<div class="product-name">
+															<span>
+																<%= cartData.cartProducts[i].productId.productName %>
+															</span>
+															<input type="hidden" id="productId<%= i %>"
+																value="<%= cartData.cartProducts[i]._id %>">
+														</div>
+													</div>
+												</td>
+												<td class="column-3">₹ <%= cartData.cartProducts[i].productId.realPrice
+														%>
+												</td>
+												<td class="column-2" id="size">
+													<%= cartData.cartProducts[i].size %>
+												</td>
+												<td class="column-4">
+													<div class="wrap-num-product flex-w m-l-auto m-r-0">
+														<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
+															onclick="decreaseQuantity(this)">
+															<i class="fs-16 zmdi zmdi-minus"></i>
+														</div>
+														<input class="mtext-104 cl3 txt-center num-product"
+															type="number" name="num-product<%= i %>"
+															value="<%= cartData.cartProducts[i].quantity %>" min="1"
+															max="10"
+															data-product-id="<%= cartData.cartProducts[i].productId._id %>"
+															data-sizes-id="<%= cartData.cartProducts[i].size %>"
+															data-price="<%= cartData.cartProducts[i].productId.realPrice %>">
+														<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
+															onclick="increaseQuantity(this)">
+															<i class="fs-16 zmdi zmdi-plus"></i>
+														</div>
+													</div>
+												</td>
+												<td class="column-5 total-price">₹ <%=
+														(cartData.cartProducts[i].quantity *
+														cartData.cartProducts[i].productId.realPrice).toFixed(2) %>
+												</td>
+												<td class="column-6">
+													<button type="button" class="btn btn-danger"
+														onclick="deleteCartItem('<%= i%>')">
+														<i class="bi bi-trash"></i>
+													</button>
+												</td>
+											</tr>
+											<% } else { %>
+												<tr class="table_row">
+													<td colspan="6" class="column-1">
+														<span>Product not found or inactive.</span>
+													</td>
+												</tr>
+												<% } %>
+													<% } %>
+								</table>
+							</div>
+
+							<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+								<div class="total-amount m-b-10">
+									<strong>Total Amount: ₹ <span id="total-amount"></span></strong>
+								</div>
+								<a href="/checkoutView"
+									class="flex-c-m stext-101 cl0 size-119 bg11 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+									Proceed to Checkout
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<% } else { %>
+			<div class="container text-center my-5">
+				<div class="row justify-content-center">
+					<div class="col-md-6">
+						<div class="alert alert-warning" role="alert">
+							<i class="bi bi-cart-x" style="font-size: 3rem;"></i>
+							<h4 class="alert-heading mt-3">Your cart is empty!</h4>
+							<p>Looks like you haven't added anything to your cart yet.</p>
+							<hr>
+							<a href="/productShop" class="btn btn-primary">Start Shopping</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% } %>
+
+
+
+
+				<script>
+					function calculateTotal() {
+						const rows = document.querySelectorAll('.table_row');
+						let totalAmount = 0;
+
+						rows.forEach(row => {
+							const quantityInput = row.querySelector('.num-product');
+							const price = parseFloat(quantityInput.dataset.price);
+							const quantity = parseInt(quantityInput.value);
+							const totalPrice = quantity * price;
+
+							row.querySelector('.total-price').textContent = `₹ ${totalPrice.toFixed(2)}`;
+							totalAmount += totalPrice;
+						});
+
+						document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+					}
+
+					function decreaseQuantity(element) {
+						const input = $(element).closest('.wrap-num-product').find('.num-product');
+						let numProduct = Number(input.val());
+
+						if (numProduct > 1) {
+							input.val(--numProduct);
+							updateCartAndTotal(input);
+						}
+					}
+
+					function increaseQuantity(element) {
+						const input = $(element).closest('.wrap-num-product').find('.num-product');
+						let numProduct = Number(input.val());
+						const maxProduct = input.attr('max');
+
+						if (numProduct < maxProduct) {
+							input.val(++numProduct);
+							updateCartAndTotal(input);
+						} else {
+							swal({
+								title: "Maximum Limit Reached",
+								text: "You can only add up to 10 items of this product.",
+								icon: "warning",
+								button: "OK",
+							});
+						}
+					}
+
+					function updateCartAndTotal(input) {
+						const quantity = Number(input.val());
+						const price = Number(input.data('price'));
+						const total = quantity * price;
+
+						$(input).closest('.table_row').find('.total-price').text('₹ ' + total.toFixed(2));
+						updateCart(input);
+						calculateTotal();
+					}
+
+					function updateCart(input) {
+						const productId = input.data('product-id');
+						const sizeId = input.data('sizes-id');
+						const quantity = Number(input.val());
+
+						fetch('/updateCart', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
+								productId: productId,
+								sizeId: sizeId,
+								quantity: quantity,
+							}),
+						})
+							.then(response => response.json())
+							.then(data => {
+								if (data.success) {
+									console.log('Cart updated successfully');
+									// swal({
+									// 	title: "Success!",
+									// 	text: "Cart updated successfully.",
+									// 	icon: "success",
+									// 	button: "OK",
+									// });
+								} else {
+									console.error('Failed to update cart:', data.message);
+									swal({
+										title: "Error!",
+										text: data.message,
+										icon: "error",
+										button: "Retry",
+									}).then(() => {
+										window.location.reload();  // Reload the page after the user clicks the button
+									});
+								}
+							})
+							.catch(error => {
+								console.error('Error updating cart:', error);
+								swal({
+									title: "Error!",
+									text: "There was an error updating the cart. Please try again.",
+									icon: "error",
+									button: "Retry",
+								});
+							});
+					}
+
+
+					window.onload = function () {
+						$('.num-product').on('change', function () {
+							updateCartAndTotal($(this));
+						});
+
+						calculateTotal();
+					};
+
+					function deleteCartItem(i) {
+						const id = document.getElementById('productId' + i).value;
+						console.log(id);
+
+						swal({
+							title: "Are you sure?",
+							text: "Once deleted, you will not be able to recover this item!",
+							icon: "warning",
+							buttons: true,
+							dangerMode: true,
+						})
+							.then((willDelete) => {
+
+								if (willDelete) {
+
+									fetch('/deleteCartItem', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											id
+										})
+									})
+										.then(response => response.json())
+										.then(data => {
+											if (data.success) {
+
+												swal("Item has been deleted!", {
+													icon: "success",
+												}).then(() => {
+													window.location.reload();
+												});
+											} else {
+
+												swal("Failed to delete item!", data.message, "error");
+											}
+										})
+										.catch(error => {
+											console.error("Error deleting item:", error);
+
+											swal("Error!", "An error occurred while deleting the item.", "error");
+										});
+								} else {
+
+									swal("Your item is safe!");
+								}
+							});
+					}
+
+
+				</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+				<!-- Footer -->
+				<%- include('./partials/userFooter.ejs') %>
+
+					<!-- Back to top -->
+					<div class="btn-back-to-top" id="myBtn">
+						<span class="symbol-btn-back-to-top">
+							<i class="zmdi zmdi-chevron-up"></i>
+						</span>
+					</div>
+
+					<!--===============================================================================================-->
+					<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+					<!--===============================================================================================-->
+					<script src="vendor/animsition/js/animsition.min.js"></script>
+					<!--===============================================================================================-->
+					<script src="vendor/bootstrap/js/popper.js"></script>
+					<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+					<!--===============================================================================================-->
+					<script src="vendor/select2/select2.min.js"></script>
+					<script>
+						$(".js-select2").each(function () {
+							$(this).select2({
+								minimumResultsForSearch: 20,
+								dropdownParent: $(this).next('.dropDownSelect2')
+							});
+						})
+					</script>
+					<!--===============================================================================================-->
+					<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+					<!--===============================================================================================-->
+					<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+					<script>
+						$('.js-pscroll').each(function () {
+							$(this).css('position', 'relative');
+							$(this).css('overflow', 'hidden');
+							var ps = new PerfectScrollbar(this, {
+								wheelSpeed: 1,
+								scrollingThreshold: 1000,
+								wheelPropagation: false,
+							});
+
+							$(window).on('resize', function () {
+								ps.update();
+							})
+						});
+					</script>
+					<!--===============================================================================================-->
+					<script src="js/main.js"></script>
+
+</body>
+
+</html>

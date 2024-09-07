@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <style>
+         .styled-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        
+@import url('https://fonts.googleapis.com/css2?family=Muli');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: url('your-background-image-url.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #000;
+    font-family: 'Muli', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(120deg, #ffffffa0 0%, #a8a8a8a0 100%);
+    z-index: 1;
+}
+
+.container {
+    position: relative;
+    background-color: #fffefe;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 2;
+}
+
+.container h1 {
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.container a {
+    text-decoration: none;
+    color: rgb(154, 163, 255);
+}
+
+.btn {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    background-color: rgb(156, 165, 255);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    border: 0;
+    border-radius: 5px;
+    z-index: 2;
+}
+
+.form-control {
+    position: relative;
+    margin: 15px 0 35px;
+    width: 300px;
+    z-index: 2;
+}
+
+.btn:focus {
+    outline: 0;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.text {
+    margin-top: 20px;
+}
+
+.form-control input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px #000 solid;
+    display: block;
+    width: 100%;
+    padding: 9px 0;
+    font-size: 18px;
+    color: #000;
+}
+
+.form-control input:focus,
+.form-control input:valid {
+    outline: 0;
+    border-bottom-color: #4facfe;
+}
+
+.form-control label {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    pointer-events: none;
+}
+
+.form-control label span {
+    display: inline-block;
+    font-size: 15px;
+    min-width: 5px;
+    transition: 0.3s cubic-bezier(0.58,-0.45,0.245,1.55);
+}
+
+.form-control input:focus + label span,
+.form-control input:valid + label span {
+    color: #4facfe;
+    transform: translateY(-30px);
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img src="your-image-url.jpg" alt="Login Image">
+        </div>
+        <div class="form-container">
+            <h1>Login</h1>
+            <div>
+                <% if (typeof message !== 'undefined') { %>
+                    <p id="temporaryMessage" class="styled-message"><%= message %></p>
+                <% } %>
+            </div>
+            
+            <form id="loginForm" action="/verifylog" method="post" onsubmit="return validateForm()" novalidate>
+                <div class="form-control">
+                    <input type="email" name="email" required value="akhildas@gmail.com">
+                    <label>Email</label>
+                </div>
+                <div id="emailError" class="error"></div>
+                
+                <div class="form-control">
+                    <input type="password" name="password" id="password" required value="123456">
+                    <label>Password</label>
+                    <span class="toggle-password" onclick="togglePassword()">show</span>
+                </div>
+                <div id="passwordError" class="error"></div>
+                <button type="submit" class="btn">Login</button>
+                <p class="text">You have no account? Please <a href="userRegister">Register</a></p>
+                <div id="forgotPassword"><p><a href="/emailVerify">Forgot password</a></p></div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+  function validateForm() {
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const password = document.querySelector('input[name="password"]').value.trim();
+
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    let isValid = true;
+
+    if (email === '') {
+        emailError.textContent = 'Email field is required';
+        isValid = false;
+    } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailError.textContent = 'Enter a valid email';
+            isValid = false;
+        }
+    }
+
+    if (password === '') {
+        passwordError.textContent = 'Password field is required';
+        isValid = false;
+    }
+
+    if (!isValid) {
+        setTimeout(() => {
+            emailError.textContent = "";
+            passwordError.textContent = "";
+        }, 3000);
+    }
+    return isValid;
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    if (!validateForm()) {
+        event.preventDefault();
+    }
+});
+
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+}
+
+const labels=document.querySelectorAll('.form-control label')
+
+labels.forEach(label=>{
+    label.innerHTML=label.innerText.split('')
+    .map((letter, idx)=>`<span style="transition-delay:${idx*10}ms">${letter}</span>`
+).join('')
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+                var messageContent = document.getElementById('temporaryMessage');
+                if (messageContent) {
+                    setTimeout(() => {
+                        messageContent.style.display = 'none';
+                    }, 3000); 
+                }
+            });
+</script>

@@ -1,0 +1,430 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Edit product</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/icons/fotor-20240806223213.png">
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        
+        .image-container {
+            display: inline-block;
+            position: relative;
+            margin: 5px;
+        }
+        .preview-image {
+            width: 100px;
+            height: 100px;
+        }
+        .remove-image {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .small-input {
+            max-width: 100px; /* Adjust this value as needed */
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+</head>
+<body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+    <main class="main-wrap">
+        <%- include('./partials/adminNav.ejs') %>
+
+        <% if (locals.products) { %> 
+            <form id="productAdd" action="/admin/updateProduct?productId=<%= products._id %>" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="productId" name="productId" value="<%= products._id %>">
+
+
+                <section class="content-main">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="content-header">
+                                <h2 class="content-title">Edit Product</h2>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Product Name</label>
+                                        <input type="text" value="<%= products.productName %>" class="form-control" id="product_name" name="productName">
+                                        <div id="productNameError" class="error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Full Description</label>
+                                        <textarea class="form-control" rows="4" name="description"><%= products.description %></textarea>
+                                        <div id="descriptionError" class="error"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Price</label>
+                                                <input placeholder="₹" type="text" class="form-control" pattern="^[1-9][0-9]*(\.[0-9]+)?$" name="realPrice" value="<%= products.realPrice %>">
+                                                <div id="realPriceError" class="error"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4"></div>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h4>Size and Quantity</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="sizeQuantityTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Size</th>
+                                                    <th>Quantity</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="sizeQuantityContainer">
+                                                <% products.sizes.forEach((size, index) => { %>
+                                                    <tr id="row<%= index %>">
+                                                        <td>
+                                                            <input type="text" value="<%= size.size %>" class="form-control small-input" id="size<%= size.size %>" name="size<%= size.size %>" oninput="validateInput(this, 'size')">
+                                                            <div id="size<%= size.size %>Error" class="error" style="color: red;"></div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="<%= size.quantity %>" class="form-control small-input" id="quantity<%= size.size %>" name="quantity<%= size.size %>" oninput="validateInput(this, 'quantity')">
+                                                            <div id="quantity<%= size.size %>Error" class="error" style="color: red;"></div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-sm cancel-btn" data-row="row<%= index %>" onclick="removeRow('row<%= index %>')">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" id="addSizeQuantityBtn" class="btn btn-primary mt-3">Add Another Size and Quantity</button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Media</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="input-upload">
+                                        <div id="imagePreview" style="position: relative;">
+                                            <% if (products.images) { %>
+                                                <% products.images.forEach((image, i) => { %>
+                                                    <div class="image-container">
+                                                        <% if (image) { %>
+                                                            <img src="<%= image %>" alt="Existing Image" class="preview-image">
+                                                            <!-- Cross button to remove the image -->
+                                                            <button type="button" class="remove-image" data-index="<%= i %>" onclick="removeImage('<%= i %>')">&times;</button>
+                                                            <input type="hidden" name="existingImages[]" value="<%= image %>">
+                                                        <% } %>
+                                                    </div>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <img src="admin-assets/imgs/theme/upload.svg" alt="Upload Icon">
+                                            <% } %>
+                                        </div>
+                                        
+                                        <!-- Section to preview newly selected images -->
+                                        <div id="newImagePreview" style="position: relative; margin-top: 20px;"></div>
+                                        
+                                        <input id="imageInput" class="form-control" type="file" accept="image/jpeg,image/jpg,image/png,image/webp" name="images" multiple>
+                                        <div id="imageError" class="error"></div>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Select Categories</h4>
+                                </div>
+                                <% if (categories) { %>
+                                    <div class="card-body">
+                                        <div class="row gx-2">
+                                            <div class="col-sm-6 mb-3">
+                                                <label class="form-label">Category</label>
+                                                <select class="form-select" name="category">
+                                                    <% categories.forEach(category => { %>
+                                                        <option value="<%= category.id %>" <%= category.id === products.categoryId ? 'selected' : '' %>>
+                                                            <%= category.categoryName %>
+                                                        </option>
+                                                    <% }); %>
+                                                </select>
+                                                <div id="categoryError" class="error"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="row gx-2">
+                                <button type="submit" class="btn btn-md rounded font-sm hover-up">Update Product</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+
+        <% } %>
+
+
+    <script>
+// Function to remove an image
+function removeImage(imageIndex) {
+    const productId = document.getElementById('productId').value;
+    console.log("Image index:", imageIndex);
+    console.log("Delete button clicked");
+    console.log("productId", productId);
+
+    fetch('/admin/removeImage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            index: imageIndex,
+            productId: productId
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();  // Returns the response body as JSON
+    })
+    .then(data => {
+        console.log('Server response:', data);
+        if (data.success) {
+            toastr.success('Image removed successfully');
+            document.querySelector(`[data-index="${imageIndex}"]`).closest('.image-container').remove();
+        } else {
+            toastr.error('Failed to remove image');
+        }
+    })
+    .catch(error => {
+        toastr.error('An error occurred while removing the image');
+    });
+}
+
+// Function to preview selected images
+document.getElementById('imageInput').addEventListener('change', function (event) {
+    const files = event.target.files;
+    const newImagePreview = document.getElementById('newImagePreview');
+    
+    // Clear previous previews
+    newImagePreview.innerHTML = '';
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        
+        reader.onload = function (e) {
+            // Create a container for the preview image and the remove button
+            const container = document.createElement('div');
+            container.classList.add('image-container');
+
+            // Create the image element
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'New Image';
+            img.classList.add('preview-image');
+
+            // Create the remove button (optional for new previews)
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('remove-image');
+            removeButton.innerHTML = '&times;';
+            removeButton.onclick = function () {
+                container.remove();  // Remove the preview when the button is clicked
+            };
+
+            // Append the image and remove button to the container
+            container.appendChild(img);
+            container.appendChild(removeButton);
+
+            // Append the container to the preview area
+            newImagePreview.appendChild(container);
+        };
+
+        reader.readAsDataURL(file);  // Read the file as a data URL to display it as a preview
+    });
+});
+
+function validateFiles(files) {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    for (let i = 0; i < files.length; i++) {
+        if (!allowedTypes.includes(files[i].type)) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid File Type',
+                text: `File "${files[i].name}" is not an allowed image type. Only JPEG, JPG, PNG, and WEBP files are allowed.`,
+                confirmButtonText: 'Ok'
+            });
+            document.getElementById('imageInput').value = ''; // Reset the input
+            return;
+        }
+    }
+}
+
+
+
+        function validatePage() {
+            const productName = document.querySelector('input[name="productName"]').value.trim();
+            const description = document.querySelector('textarea[name="description"]').value.trim();
+            const realPrice = document.querySelector('input[name="realPrice"]').value.trim();
+            const stock = document.querySelector('input[name="stock"]').value.trim();
+            const size = document.querySelector('input[name="size"]').value.trim();
+            const category = document.querySelector('select[name="category"]').value.trim();
+
+            const productNameError = document.getElementById('productNameError');
+            const descriptionError = document.getElementById('descriptionError');
+            const realPriceError = document.getElementById('realPriceError');
+            const stockError = document.getElementById('stockError');
+            const sizeError = document.getElementById('sizeError');
+            const categoryError = document.getElementById('categoryError');
+
+            let isValid = true;
+
+            productNameError.textContent = '';
+            descriptionError.textContent = '';
+            realPriceError.textContent = '';
+            stockError.textContent = '';
+            sizeError.textContent = '';
+            categoryError.textContent = '';
+
+            if (productName === '') {
+                productNameError.textContent = 'Product name is required';
+                isValid = false;
+            }
+
+            if (description === '') {
+                descriptionError.textContent = 'Description is required';
+                isValid = false;
+            }
+
+            if (realPrice === '') {
+                realPriceError.textContent = 'Price is required';
+                isValid = false;
+            } else if (!/^[1-9][0-9]*(\.[0-9]+)?$/.test(realPrice)) {
+                realPriceError.textContent = 'Enter a valid price';
+                isValid = false;
+            }
+
+            if (stock === '') {
+                stockError.textContent = 'Quantity is required';
+                isValid = false;
+            } else if (!/^[1-9][0-9]*(\.[0-9]+)?$/.test(stock)) {
+                stockError.textContent = 'Enter a valid quantity';
+                isValid = false;
+            }
+
+            if (size === '') {
+                sizeError.textContent = 'Size is required';
+                isValid = false;
+            } else if (!/^[0-9]+(\.[0-9]+)?$/.test(size)) {
+                sizeError.textContent = 'Enter a valid size';
+                isValid = false;
+            }
+
+            if (category === '') {
+                categoryError.textContent = 'Category is required';
+                isValid = false;
+            }
+            
+            setTimeout(() => {
+                productNameError.textContent = '';
+                descriptionError.textContent = '';
+                realPriceError.textContent = '';
+                stockError.textContent = '';
+                sizeError.textContent = '';
+                categoryError.textContent = '';
+            }, 3000);
+
+            return isValid;
+        }
+
+        document.getElementById('productAdd').addEventListener('submit', function(event) {
+            if (!validatePage()) {
+                event.preventDefault();
+            }
+        });
+
+
+        
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('update') === 'success') {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product updated successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+            <!-- Toastr CSS -->
+
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+<script src="/public/assets/js/vendor/jquery-3.6.0.min.js"></script>
+<script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+<script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="/public/assets/js/plugins/slick.js"></script>
+<script src="/public/assets/js/plugins/jquery.syotimer.min.js"></script>
+<script src="/public/assets/js/plugins/wow.js"></script>
+<script src="/public/assets/js/plugins/jquery-ui.js"></script>
+<script src="/public/assets/js/plugins/perfect-scrollbar.js"></script>
+<script src="/public/assets/js/plugins/magnific-popup.js"></script>
+<script src="/public/assets/js/plugins/select2.min.js"></script>
+<script src="/public/assets/js/plugins/waypoints.js"></script>
+<script src="/public/assets/js/plugins/counterup.js"></script>
+<script src="/public/assets/js/plugins/jquery.countdown.min.js"></script>
+<script src="/public/assets/js/plugins/images-loaded.js"></script>
+<script src="/public/assets/js/plugins/isotope.js"></script>
+<script src="/public/assets/js/plugins/scrollup.js"></script>
+<script src="/public/assets/js/plugins/jquery.vticker-min.js"></script>
+<script src="/public/assets/js/plugins/jquery.theia.sticky.js"></script>
+<script src="/public/assets/js/plugins/jquery.elevatezoom.js"></script>
+<!-- Template  JS -->
+<script src="/public/assets/js/maind134.js?v=3.4"></script>
+<script src="/public/assets/js/shopd134.js?v=3.4"></script>
+
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/vendors/select2.min.js"></script>
+    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="admin-assets/js/main.js" type="text/javascript"></script>
+</body>
+</html>

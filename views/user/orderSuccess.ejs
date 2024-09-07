@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+
+    <%- include('./partials/solewayCss.ejs') %>
+
+    <style>
+        /* Write page CSS here*/
+.message-box{
+  display: flex;
+  justify-content: center;
+  padding-top: 20vh;
+  padding-bottom: 20vh;
+}
+.success-container{
+  background: white;
+  height: 726px;
+  width: 90%;
+box-shadow: 5px 5px 10px grey;
+  text-align: center;
+}
+.confirm-green-box{
+  width: 100%;
+  height: 170px;
+  background: #d7f5da;
+}
+
+
+.monserrat-font{
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 2px;
+}
+
+
+
+
+
+/* --------------- site wide START ----------------- */
+.main{
+  width:80vw;
+  margin: 0 10vw;
+  height:50vh;
+  overflow:hidden;
+  
+}
+
+body{
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* 
+ * Setting the site variables, example of how to use
+ * color:var(--text-1);
+ *
+ */
+
+:root {
+    --background-1: #ffffff;
+    --background-2: #E3E3E3;
+    --background-3: #A3CCC8;
+    --text-1: #000000;
+    --text-2: #ffffff;
+    --text-size-reg: calc(20px + (20 - 18) * ((100vw - 300px) / (1600 - 300)));
+    --text-size-sml: calc(10px + (10 - 8) * ((100vw - 300px) / (1600 - 300)));
+}
+
+.verticle-align{
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.no-style{
+  padding:0;
+  margin:0;
+}
+
+
+/* ------------------ site wide END ----------------- */
+
+/* ----- RESPONSIVE OPTIONS MUST STAY AT BOTTOM ----- */
+
+/* SM size and above unless over ridden in bigger sizes */
+@media (min-width: 576px) { /* sm size */
+
+}
+
+/* MD size and above unless over ridden in bigger sizes */
+@media (min-width: 768px) {
+
+}
+
+/* LG size and above unless over ridden in bigger sizes */
+@media (min-width: 992px) { 
+  
+
+}
+
+ /* XL size and above */
+@media (min-width: 1200px) {
+  
+}
+
+svg {
+  width: 100px;
+  display: block;
+  margin: 40px auto 0;
+}
+
+.path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  &.circle {
+    -webkit-animation: dash .9s ease-in-out;
+    animation: dash .9s ease-in-out;
+  }
+  &.line {
+    stroke-dashoffset: 1000;
+    -webkit-animation: dash .9s .35s ease-in-out forwards;
+    animation: dash .9s .35s ease-in-out forwards;
+  }
+  &.check {
+    stroke-dashoffset: -100;
+    -webkit-animation: dash-check .9s .35s ease-in-out forwards;
+    animation: dash-check .9s .35s ease-in-out forwards;
+  }
+}
+
+p {
+  text-align: center;
+  margin: 8px 0 60px;
+  font-size: 1.25em;
+  &.success {
+    color: #73AF55;
+  }
+  &.error {
+    color: #D06079;
+  }
+}
+
+
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@-webkit-keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
+}
+
+@keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
+}
+
+    </style>
+</head>
+<body>
+    <!-- start of nav -->
+<%- include('./partials/solewayTopBar.ejs') %>
+<!-- end of nav-->
+  
+<!-- start of main -->
+<div style="background-color: #f8f9fa;"> <!-- Assuming a background color -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="message-box">
+          <div class="success-container">
+            <br>
+            <img src="https://scontent-lcy1-1.xx.fbcdn.net/v/t1.6435-9/31301640_2114242505489348_3921532491046846464_n.png?_nc_cat=104&ccb=1-3&_nc_sid=973b4a&_nc_ohc=pfOalMq8BzUAX-k-rhY&_nc_ht=scontent-lcy1-1.xx&oh=3af014dd12fa6e3d1816a3425a80e516&oe=609BE04A" alt="" style="height: 100px;">
+            <br>
+            <div style="padding-left: 5%; padding-right: 5%">
+              <hr>
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+              </svg>
+              
+            </div>
+            <br>
+            <h1 class="monserrat-font" style="color: Grey">Thank you for your order</h1>
+            <br>
+            <div class="confirm-green-box">
+              <br>
+              <h5>ORDER CONFIRMATION</h5>
+              <p>Your order has been successfully placed</p>
+              <p>Thank you for choosing Soleway Fashion.</p>
+            </div>
+            <br>
+            <a href="/" id="back-to-shop-btn" class="btn btn-secondary margin-left-5px">Back to Home</a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end of main -->
+
+    
+</body>
+</html>
+
+<script>
+    
+</script>
+
+<!--===============================================================================================-->	
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/slick/slick.min.js"></script>
+	<script src="js/slick-custom.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/parallax100/parallax100.js"></script>
+	<script>
+        $('.parallax100').parallax100();
+	</script>
+<!--===============================================================================================-->
+	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+	<script>
+		$('.gallery-lb').each(function() { // the containers for all your galleries
+			$(this).magnificPopup({
+		        delegate: 'a', // the selector for gallery item
+		        type: 'image',
+		        gallery: {
+		        	enabled:true
+		        },
+		        mainClass: 'mfp-fade'
+		    });
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="vendor/isotope/isotope.pkgd.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/sweetalert/sweetalert.min.js"></script>
+	<script>
+		$('.js-addwish-b2').on('click', function(e){
+			e.preventDefault();
+		});
+
+		$('.js-addwish-b2').each(function(){
+			var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+			$(this).on('click', function(){
+				swal(nameProduct, "is added to wishlist !", "success");
+
+				$(this).addClass('js-addedwish-b2');
+				$(this).off('click');
+			});
+		});
+
+		$('.js-addwish-detail').each(function(){
+			var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+			$(this).on('click', function(){
+				swal(nameProduct, "is added to wishlist !", "success");
+
+				$(this).addClass('js-addedwish-detail');
+				$(this).off('click');
+			});
+		});
+
+		/*---------------------------------------------*/
+
+		// $('.js-addcart-detail').each(function(){
+		// 	var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+		// 	$(this).on('click', function(){
+		// 		swal(nameProduct, "is added to cart !", "success");
+		// 	});
+		// });
+	
+	</script>
+<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			$(this).css('position','relative');
+			$(this).css('overflow','hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify </title>
+</head>
+<body>
+    <div class="container">
+        <h1>Verify Your Email</h1>
+        <% if (typeof message !== 'undefined') { %>
+            <p><%= message %></p>
+          <% } %>
+          
+        <form id="loginForm" action="/existUser" method="post" onsubmit="return validateForm()" novalidate>
+            <div class="form-control">
+                <input type="email" name="email"  required>
+                <label>Email</label>
+            </div>
+            <div id="emailError" class="error"></div>
+
+            <button type="submit" class="btn">Verify</button>
+            
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    function validateForm() {
+     
+      const email = document.querySelector('input[name="email"]').value.trim();
+      
+      
+  
+     
+      const emailError = document.getElementById('emailError');
+      
+     
+     
+     
+      emailError.textContent = "";
+       
+    
+     
+  
+      let isValid = true;
+  
+      
+      if (email === '') {
+          emailError.textContent = 'Email field is required';
+          isValid = false;
+      } else {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+              emailError.textContent = 'Enter a valid email';
+              isValid = false;
+          }
+      }
+     return isValid;
+  }
+  
+  
+  document.getElementById('loginForm').addEventListener('submit',function(event){
+      if(!validateForm()){
+          event.preventDefault();
+      }
+  })
+  
+  
+  </script>
+  
+
+
+
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Muli');
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-image: linear-gradient(120deg, #cfa5fa 0%, #a8a8a8 100%);
+    color: #000;
+    font-family: 'Muli', sans-serif;
+    margin:0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+.error {
+  color: red;
+  font-size: 20px;
+  align-items: center;
+}
+
+.container{
+    background-color:#ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.container h1{
+    text-align: center;
+  padding-bottom:10px;
+    margin-bottom: 15px;
+}
+
+.container a{
+    text-decoration: none;
+    color: rgb(154, 163, 255);
+}
+
+.btn{
+    cursor: pointer;
+    display: inline;
+    width: 100%;
+    background-color: rgb(156, 165, 255);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    border: 0;
+    border-radius: 5px;
+}
+
+.form-control{
+    position: relative;
+    margin: 15px 0 35px ;
+    width: 300px;
+}
+
+.btn:focus{
+    outline: 0;
+}
+
+ .btn:active{
+    transform: scale(0.98);
+}
+
+.text{
+    margin-top: 20px;
+}
+
+.form-control input{
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px #000 solid;
+    display: block;
+    width: 100%;
+    padding: 9px 0;
+    font-size: 18px;
+    color:#000;
+}
+
+.form-control input:focus,
+.form-control input:valid{
+    outline: 0;
+    border-bottom-color:#4facfe ;
+}
+
+.form-control label {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    pointer-events: none;
+  }
+  
+ .form-control label span{
+    display: inline-block;
+    font-size: 15px;
+    min-width: 5px;
+    transition: 0.3s cubic-bezier(0.58,-0.45,0.245,1.55);
+ } 
+
+ .form-control input:focus + label span,
+ .form-control input:valid + label span {
+   color: #4facfe;
+   transform: translateY(-30px);
+ }
+</style>
+
+<script>
+    const labels=document.querySelectorAll('.form-control label')
+
+labels.forEach(label=>{
+    label.innerHTML=label.innerText.split('')
+    .map((letter,    idx)=>`<span style="transition-delay:${idx*10}ms">${letter}</span>`
+).join('')
+})
+</script>

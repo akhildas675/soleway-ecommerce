@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Otp page</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+</head>
+<body>
+  <div class="container">
+    <h1>OTP Verification</h1>
+    <form id="otpForm" action="/verifyOtp" method="post" onsubmit="return validateOtp()">
+      <label for="otpCode" class="center-label">Enter the OTP code sent to your email:</label>
+      <div class="otp-field">
+        <input type="text" id="otp1" maxlength="1" minlength="1">
+        <input type="text" id="otp2" maxlength="1" minlength="1" disabled>
+        <input type="text" id="otp3" maxlength="1" minlength="1" disabled>
+        <input type="text" id="otp4" maxlength="1" minlength="1" disabled>
+      </div>
+      <input type="hidden" id="otpCode" name="otp">
+      <button type="submit">Verify OTP Code</button>
+      <button type="button" id="resendButton" onclick="resendOTP()" disabled>Resend OTP</button>
+      <h3 class="text-danger" id="loginErrorMessage">
+        <%= locals.errmessage ? errmessage : '' %>
+      </h3>
+      <h3 class="text-success" id="loginSuccessMessage">
+        <%= locals.successMessage ? successMessage : '' %>
+      </h3>
+      <div id="timerDisplay"></div>
+      <div class="error-message" id="otpErrorMessage">
+        <%= message || 'Please enter a valid 4-digit OTP code.' %>
+      </div>
+      <div><% if (typeof message !== 'undefined') { %>
+        <p><%= message %> </p>
+      <% } %>
+    </div>
+    </form>
+  </div>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      background-color: #f2f2f2;
+      border-radius: 31px;
+      padding: 20px;
+    }
+
+    .otp-field {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .otp-field input {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 24px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin: 0 5px;
+    }
+
+    .center-label {
+      text-align: center;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    button[type="submit"], button#resendButton {
+      width: 50%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-left: 106px;
+    }
+
+    button[type="submit"] {
+      background-color: #000000;
+      color: white;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #616161;
+    }
+
+    button#resendButton {
+      background-color: #787878;
+      color: white;
+      margin-top: 10px;
+    }
+
+    button#resendButton:disabled {
+      background-color: #CCCCCC;
+      cursor: not-allowed;
+    }
+
+    #timerDisplay {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    h3 {
+      text-align: center;
+    }
+
+    .text-danger {
+      color: red;
+    }
+
+    .text-success {
+      color: green;
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      display: none;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+
+  <script>
+    let timerDuration = 20; //resend otp timer setting
+    let timer;
+
+    function startTimer() {
+      let seconds = timerDuration;
+      timer = setInterval(function () {
+        document.getElementById("timerDisplay").innerHTML = `Resend OTP in ${seconds} seconds`;
+
+        if (--seconds < 0) {
+          clearInterval(timer);
+          document.getElementById("timerDisplay").innerHTML = "";
+          document.getElementById("resendButton").disabled = false;
+        }
+      }, 1000);
+    }
+
+    function resendOTP() {
+      console.log("Resending OTP...");
+
+      document.getElementById("resendButton").disabled = true;
+      startTimer();
+
+      fetch('/otpGet', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('OTP Resent:', data);
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
+    }
+
+    function validateOtp() {
+      let otp1 = document.getElementById('otp1').value;
+      let otp2 = document.getElementById('otp2').value;
+      let otp3 = document.getElementById('otp3').value;
+      let otp4 = document.getElementById('otp4').value;
+      let otpCode = otp1 + otp2 + otp3 + otp4;
+      document.getElementById('otpCode').value = otpCode;
+
+      if (otpCode.length !== 4 || otp1 === "" || otp2 === "" || otp3 === "" || otp4 === "") {
+        document.getElementById('otpErrorMessage').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('otpErrorMessage').style.display = 'none';
+        }, 3000);
+        return false;
+      } else {
+        document.getElementById('otpErrorMessage').style.display = 'none';
+      }
+      return true;
+    }
+
+    const inputs = document.querySelectorAll('.otp-field input');
+inputs[0].focus();
+
+for (let index = 0; index < inputs.length; index++) {
+    const input = inputs[index];
+
+    input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9]/g, ''); 
+        if (input.value.length === 1) {
+            if (index !== inputs.length - 1) {
+                inputs[index + 1].removeAttribute('disabled');
+                inputs[index + 1].focus();
+            }
+        } else {
+            if (index !== 0) {
+                inputs[index].value = '';
+                inputs[index - 1].focus();
+            }
+        }
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+            if (input.value.length === 0 && index !== 0) {
+                inputs[index - 1].focus();
+            }
+        }
+    });
+}
+
+window.onload = startTimer;
+
+  </script>
+</body>
+</html>
