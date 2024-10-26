@@ -4742,8 +4742,8 @@ progress {
 .page-item.active .page-link {
     z-index: 3;
     color: #FFF;
-    background-color: #0D6EFD;
-    border-color: #0D6EFD;
+    background-color: #000000;
+    border-color: #000000;
 }
 .page-item.disabled .page-link {
     color: #6C757D;
@@ -18241,7 +18241,7 @@ Pages - Contact
     width: 100px;
 }
 .header-logo .logo img {
-    width: 120%;
+    width: 100%;
     height: auto;
 }
 
@@ -18289,10 +18289,10 @@ Pages - Contact
 
 /*Action Style Color Normal*/
 .action-color--black.header-action-link li a {
-    color: #24262b;
+    color: #ffffff;
 }
 .action-color--black .offside-about {
-    background: rgba(242, 232, 231, 0.5);
+    background: rgb(0 0 0 / 50%);
 }
 .action-color--white.header-action-link li a {
     color: #FFF;

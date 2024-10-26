@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>About</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<%- include('./partials/solewayCss.ejs') %>
+	
+</head>
+
+<body class="animsition">
+
+	<!-- Header -->
+	<header>
+		<!-- Header desktop -->
+		<div class="container-menu-desktop">
+			<!-- Topbar -->
+			<%- include('./partials/solewayTopBar.ejs') %>
+
+
+
+				<!-- Top bar end -->
+
+				<div class="wrap-menu-desktop">
+					<nav class="limiter-menu-desktop container">
+
+						<!-- Logo desktop -->
+						<a href="/" class="logo">
+							<img src="/images/icons/1.png" alt="IMG-LOGO">
+						</a>
+
+						<!-- Menu desktop -->
+						<div class="menu-desktop">
+							<ul class="main-menu">
+								<li>
+									<a href="/" style="text-decoration: none;">Home</a>
+
+
+								</li>
+								
+
+								<li>
+									<a href="/Shop" style="text-decoration: none;">Shop</a>
+								</li>
+
+								
+								<li>
+									<a href="/Blog" style="text-decoration: none;">Blog</a>
+								</li>
+
+								<li class="active-menu">
+									<a href="/About" style="text-decoration: none;">About</a>
+								</li>
+
+								<li>
+									<a href="contact.html" style="text-decoration: none;">Contact</a>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Icon header -->
+						<div class="wrap-icon-header flex-w flex-r-m">
+							<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+								<i class="zmdi zmdi-search"></i>
+							</div> -->
+
+					
+                        </div>
+
+						
+						<% if (findUser) { %> <!-- Only check if user is logged in -->
+							<a href="/Cart" 
+							   class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" 
+							   data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
+								<i class="zmdi zmdi-shopping-cart"></i>
+								
+							</a>
+						
+							<a href="/Wishlist" 
+							   class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" 
+							   data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+								
+							</a>
+						<% } %>
+						
+						</div>
+					</nav>
+				</div>
+		</div>
+
+		<!-- Header Mobile -->
+		<div class="wrap-header-mobile">
+			<!-- Logo mobile -->
+			<div class="logo-mobile">
+				<a href="/"><img src="/images/icons/1.png" alt="IMG-LOGO"></a>
+			</div>
+
+			<!-- Icon header -->
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+					<i class="zmdi zmdi-search"></i>
+				</div> -->
+
+				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+                    <i class="zmdi zmdi-shopping-cart"></i>
+                </div> -->
+
+				<% if (cartCount > 0 && findUser && wishlistCount) { %> <!-- Use cartCount instead of locals.cartCount -->
+					<a href="/Cart"
+					  class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+					  data-notify="<%= cartCount > 0 ? cartCount : 0  %>">
+					  <i class="zmdi zmdi-shopping-cart"></i>
+					</a>
+				  
+				  
+
+					<a href="/Wishlist"
+						class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+						data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+						<i class="zmdi zmdi-favorite-outline"></i>
+					</a>
+					<% } %>
+			</div>
+
+			<!-- Button show menu -->
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+		<!-- Menu Mobile -->
+		<div class="menu-mobile">
+			
+			<ul class="main-menu-m" >
+				<li>
+					<a href="/" style="text-decoration: none;">Home</a>
+					
+					
+				</li>
+
+				<li>
+					<a href="/Shop" style="text-decoration: none;">Shop</a>
+				</li>
+
+				
+
+				<li>
+					<a href="/Blog"  style="text-decoration: none;">Blog</a>
+				</li>
+
+				<li class="active-menu">
+					<a href="/About" style="text-decoration: none;">About</a>
+				</li>
+
+				<li>
+					<a href="contact.html" style="text-decoration: none;">Contact</a>
+				</li>
+				<li>
+					<a href="/Account" style="text-decoration: none;">Account</a>
+
+				</li>
+
+				
+				<% if (locals.findUser) { %>
+					<li>
+						<a href="/logout" style="text-decoration: none;">Logout</a>
+	
+					</li>
+					<% } else { %>
+						<li>
+							<a href="/Login" style="text-decoration: none;">Login</a>
+		
+						</li>
+						<li>
+							<a href="/Register" style="text-decoration: none;">Register</a>
+		
+						</li>
+
+						
+						<% } %>
+
+
+
+
+			</ul>
+		</div>
+
+		<!-- Modal Search -->
+
+	</header>
+
+
+
+
+	<!-- Title page -->
+	<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('/user-assets/images/bg-01.jpg');">
+		<h2 class="ltext-105 cl0 txt-center">
+			About
+		</h2>
+	</section>
+
+
+	<!-- Content page -->
+	<section class="bg0 p-t-75 p-b-120">
+		<div class="container">
+			<div class="row p-b-148">
+				<div class="col-md-7 col-lg-8">
+					<div class="p-t-7 p-r-85 p-r-15-lg p-r-0-md">
+						<h3 class="mtext-111 cl16 p-b-16">
+							Our Story
+						</h3>
+
+						<p class="stext-113 cl6 p-b-26">
+							In a world where fashion trends come and go, one thing has always remained a steadfast
+							expression of individuality: footwear. Shoes are more than just necessities—they’re an
+							extension of personality, a tool for adventure, and a companion for life’s journey. For
+							some, shoes are simply a fashion accessory, but for Akhildas, the founder of SOLEWAY,
+							they’ve always been a deep passion.
+						</p>
+
+						<p class="stext-113 cl6 p-b-26">
+							From a young age, Akhildas was captivated by footwear—not just the look of a great pair of
+							shoes but the way they can make a person feel. He saw how the right pair of shoes could
+							boost confidence, provide comfort, and withstand the test of time. Whether it was a sleek
+							pair of sneakers, durable boots, or elegant formal shoes, Akhildas believed that everyone
+							deserves high-quality footwear at a price that doesn’t break the bank. Frustrated by the
+							extremes of the shoe industry—luxury brands that were too expensive for many and budget
+							shoes that lacked durability—he dreamt of creating something better. That dream took shape
+							in SOLEWAY, a platform designed to offer affordable, high-quality shoes for everyone.
+						</p>
+
+						<p class="stext-113 cl6 p-b-26">
+							Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call
+							us on (+1) 96 716 6879
+						</p>
+					</div>
+				</div>
+
+				<div class="col-11 col-md-5 col-lg-4 m-lr-auto">
+					<div class="how-bor1 ">
+						<div class="hov-img0">
+							<img src="/user-assets/images/about image 1" alt="IMG">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="order-md-2 col-md-7 col-lg-8 p-b-30">
+					<div class="p-t-7 p-l-85 p-l-15-lg p-l-0-md">
+						<h3 class="mtext-111 cl16 p-b-16">
+							Our Mission
+						</h3>
+
+						<p class="stext-113 cl6 p-b-26">
+							At SOLEWAY, our mission is simple: to make great footwear accessible to all. We believe that
+							no one should have to compromise between style, comfort, and price. Akhildas founded SOLEWAY
+							with a vision to bridge the gap between premium quality and affordability. Our platform
+							offers a wide range of shoes that cater to everyone, from young adults seeking trendy
+							sneakers to professionals in need of stylish, reliable formal shoes.
+
+							Our curated collections are built around three key principles: comfort, durability, and
+							modern design. We understand that shoes are an important part of everyday life, whether
+							you're headed to work, school, or out on an adventure. That’s why every pair we offer is
+							crafted to not only look good but feel great and last long. SOLEWAY is more than just a
+							store—it’s a brand that’s committed to empowering you to walk your way, with confidence and
+							comfort, no matter where life takes you.
+						</p>
+
+						<div class="bor16 p-l-29 p-b-9 m-t-22">
+							<p class="stext-114 cl6 p-r-40 p-b-11">
+								Creativity is just connecting things. When you ask creative people how they did
+								something, they feel a little guilty because they didn't really do it, they just saw
+								something. It seemed obvious to them after a while.
+							</p>
+
+							<span class="stext-111 cl8">
+								- Steve Job’s
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="order-md-1 col-11 col-md-5 col-lg-4 m-lr-auto p-b-30">
+					<div class="how-bor2">
+						<div class="hov-img0">
+							<img src="/user-assets/images/about image 2.jpeg" alt="IMG">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+
+	<!-- Footer -->
+	<%- include('./partials/userFooter.ejs') %>
+
+
+	<!-- Back to top -->
+	<div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+	</div>
+
+	<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function () {
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+	</script>
+	<!--===============================================================================================-->
+	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function () {
+			$(this).css('position', 'relative');
+			$(this).css('overflow', 'hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function () {
+				ps.update();
+			})
+		});
+	</script>
+	<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>

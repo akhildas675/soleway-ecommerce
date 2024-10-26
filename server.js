@@ -56,7 +56,7 @@ app.use('*', (req, res) => {
   
 app.use((err,req,res,next)=>{
     console.log(err.stack);
-    res.status(500).send('Server side error')
+    res.render('user/500')
 })
 
 

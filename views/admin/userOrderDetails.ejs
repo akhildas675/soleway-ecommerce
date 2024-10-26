@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:22 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Order Info</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <!-- Add this in the <head> section for CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<!-- Include SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+        <main class="main-wrap">
+            <%- include('./partials/adminNav.ejs') %>
+
+            <section class="content-main">
+                <% if (orderedData && orderedData.products && orderedData.products.length > 0) { %>
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order Detail</h2>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <header class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                    <span>
+                                        <i class="material-icons md-calendar_today"></i>
+                                        <b><%= new Date(orderedData.orderDate).toLocaleDateString() %></b>
+                                    </span> <br>
+                                    <small class="text-muted">Order ID: <%= orderedData.orderId %></small>
+                                </div>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="orderStatusSelect">
+                                        <option>Change status</option>
+                                        <option value="Pending">Awaiting payment</option>
+                                        <option value="Order Placed">Confirmed</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Returned">Returned</option>
+                                    </select>
+            
+                                    <a class="btn btn-secondary print ms-2" href="#">
+                                        <i class="icon material-icons md-print"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </header>
+            
+                        <div class="card-body">
+                            <div class="row mb-50 mt-20 order-info-wrap">
+                                <!-- Customer Info -->
+                                <div class="col-md-4">
+                                    <article class="icontext align-items-start">
+                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                            <i class="text-primary material-icons md-person"></i>
+                                        </span>
+                                        <div class="text">
+                                            <h6 class="mb-1">Customer:</h6>
+                                            <p>Name: <b><%= orderedData.address.addressName %></b></p> <!-- Display Customer Name -->
+                                            <p>Mobile: <b><%= orderedData.address.mobile %></b></p> <!-- Display Customer Mobile -->
+                                            <!-- <a href="#">View profile</a> -->
+                                        </div>
+                                    </article>
+                                </div>
+                                
+            
+                                <!-- Order Info -->
+                                <div class="col-md-4">
+                                    <article class="icontext align-items-start">
+                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                            <i class="text-primary material-icons md-local_shipping"></i>
+                                        </span>
+                                        <div class="text">
+                                            <h6 class="mb-1">Order Info</h6>
+                                            <p class="mb-1">
+                                                Shipping: Express <br>
+                                                Pay Method: <%= orderedData.paymentMethod %> <br>
+                                                Status: <%= orderedData.orderStatus %>
+                                            </p>
+                                        </div>
+                                    </article>
+                                </div>
+            
+                                <!-- Delivery Address -->
+                                <div class="col-md-4">
+                                    <article class="icontext align-items-start">
+                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                            <i class="text-primary material-icons md-place"></i>
+                                        </span>
+                                        <div class="text">
+                                            <h6 class="mb-1">Deliver to</h6>
+                                            <% if (orderedData.address) { %>
+                                                <p class="mb-1">
+                                                    City: <%= orderedData.address.city %>, <%= orderedData.address.state %> <br>
+                                                    <%= orderedData.address.homeAddress %> <br>
+                                                    Pincode: <%= orderedData.address.pincode %>
+                                                </p>
+                                            <% } else { %>
+                                                <p>No address found.</p>
+                                            <% } %>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+            
+                            <!-- Ordered Products -->
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th width="40%">Product</th>
+                                                    <th width="40%">Size</th>
+                                                    <th width="20%">Unit Price</th>
+                                                    <th width="20%">Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (orderedData && orderedData.products && orderedData.products.length > 0) { %>
+                                                    <% orderedData.products.forEach((item) => { %>
+                                                        <tr>
+                                                            <td>
+                                                                <a class="itemside" href="#">
+                                                                    <div class="left">
+                                                                        <img src="<%= item.productId.images[0] %>" width="40" height="40" class="img-xs" alt="Item">
+                                                                    </div>
+                                                                    <div class="info">
+                                                                        <%= item.productId.productName %>
+                                                                    </div>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <%= item.size %>
+                                                            </td>
+                                                            <td>
+                                                                ₹<%= item.productId.offerPrice %>
+                                                            </td>
+                                                            <td>
+                                                                <%= item.quantity %>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="4">No products found in this order.</td>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+            
+                                <!-- Payment Summary -->
+                                <div class="col-lg-5">
+                                    <article class="float-end">
+                                        <!-- Payment Summary: Calculate Real Price and Offer Price -->
+                                        <dl class="dlist">
+                                            <dt>Total Real Price:</dt>
+                                            <dd>
+                                                <b style="font-size: 1.25rem; font-weight: normal;">₹
+                                                    <%= orderedData.products.reduce((sum, item) => sum + (item.productId.realPrice * item.quantity), 0) %>
+                                                </b>
+                                            </dd>
+                                        </dl>
+            
+                                        <dl class="dlist">
+                                            <dt>Total Offer Price:</dt>
+                                            <dd>
+                                                <b style="font-size: 1.25rem; font-weight: normal;">₹
+                                                    <%= orderedData.products.reduce((sum, item) => sum + (item.productId.offerPrice * item.quantity), 0) %>
+                                                </b>
+                                            </dd>
+                                        </dl>
+            
+                                        <dl class="dlist">
+                                            <dt>Coupon Discount:</dt>
+                                            <dd>
+                                                <b style="font-size: 1.25rem; font-weight: normal;">₹<%= orderedData.coupon ? orderedData.coupon.discountAmount : 0 %></b>
+                                            </dd>
+                                        </dl>
+            
+                                        <dl class="dlist">
+                                            <dt>Grand Total:</dt>
+                                            <dd>
+                                                <b style="font-size: 2rem; font-weight: bold;">₹<%= orderedData.totalAmount %></b> <!-- Larger size for Grand Total -->
+                                            </dd>
+                                        </dl>
+            
+                                        <dl class="dlist">
+                                            <dt class="text-muted">Payment Status:</dt>
+                                            <dd>
+                                                <span class="badge rounded-pill alert-success text-success">
+                                                    <%= orderedData.paymentStatus === 'Received' ? 'Payment done' : 'Payment pending' %>
+                                                </span>
+                                            </dd>
+                                        </dl>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <p>No order details available.</p>
+                <% } %>
+            </section>
+            
+            
+                <!-- content-main end// -->
+
+        </main>
+        <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="admin-assets/js/vendors/select2.min.js"></script>
+        <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="admin-assets/js/main.js" type="text/javascript"></script>
+        <!-- Include SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+        <!-- Add this before the closing </body> tag for JavaScript -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+
+        
+<script>
+   
+  document.getElementById("orderStatusSelect").addEventListener("change", function () {
+    const newStatus = this.value;
+    const orderId = "<%= orderedData._id %>"; 
+
+    if (newStatus !== "Change status") {
+      // Ask for confirmation before updating the status
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to update the order status to "${newStatus}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, update it!',
+        cancelButtonText: 'No, keep it',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If the user confirms, proceed with the update
+          fetch(`/admin/updateOrderStatus`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              newStatus: newStatus,
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Success notification
+              Swal.fire({
+                icon: 'success',
+                title: 'Order status updated!',
+                text: `The status has been successfully changed to "${newStatus}".`,
+                showConfirmButton: false,
+                timer: 2000
+              }).then(() => {
+                // Reload the page after success
+                window.location.reload();
+              });
+            } else {
+             
+              Swal.fire({
+                icon: 'error',
+                title: 'Update failed',
+                text: 'Failed to update order status. Please try again later.',
+              });
+            }
+          })
+          .catch(error => {
+            console.error("Error updating order status:", error);
+            
+            Swal.fire({
+              icon: 'error',
+              title: 'An error occurred',
+              text: 'Something went wrong. Please try again.',
+            });
+          });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          
+          Swal.fire({
+            title: 'Cancelled',
+            text: 'Order status was not changed.',
+            icon: 'info',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        }
+      });
+    }
+  });
+  </script>
+  
+          
+
+
+        
+</body>
+
+
+
+
+</html>

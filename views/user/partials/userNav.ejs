@@ -27,11 +27,11 @@
                         <i class="zmdi zmdi-sign-in"></i> Logout
                     </a>
                 <% } else { %>
-                    <a href="/userLogin" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                    <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
                         <i class="zmdi zmdi-account"></i> Login
                     </a>
 
-                    <a href="/userRegister" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                    <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
                         <i class="zmdi zmdi-assignment"></i> Register
                     </a>
                 <% } %>
@@ -56,7 +56,7 @@
                     </li>
             
                     <li id="shop-menu">
-                        <a href="/productShop">Shop</a>
+                        <a href="/Shop">Shop</a>
                     </li>
             
                     <li id="features-menu" class="label1" data-label1="hot">
@@ -104,7 +104,7 @@
 <div class="wrap-header-mobile">
     <!-- Logo mobile -->
     <div class="logo-mobile">
-        <a href="index.html"><img src="images/icons/soleWayLogo.png" alt="IMG-LOGO"></a>
+        <a href="/"><img src="images/icons/soleWayLogo.png" alt="IMG-LOGO"></a>
     </div>
 
     <!-- Icon header -->
@@ -148,12 +148,12 @@
                 
 
                 <% if (locals.findUser) { %>
-                    <a href="#" class="flex-c-m p-lr-10 trans-04">
+                    <a href="/Account" class="flex-c-m p-lr-10 trans-04">
                         <%= findUser %>
                     </a>
 
                     <% } else { %>
-                        <a href="#" class="flex-c-m p-lr-10 trans-04">
+                        <a href="/Account" class="flex-c-m p-lr-10 trans-04">
                             <%= findUser %>
                         </a>
                 <% } %>
@@ -166,11 +166,11 @@
                         <i class="zmdi zmdi-sign-in"></i> Logout
                     </a>
                 <% } else { %>
-                    <a href="/userLogin" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                    <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
                         <i class="zmdi zmdi-account"></i> Login
                     </a>
 
-                    <a href="/userRegister" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                    <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
                         <i class="zmdi zmdi-assignment"></i> Register
                     </a>
                 <% } %>
@@ -179,7 +179,7 @@
     </ul>
     <ul class="main-menu-m">
         <li>
-            <a href="index.html">Home</a>
+            <a href="/">Home</a>
            
             <span class="arrow-main-menu-m">
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -187,7 +187,7 @@
         </li>
 
         <li>
-            <a href="product.html">Shop</a>
+            <a href="/Shop">Shop</a>
         </li>
 
         <li>

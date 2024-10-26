@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -21,7 +15,7 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/icons/fotor-20240806223213.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png">
     <!-- Template CSS -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -31,29 +25,115 @@
 
 
     <!-- test -->
-   <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS -->
 
-   <!-- Font Awesome CSS for icons -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <!-- Cropper.js CSS -->
-  
-<!-- test -->
+    <!-- Font Awesome CSS for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Cropper.js CSS -->
 
-
- <!-- Cropper.js CSS -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-
- <!-- Bootstrap CSS -->
- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- test -->
 
 
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 
-<link rel="stylesheet" href="/cropperjs/cropper.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
+    <link rel="stylesheet" href="/cropperjs/cropper.css">
+
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 200px;
+            overflow: hidden;
+        }
+
+        .img-thumbnail {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            max-width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 10px;
+        }
+
+        .image-preview button {
+            margin-bottom: 5px;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .small-input {
+            max-width: 100px;
+            /* Adjust this value as needed */
+        }
+    </style>
 
 
 
@@ -62,773 +142,562 @@
 <body>
     <div class="screen-overlay"></div>
     <%- include('./partials/adminAside.ejs') %>
-    <main class="main-wrap">
-        <%- include('./partials/adminNav.ejs') %>
-      <form id="productAdd" enctype="multipart/form-data">
-  <section class="content-main">
-    <div class="row">
-      <div class="col-9">
-        <div class="content-header">
-          <h2 class="content-title">Add New Product</h2>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="card mb-4">
-          <div class="card-header"></div>
-          <div class="card-body">
-            <div class="mb-4">
-              <label for="product_name" class="form-label">Product Name</label>
-              <input type="text" placeholder="Product name" class="form-control" id="product_name" name="productName">
-              <div id="productNameError" class="error" style="color: red;"></div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Full description</label>
-              <textarea placeholder="Type here" class="form-control" rows="4" name="description" id="description" maxlength="150"></textarea>
+        <main class="main-wrap">
+            <%- include('./partials/adminNav.ejs') %>
+                <form id="productAdd" enctype="multipart/form-data">
+                    <section class="content-main">
+                        <div class="row">
+                            <div class="col-9">
+                                <div class="content-header">
+                                    <h2 class="content-title">Add New Product</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card mb-4">
+                                    <div class="card-header"></div>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Product Name</label>
+                                            <input type="text" placeholder="Product name" class="form-control"
+                                                id="product_name" name="productName">
+                                            <div id="productNameError" class="error" style="color: red;"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Full description</label>
+                                            <textarea placeholder="Type here" class="form-control" rows="4"
+                                                name="description" id="description" maxlength="150"></textarea>
 
-              <div id="descriptionError" class="error" style="color: red;"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                  <div class="mb-4">
-                    <label class="form-label">Price</label>
-                    <div class="row gx-2">
-                      <input placeholder="Enter Amount" type="text" class="form-control" pattern="^[1-9][0-9]*(.[0-9]+)?$" name="realPrice" id="realPrice">
-                      <div id="realPriceError" class="error" style="color: red;"></div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="col-lg-4">
-                  <!-- <div class="mb-4">
-                    <label class="form-label">Brand</label>
-                    <div class="row gx-2">
-                      <input placeholder="Brand" type="text" class="form-control" name="brand" id="brand">
-                      <div id="brandError" class="error" style="color: red;"></div>
-                    </div>
-                  </div> -->
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-4">
-                      <label class="form-label">Brand</label>
-                      <div class="row gx-2">
-                        <input placeholder="Brand" type="text" class="form-control" name="brandName" id="brand">
-                        <div id="brandError" class="error" style="color: red;"></div>
-                      </div>
-                    </div>
-                  </div>
-              </div>
+                                            <div id="descriptionError" class="error" style="color: red;"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="mb-4">
+                                                    <label class="form-label">Price</label>
+                                                    <div class="row gx-2">
+                                                        <input placeholder="Enter Amount" type="text"
+                                                            class="form-control" pattern="^[1-9][0-9]*(.[0-9]+)?$"
+                                                            name="realPrice" id="realPrice">
+                                                        <div id="realPriceError" class="error" style="color: red;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-              
-            <div class="mb-4"></div>
-          </div>
-        </div>
-        <!-- size and quantity here -->
+                                            <div class="col-lg-4">
+                                               
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="mb-4">
+                                                    <label class="form-label">Brand</label>
+                                                    <div class="row gx-2">
+                                                        <input placeholder="Brand" type="text" class="form-control"
+                                                            name="brandName" id="brand">
+                                                        <div id="brandError" class="error"
+                                                            style="color: rgb(60, 0, 255);"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4>Size and Quantity</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="sizeQuantityTable">
-                        <thead>
-                            <tr>
-                                <th>Size</th>
-                                <th>Quantity</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sizeQuantityContainer">
-                            <tr id="row7">
-                                <td>
-                                    <input type="text" placeholder="Size" class="form-control small-input" id="size7" name="size7" oninput="validateInput(this)">
-                                    <div id="size7Error" class="error" style="color: red;"></div>
-                                </td>
-                                <td>
-                                    <input type="text" placeholder="Quantity" class="form-control small-input" id="quantity7" name="quantity7" oninput="validateInput(this)">
-                                    <div id="quantity7Error" class="error" style="color: red;"></div>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm cancel-btn" data-row="row7" onclick="removeRow('row7')">Remove</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button type="button" id="addSizeQuantityBtn" class="btn btn-primary mt-3">Add Another Size and Quantity</button>
-            </div>
-        </div>
-    
-        
-    <script>
-        let sizeCounter = 8; 
-        const maxFields = 6;
-        
-        document.getElementById('addSizeQuantityBtn').addEventListener('click', function() {
-            const container = document.getElementById('sizeQuantityContainer');
-            
-            
-            const rows = container.getElementsByTagName('tr');
-            const lastRow = rows[rows.length - 1];
-            const sizeInput = lastRow.querySelector('input[name^="size"]');
-            const quantityInput = lastRow.querySelector('input[name^="quantity"]');
-            
-            const isSizeValid = validateInput(sizeInput, 'size');
-            const isQuantityValid = validateInput(quantityInput, 'quantity');
-            
-            if (!isSizeValid || !isQuantityValid) {
-                // alert('Please fill in both size and quantity fields with valid values before adding another row.');
-                return;
-            }
-            
-            if (rows.length >= maxFields) {
-                alert('Maximum of 6 size and quantity rows reached.');
-                return;
-            }
-        
-            const newRow = createSizeQuantityRow(sizeCounter);
-            container.appendChild(newRow);
-        
-            sizeCounter++; 
-        });
-        
-       
-        function createSizeQuantityRow(counter) {
-            const newRow = document.createElement('tr');
-            newRow.id = `row${counter}`;
-        
-            const sizeCell = document.createElement('td');
-            const quantityCell = document.createElement('td');
-            const actionCell = document.createElement('td');
-        
-            const sizeInput = createInputField(`size${counter}`, 'Size', 'Enter Size', null, 'size');
-            const quantityInput = createInputField(`quantity${counter}`, 'Quantity', 'Enter Quantity', '^[0-9]+(\\.[0-9]+)?$', 'quantity');
-            const cancelButton = createCancelButton(`row${counter}`);
-        
-            sizeCell.appendChild(sizeInput);
-            quantityCell.appendChild(quantityInput);
-            actionCell.appendChild(cancelButton);
-        
-            newRow.appendChild(sizeCell);
-            newRow.appendChild(quantityCell);
-            newRow.appendChild(actionCell);
-        
-            return newRow;
-        }
-        
-        // Function to create an input field
-        function createInputField(id, placeholder, labelText, pattern = null, type = 'generic') {
-            const input = document.createElement('input');
-            input.setAttribute('type', 'text');
-            input.setAttribute('placeholder', placeholder);
-            input.classList.add('form-control', 'small-input');
-            input.id = id;
-            input.setAttribute('name', id);
-            input.setAttribute('oninput', `validateInput(this, '${type}')`);
-        
-            const errorDiv = document.createElement('div');
-            errorDiv.id = `${id}Error`;
-            errorDiv.classList.add('error');
-            errorDiv.style.color = 'red';
-        
-            const wrapperDiv = document.createElement('div');
-            wrapperDiv.appendChild(input);
-            wrapperDiv.appendChild(errorDiv);
-        
-            return wrapperDiv;
-        }
-        
-        
-        function createCancelButton(rowId) {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.classList.add('btn', 'btn-danger', 'btn-sm');
-            button.innerText = 'Cancel';
-            button.setAttribute('data-row', rowId);
-        
-            button.addEventListener('click', function() {
-                removeRow(rowId);
-            });
-        
-            return button
-        }
-        
-        
-        function removeRow(rowId) {
-            const container = document.getElementById('sizeQuantityContainer');
-            if (container.getElementsByTagName('tr').length > 1) {
-                document.getElementById(rowId).remove();
-            }
-        }
-        
-        
-        function validateInput(input, type) {
-            const errorDiv = document.getElementById(`${input.id}Error`);
-            const value = input.value.trim();
-            
-            if (type === 'size') {
-               
-                if (value === '' || isNaN(value) || parseFloat(value) <=4 || parseFloat(value) > 15) {
-                    errorDiv.textContent = 'Please enter a valid size (5-15).';
-                    return false;
-                }
-            } else if (type === 'quantity') {
-                
-                if (value === '' || isNaN(value) || parseFloat(value) < 0) {
-                    errorDiv.textContent = 'Please enter a valid positive number.';
-                    return false;
-                }
-            }
-            
-            errorDiv.textContent = '';
-            return true;
-        }
-        </script>
-        
-      
+                                        <div class="mb-4"></div>
+                                    </div>
+                                </div>
+                                <!-- size and quantity here -->
 
 
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h4>Size and Quantity</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="sizeQuantityTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Size</th>
+                                                        <th>Quantity</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="sizeQuantityContainer">
+                                                    <tr id="row7">
+                                                        <td>
+                                                            <input type="text" placeholder="Size"
+                                                                class="form-control small-input" id="size7" name="size7"
+                                                                oninput="validateInput(this)">
+                                                            <div id="size7Error" class="error" style="color: red;">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" placeholder="Quantity"
+                                                                class="form-control small-input" id="quantity7"
+                                                                name="quantity7" oninput="validateInput(this)">
+                                                            <div id="quantity7Error" class="error" style="color: red;">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm cancel-btn" data-row="row7"
+                                                                onclick="removeRow('row7')">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button type="button" id="addSizeQuantityBtn" class="btn btn-primary mt-3">Add
+                                            Another Size and Quantity</button>
+                                    </div>
+                                </div>
 
-      </div>
-      <div class="col-lg-3">
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="container mt-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Media</h4>
+                                        </div>
+                                        <div class="card mb-4">
+                                            <div class="card-body">
+                                                <div class="input-upload">
+                                                    <div class="image-preview-container" id="imagePreviewContainer">
+                                                        <!-- Image previews will be displayed here -->
+                                                    </div>
+                                                    <input id="imageInput" class="form-control" type="file"
+                                                        accept="image/jpeg,image/jpg,image/png,image/webp" name="images"
+                                                        multiple onchange="handleImageSelection(event)">
+                                                    <div id="imageError" class="error"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <div id="myModal" class="modal">
+                                    <div class="modal-content img-container">
+                                        <span class="close">&times;</span>
+                                        <img id="image" src="" alt="Image Preview">
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <button id="btn-crop" class="btn btn-success" type="button">Crop</button>
+                                            <button id="btn-cancel" class="btn btn-secondary"
+                                                type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                    <div class="cropped-container" style="display: none;">
+                                        <img id="output" src="" alt="">
+                                    </div>
+                                </div>
 
+                                <input type="hidden" id="hiddenField1" name="hiddenField1" value="">
+                                <input type="hidden" id="hiddenField2" name="hiddenField2" value="">
+                                <input type="hidden" id="hiddenField3" name="hiddenField3" value="">
+                                <input type="hidden" id="hiddenField4" name="hiddenField4" value="">
 
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Categories</h4>
+                                    </div>
+                                    <% if (locals.categories) { %>
+                                        <div class="card-body">
+                                            <div class="row gx-2">
+                                                <div class="col-sm-6 mb-3">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-select" name="category" id="category">
+                                                        <% for (let i=0; i < categories.length; i++) { %>
+                                                            <option value="<%= categories[i]._id %>">
+                                                                <%= categories[i].categoryName %>
+                                                            </option>
+                                                            <% } %>
+                                                    </select>
+                                                    <div id="categoryError" class="error" style="color: red;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Offer</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row gx-2">
+                                            <div class="col-sm-6 mb-3">
+                                                <label class="form-label">Offers</label>
+                                                <select class="form-select" name="offerId" id="offer">
+                                                    <% for (let i = 0; i < offer.length; i++) { %>
+                                                        <option value="<%= offer[i]._id %>">
+                                                            <% if (offer[i].offerPercentage === 0) { %>
+                                                                NO Offer
+                                                            <% } else { %>
+                                                                <%= offer[i].offerPercentage %>%
+                                                            <% } %>
+                                                        </option>
+                                                    <% } %>
+                                                </select>
+                                                
+                                            </div>
 
+                                        </div> <!-- row.// -->
+                                    </div>
+                                </div>
+                                <div class="row gx-2">
+                                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Add
+                                        Product</button>
+                                </div>
+                                <div id="errorMessages" style="color: red;"></div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
 
+                <style>
 
+                </style>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <div class="container mt-4">
-          <div class="card mb-4">
-              <div class="card-header">
-                  <h4>Media</h4>
-              </div>
-              <div class="card mb-4">
-                  <div class="card-body">
-                      <div class="input-upload">
-                          <div class="image-preview-container" id="imagePreviewContainer">
-                              <!-- Image previews will be displayed here -->
-                          </div>
-                          <input id="imageInput" class="form-control" type="file" accept="image/jpeg,image/jpg,image/png,image/webp" name="images" multiple onchange="handleImageSelection(event)">
-                          <div id="imageError" class="error"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      
-      <div id="myModal" class="modal">
-          <div class="modal-content img-container">
-              <span class="close">&times;</span>
-              <img id="image" src="" alt="Image Preview">
-              <div class="d-flex justify-content-between mt-2">
-                  <button id="btn-crop" class="btn btn-success" type="button">Crop</button>
-                  <button id="btn-cancel" class="btn btn-secondary" type="button">Cancel</button>
-              </div>
-          </div>
-          <div class="cropped-container" style="display: none;">
-              <img id="output" src="" alt="">
-          </div>
-      </div>
-      
-      <input type="hidden" id="hiddenField1" name="hiddenField1" value="">
-      <input type="hidden" id="hiddenField2" name="hiddenField2" value="">
-      <input type="hidden" id="hiddenField3" name="hiddenField3" value="">
-      <input type="hidden" id="hiddenField4" name="hiddenField4" value="">
-      
-      <script src="/cropperjs/cropper.js"></script>
-      <!-- Bootstrap JS Bundle with Popper -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-      <!-- Cropper.js -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-      
-      <script>
-          let croppedImages = [];
-      
-          function handleImageSelection(event) {
-              const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-              const fileInput = document.getElementById('imageInput');
-              
-              if (!validateImages(fileInput)) {
-                  return;
-              }
-      
-              imagePreviewContainer.innerHTML = ''; 
-      
-              const files = event.target.files;
-      
-              if (files.length > 3) {
-                  toastr.error('You can only select up to 3 images.');
-                  fileInput.value = ''; 
-                  return;
-              }
-      
-              for (let i = 0; i < files.length; i++) {
-                  const file = files[i];
-                  const imagePreview = document.createElement('div');
-                  imagePreview.classList.add('image-preview', 'position-relative', 'd-flex', 'flex-column', 'align-items-center', 'mb-2');
-      
-                  const removeButton = document.createElement('button');
-                  removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'mb-2');
-                  removeButton.innerHTML = 'Remove';
-                  removeButton.style.fontSize = '10px'; 
-                  removeButton.style.padding = '2px 5px'; 
-                  removeButton.onclick = () => {
-                      const fileIndex = Array.from(fileInput.files).indexOf(file);
-                      if (fileIndex !== -1) {
-                          const dt = new DataTransfer();
-                          const updatedFiles = Array.from(fileInput.files);
-                          updatedFiles.splice(fileIndex, 1);
-                          for (let j = 0; j < updatedFiles.length; j++) {
-                              dt.items.add(updatedFiles[j]);
-                          }
-                          fileInput.files = dt.files;
-                      }
-                      imagePreview.remove();
-                  };
-      
-                  const img = document.createElement('img');
-                  img.src = URL.createObjectURL(file);
-                  img.alt = file.name;
-                  img.classList.add('img-thumbnail', 'mb-2');
-                  img.style.maxWidth = '100px';
-      
-                  const fileName = document.createElement('p');
-                  fileName.textContent = file.name;
-                  fileName.classList.add('text-muted', 'mb-0', 'file-name', 'text-center');
-      
-                  const viewButton = document.createElement('button');
-                  viewButton.classList.add('btn', 'btn-info', 'btn-sm');
-                  viewButton.innerHTML = 'View';
-                  viewButton.type = 'button';
-                  viewButton.onclick = () => {
-                      var modal = document.getElementById('myModal');
-                      modal.style.display = 'block';
-      
-                      const image = document.getElementById('image');
-                      image.src = URL.createObjectURL(file);
-                      const cropper = new Cropper(image, {
-                          aspectRatio: 1 / 1,
-                          viewMode: 3
-                      });
-      
-                      document.getElementById('btn-crop').onclick = () => {
-                          var croppedImage = cropper.getCroppedCanvas().toDataURL("image/png");
-                          let dimensions = cropper.getData();
-                          img.src = croppedImage;
-      
-                          let x = dimensions.x;
-                          let y = dimensions.y;
-                          let height = dimensions.height;
-                          let width = dimensions.width;
-                          const imagedata = "index= " + i + " x= " + x + " y= " + y + " width= " + width + " height= " + height;
-      
-                          croppedImages[i] = croppedImage;
-      
-                          if (i == 0) {
-                              document.getElementById('hiddenField1').value = imagedata;
-                          } else if (i == 1) {
-                              document.getElementById('hiddenField2').value = imagedata;
-                          } else if (i == 2) {
-                              document.getElementById('hiddenField3').value = imagedata;
-                          } else if (i == 3) {
-                              document.getElementById('hiddenField4').value = imagedata;
-                          }
-      
-                          document.querySelector(".cropped-container").style.display = 'none';
-                          modal.style.display = 'none';
-                          cropper.destroy();
-                      };
-      
-                      document.getElementById('btn-cancel').onclick = () => {
-                          modal.style.display = 'none';
-                          cropper.destroy();
-                      };
-                  };
-      
-                  imagePreview.appendChild(img);
-                  imagePreview.appendChild(fileName);
-                  imagePreview.appendChild(removeButton);
-                  imagePreview.appendChild(viewButton);
-                  imagePreviewContainer.appendChild(imagePreview);
-              }
-          }
-      
-          function validateImages(fileInput) {
-              const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-              const files = fileInput.files;
-              const imageError = document.getElementById('imageError');
-      
-              for (let i = 0; i < files.length; i++) {
-                  if (!allowedImageTypes.includes(files[i].type)) {
-                      imageError.textContent = 'Invalid file type. Allowed types are: ' + allowedImageTypes.join(', ');
-                      fileInput.value = ''; 
-                      return false;
-                  }
-              }
-              imageError.textContent = ''; 
-              return true;
-          }
-      
-          document.getElementsByClassName('close')[0].onclick = function() {
-              document.getElementById('myModal').style.display = 'none';
-          };
-      
-          document.getElementById('imageForm').addEventListener('submit', function(event) {
-              const files = document.getElementById('imageInput').files;
-              if (files.length < 3) {
-                  toastr.error('Please provide at least 3 images.');
-                  event.preventDefault();
-              }
-      
-              // Ensure the cropped images are added to the form data
-              if (croppedImages.length > 0) {
-                  const formData = new FormData();
-                  for (let i = 0; i < croppedImages.length; i++) {
-                      if (croppedImages[i]) {
-                          formData.append('croppedImages[]', croppedImages[i]);
-                      }
-                  }
-                  // Additional form data can be appended here
-              }
-          });
-      </script>
-      
-      <style>
-          .modal {
-              display: none;
-              position: fixed;
-              z-index: 1;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: auto;
-              background-color: rgba(0, 0, 0, 0.4);
-              padding-top: 50px;
-          }
-      
-          .modal-content {
-              background-color: #fefefe;
-              margin: 5% auto;
-              padding: 20px;
-              border: 1px solid #888;
-              width: 60%;
-              max-width: 600px;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-          }
-      
-          .close {
-              color: #aaa;
-              float: right;
-              font-size: 28px;
-              font-weight: bold;
-              margin-left: auto;
-          }
-      
-          .close:hover,
-          .close:focus {
-              color: black;
-              text-decoration: none;
-              cursor: pointer;
-          }
-      
-          .image-preview-container {
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 20px;
-          }
-      
-          .image-preview {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              max-width: 200px;
-              overflow: hidden;
-          }
-      
-          .img-thumbnail {
-              max-width: 100%;
-              margin-bottom: 10px;
-          }
-      
-          .file-name {
-              max-width: 100%;
-              text-align: center;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              margin-bottom: 10px;
-          }
-      
-          .image-preview button {
-              margin-bottom: 5px;
-          }
-      
-          .img-container img {
-              width: 100%;
-              height: auto;
-              max-height: 400px;
-              object-fit: contain;
-          }
-      </style>
-      
-      
+        </main>
 
 
-
-      
-
-
-        <div class="card mb-4">
-          <div class="card-header">
-            <h4>Select Categories</h4>
-          </div>
-          <% if (locals.categories) { %>
-          <div class="card-body">
-            <div class="row gx-2">
-              <div class="col-sm-6 mb-3">
-                <label class="form-label">Category</label>
-                <select class="form-select" name="category" id="category">
-                  <% for (let i = 0; i < categories.length; i++) { %>
-                      <option value="<%= categories[i]._id %>">
-                          <%= categories[i].categoryName %>
-                      </option>
-                  <% } %>
-                </select>
-                <div id="categoryError" class="error" style="color: red;"></div>
-              </div>
-            </div>
-          </div>
-          <% } %>
-        </div>
-        <div class="row gx-2">
-          <button type="submit" class="btn btn-md rounded font-sm hover-up">Add Product</button>
-        </div>
-        <div id="errorMessages" style="color: red;"></div>
-      </div>
-    </div>
-  </section>
-</form>
-
-        <style>
-            .small-input {
-                max-width: 100px; /* Adjust this value as needed */
-            }
-        </style>
-        
-    </main>
-
-   
-    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
-    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
-    <script src="admin-assets/js/vendors/select2.min.js"></script>
-    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
-    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
-    <!-- Main Script -->
-    <script src="admin-assets/js/main.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
-
-
-
-
-
-
-
-
-
+        <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="admin-assets/js/vendors/select2.min.js"></script>
+        <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="admin-assets/js/main.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script
 
  <!-- Bootstrap JS Bundle with Popper -->
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
- <!-- Cropper.js -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+        <!-- Cropper.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+        <!-- fetching validation -->
+
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
 
+        <script>
+            //send to backend
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('productAdd');
+                const imageInput = document.getElementById('imageInput');
 
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
 
+                    const formData = new FormData(form);
+                    const response = await fetch('/admin/createProduct', {
+                        method: 'POST',
+                        body: formData
+                    });
 
- <script>
-  // function handleImageSelection(event) {
-  //   const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-  //   const fileInput = document.getElementById('imageInput');
-    
-  //   if (!validateImages(fileInput)) {
-  //       return;
-  //   }
+                    const result = await response.json();
 
-  //   imagePreviewContainer.innerHTML = ''; 
+                    // Show validation errors as toastr messages
+                    if (result.errors) {
+                        for (const [key, errorMessage] of Object.entries(result.errors)) {
+                            toastr.error(errorMessage, 'Validation Error');
+                        }
+                    }
 
-  //   const files = event.target.files;
-
-  //   if (files.length > 3) {
-  //     toastr.error('You can only select up to 3 images.');
-  //     fileInput.value = ''; 
-  //     return;
-  //   }
-
-  //   for (let i = 0; i < files.length; i++) {
-  //       const file = files[i];
-  //       const imagePreview = document.createElement('div');
-  //       imagePreview.classList.add('image-preview', 'position-relative');
-
-  //       const img = document.createElement('img');
-  //       img.src = URL.createObjectURL(file);
-  //       img.alt = file.name;
-  //       img.classList.add('img-thumbnail', 'mb-2');
-  //       img.style.maxWidth = '100px';
-
-  //       const fileName = document.createElement('p');
-  //       fileName.textContent = file.name;
-  //       fileName.classList.add('text-muted', 'mb-0');
-
-  //       const removeButton = document.createElement('button');
-  //       removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-btn');
-  //       removeButton.innerHTML = 'Remove';
-  //       removeButton.style.fontSize = '10px'; 
-  //       removeButton.style.padding = '2px 5px'; 
-  //       removeButton.onclick = () => {
-  //           const fileIndex = Array.from(fileInput.files).indexOf(file);
-  //           if (fileIndex !== -1) {
-  //               const dt = new DataTransfer();
-  //               const updatedFiles = Array.from(fileInput.files);
-  //               updatedFiles.splice(fileIndex, 1);
-  //               for (let j = 0; j < updatedFiles.length; j++) {
-  //                   dt.items.add(updatedFiles[j]);
-  //               }
-  //               fileInput.files = dt.files;
-  //           }
-  //           imagePreview.remove();
-  //       };
-
-  //       imagePreview.appendChild(img);
-  //       imagePreview.appendChild(fileName);
-  //       imagePreview.appendChild(removeButton);
-  //       imagePreviewContainer.appendChild(imagePreview);
-  //   }
-  // }
-
-  // function validateImages(fileInput) {
-  //     const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-  //     const files = fileInput.files;
-  //     const imageError = document.getElementById('imageError');
-
-  //     for (let i = 0; i < files.length; i++) {
-  //         if (!allowedImageTypes.includes(files[i].type)) {
-  //             imageError.textContent = 'Invalid file type. Allowed types are: ' + allowedImageTypes.join(', ');
-  //             fileInput.value = ''; 
-  //             return false;
-  //         }
-  //     }
-  //     imageError.textContent = ''; 
-  //     return true;
-  // }
-
-  // document.getElementById('imageForm').addEventListener('submit', function(event) {
-  //   const files = document.getElementById('imageInput').files;
-  //   if (files.length < 3) {
-  //     toastr.error('Please provide at least 3 images.');
-  //     event.preventDefault();
-  //   }
-  // });
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- fetching validation -->
- 
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
-
-<script>
- document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('productAdd');
-    const imageInput = document.getElementById('imageInput');
-
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-        const response = await fetch('/admin/createProduct', {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-
-        // Show validation errors as toastr messages
-        if (result.errors) {
-            for (const [key, errorMessage] of Object.entries(result.errors)) {
-                toastr.error(errorMessage, 'Validation Error');
-            }
-        }
-
-        // If the response is ok and there are at least 3 images
-        if (response.ok && imageInput.files.length >= 3) {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Product added successfully!',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                window.location.href = '/admin/productsView';
+                    // If the response is ok and there are at least 3 images
+                    if (response.ok && imageInput.files.length >= 3) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Product added successfully!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = '/admin/productsView';
+                        });
+                    }
+                });
             });
-        }
-    });
-});
 
 
-    </script>
+        </script>
+
+<!-- Size and Quantity field Generating -->
+        <script>
+            let sizeCounter = 8;
+            const maxFields = 6;
+
+            document.getElementById('addSizeQuantityBtn').addEventListener('click', function () {
+                const container = document.getElementById('sizeQuantityContainer');
 
 
+                const rows = container.getElementsByTagName('tr');
+                const lastRow = rows[rows.length - 1];
+                const sizeInput = lastRow.querySelector('input[name^="size"]');
+                const quantityInput = lastRow.querySelector('input[name^="quantity"]');
 
+                const isSizeValid = validateInput(sizeInput, 'size');
+                const isQuantityValid = validateInput(quantityInput, 'quantity');
+
+                if (!isSizeValid || !isQuantityValid) {
+
+                    return;
+                }
+
+                if (rows.length >= maxFields) {
+                    alert('Maximum of 6 size and quantity rows reached.');
+                    return;
+                }
+
+                const newRow = createSizeQuantityRow(sizeCounter);
+                container.appendChild(newRow);
+
+                sizeCounter++;
+            });
+
+
+            function createSizeQuantityRow(counter) {
+                const newRow = document.createElement('tr');
+                newRow.id = `row${counter}`;
+
+                const sizeCell = document.createElement('td');
+                const quantityCell = document.createElement('td');
+                const actionCell = document.createElement('td');
+
+                const sizeInput = createInputField(`size${counter}`, 'Size', 'Enter Size', null, 'size');
+                const quantityInput = createInputField(`quantity${counter}`, 'Quantity', 'Enter Quantity', '^[0-9]+(\\.[0-9]+)?$', 'quantity');
+                const cancelButton = createCancelButton(`row${counter}`);
+
+                sizeCell.appendChild(sizeInput);
+                quantityCell.appendChild(quantityInput);
+                actionCell.appendChild(cancelButton);
+
+                newRow.appendChild(sizeCell);
+                newRow.appendChild(quantityCell);
+                newRow.appendChild(actionCell);
+
+                return newRow;
+            }
+
+            // Function to create an input field
+            function createInputField(id, placeholder, labelText, pattern = null, type = 'generic') {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('placeholder', placeholder);
+                input.classList.add('form-control', 'small-input');
+                input.id = id;
+                input.setAttribute('name', id);
+                input.setAttribute('oninput', `validateInput(this, '${type}')`);
+
+                const errorDiv = document.createElement('div');
+                errorDiv.id = `${id}Error`;
+                errorDiv.classList.add('error');
+                errorDiv.style.color = 'red';
+
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.appendChild(input);
+                wrapperDiv.appendChild(errorDiv);
+
+                return wrapperDiv;
+            }
+
+
+            function createCancelButton(rowId) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.classList.add('btn', 'btn-danger', 'btn-sm');
+                button.innerText = 'Remove';
+                button.setAttribute('data-row', rowId);
+
+                button.addEventListener('click', function () {
+                    removeRow(rowId);
+                });
+
+                return button
+            }
+
+
+            function removeRow(rowId) {
+                const container = document.getElementById('sizeQuantityContainer');
+                if (container.getElementsByTagName('tr').length > 1) {
+                    document.getElementById(rowId).remove();
+                }
+            }
+
+
+            function validateInput(input, type) {
+                const errorDiv = document.getElementById(`${input.id}Error`);
+                const value = input.value.trim();
+
+                if (type === 'size') {
+
+                    if (value === '' || isNaN(value) || parseFloat(value) <= 4 || parseFloat(value) > 15) {
+                        errorDiv.textContent = 'Please enter a valid size (5-15).';
+                        return false;
+                    }
+                } else if (type === 'quantity') {
+
+                    if (value === '' || isNaN(value) || parseFloat(value) < 0) {
+                        errorDiv.textContent = 'Please enter a valid positive number.';
+                        return false;
+                    }
+                }
+
+                errorDiv.textContent = '';
+                return true;
+            }
+        </script>
+
+
+<!-- Image cropping -->
+        <script>
+            let croppedImages = [];
+
+            function handleImageSelection(event) {
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+                const fileInput = document.getElementById('imageInput');
+
+                if (!validateImages(fileInput)) {
+                    return;
+                }
+
+                imagePreviewContainer.innerHTML = '';
+
+                const files = event.target.files;
+
+                if (files.length > 5) {
+                    toastr.error('You can only select up to 3 images.');
+                    fileInput.value = '';
+                    return;
+                }
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const imagePreview = document.createElement('div');
+                    imagePreview.classList.add('image-preview', 'position-relative', 'd-flex', 'flex-column', 'align-items-center', 'mb-2');
+
+                    const removeButton = document.createElement('button');
+                    removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'mb-2');
+                    removeButton.innerHTML = 'Remove';
+                    removeButton.style.fontSize = '10px';
+                    removeButton.style.padding = '2px 5px';
+                    removeButton.onclick = () => {
+                        const fileIndex = Array.from(fileInput.files).indexOf(file);
+                        if (fileIndex !== -1) {
+                            const dt = new DataTransfer();
+                            const updatedFiles = Array.from(fileInput.files);
+                            updatedFiles.splice(fileIndex, 1);
+                            for (let j = 0; j < updatedFiles.length; j++) {
+                                dt.items.add(updatedFiles[j]);
+                            }
+                            fileInput.files = dt.files;
+                        }
+                        imagePreview.remove();
+                    };
+
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.alt = file.name;
+                    img.classList.add('img-thumbnail', 'mb-2');
+                    img.style.maxWidth = '100px';
+
+                    const fileName = document.createElement('p');
+                    fileName.textContent = file.name;
+                    fileName.classList.add('text-muted', 'mb-0', 'file-name', 'text-center');
+
+                    const viewButton = document.createElement('button');
+                    viewButton.classList.add('btn', 'btn-info', 'btn-sm');
+                    viewButton.innerHTML = 'View';
+                    viewButton.type = 'button';
+                    viewButton.onclick = () => {
+                        var modal = document.getElementById('myModal');
+                        modal.style.display = 'block';
+
+                        const image = document.getElementById('image');
+                        image.src = URL.createObjectURL(file);
+                        const cropper = new Cropper(image, {
+                            aspectRatio: 1 / 1,
+                            viewMode: 3
+                        });
+
+                        document.getElementById('btn-crop').onclick = () => {
+                            var croppedImage = cropper.getCroppedCanvas().toDataURL("image/png");
+                            let dimensions = cropper.getData();
+                            img.src = croppedImage;
+
+                            let x = dimensions.x;
+                            let y = dimensions.y;
+                            let height = dimensions.height;
+                            let width = dimensions.width;
+                            const imagedata = "index= " + i + " x= " + x + " y= " + y + " width= " + width + " height= " + height;
+
+                            croppedImages[i] = croppedImage;
+
+                            if (i == 0) {
+                                document.getElementById('hiddenField1').value = imagedata;
+                            } else if (i == 1) {
+                                document.getElementById('hiddenField2').value = imagedata;
+                            } else if (i == 2) {
+                                document.getElementById('hiddenField3').value = imagedata;
+                            } else if (i == 3) {
+                                document.getElementById('hiddenField4').value = imagedata;
+                            }
+
+                            document.querySelector(".cropped-container").style.display = 'none';
+                            modal.style.display = 'none';
+                            cropper.destroy();
+                        };
+
+                        document.getElementById('btn-cancel').onclick = () => {
+                            modal.style.display = 'none';
+                            cropper.destroy();
+                        };
+                    };
+
+                    imagePreview.appendChild(img);
+                    imagePreview.appendChild(fileName);
+                    imagePreview.appendChild(removeButton);
+                    imagePreview.appendChild(viewButton);
+                    imagePreviewContainer.appendChild(imagePreview);
+                }
+            }
+
+            function validateImages(fileInput) {
+                const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                const files = fileInput.files;
+                const imageError = document.getElementById('imageError');
+
+                for (let i = 0; i < files.length; i++) {
+                    if (!allowedImageTypes.includes(files[i].type)) {
+                        imageError.textContent = 'Invalid file type. Allowed types are: ' + allowedImageTypes.join(', ');
+                        fileInput.value = '';
+                        return false;
+                    }
+                }
+                imageError.textContent = '';
+                return true;
+            }
+
+            document.getElementsByClassName('close')[0].onclick = function () {
+                document.getElementById('myModal').style.display = 'none';
+            };
+
+            document.getElementById('imageForm').addEventListener('submit', function (event) {
+                const files = document.getElementById('imageInput').files;
+                if (files.length < 3) {
+                    toastr.error('Please provide at least 3 images.');
+                    event.preventDefault();
+                }
+
+                // Ensure the cropped images are added to the form data
+                if (croppedImages.length > 0) {
+                    const formData = new FormData();
+                    for (let i = 0; i < croppedImages.length; i++) {
+                        if (croppedImages[i]) {
+                            formData.append('croppedImages[]', croppedImages[i]);
+                        }
+                    }
+                    // Additional form data can be appended here
+                }
+            });
+        </script>
 </body>
 
 

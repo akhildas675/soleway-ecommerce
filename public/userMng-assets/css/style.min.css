@@ -308,7 +308,7 @@ svg {
 }
 img {
     padding-left: 0px;
-    margin-left: -60px;
+    margin-left: 0px;
 }
 
 table {
@@ -2748,8 +2748,8 @@ progress {
 }
 
 .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #000000;
+    border-color: #000000
 }
 
 .form-check-input:checked[type=checkbox] {
@@ -3415,21 +3415,21 @@ fieldset:disabled .btn {
 
 .btn-primary {
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #000000;
+    border-color: #626262
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #025ce2;
-    border-color: #0257d5
+    background-color: #363636;
+    border-color: #626262
 }
 
 .btn-check:focus+.btn-primary,
 .btn-primary:focus {
     color: #fff;
-    background-color: #025ce2;
-    border-color: #0257d5;
+    background-color: #494949;
+    border-color: #383838;
     box-shadow: 0 0 0 4px rgba(49, 132, 253, .5)
 }
 
@@ -3439,8 +3439,8 @@ fieldset:disabled .btn {
 .btn-primary:active,
 .show>.btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #0257d5;
-    border-color: #0252c9
+    background-color: #4e4e4e;
+    border-color: #3c3c3c
 }
 
 .btn-check:active+.btn-primary:focus,
@@ -3454,8 +3454,8 @@ fieldset:disabled .btn {
 .btn-primary.disabled,
 .btn-primary:disabled {
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #393939;
+    border-color: #464646
 }
 
 .btn-secondary {
@@ -5300,8 +5300,8 @@ fieldset:disabled .btn {
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #000000;
+    border-color: #000000;
 }
 
 .page-item.disabled .page-link {
@@ -5445,9 +5445,9 @@ fieldset:disabled .btn {
 }
 
 .alert-warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba
+    color: #ffffff;
+    background-color: #515151;
+    border-color: #515151
 }
 
 .alert-warning .alert-link {
@@ -19605,11 +19605,11 @@ table {
 }
 
 .action-color--black.header-action-link li a {
-    color: #24262b
+    color: #ffffff
 }
 
 .action-color--black .offside-about {
-    background: rgb(255 255 255 / 50%)
+    background:#000000
 }
 
 .action-color--white.header-action-link li a {
@@ -19726,7 +19726,7 @@ table {
 }
 
 .mobile-header {
-    padding: 15px 0
+    padding: 0px 0
 }
 
 .offside-menu {
@@ -19737,7 +19737,7 @@ table {
     letter-spacing: normal !important;
     display: block;
     border-radius: 50%;
-    background: rgba(242, 232, 231, .5)
+    background: #000000
 }
 
 .offside-menu-color--black {
@@ -19770,7 +19770,7 @@ table {
 }
 
 .mobile-header-bg-color--black {
-    background: #24262b
+    background: #000000
 }
 
 .footer-bg {

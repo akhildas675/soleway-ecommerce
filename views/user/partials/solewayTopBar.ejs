@@ -10,7 +10,7 @@
             </a>
 
             <% if (locals.findUser) { %>
-                <a href="/userInfo" class="flex-c-m trans-04 p-lr-25">
+                <a href="/Account" class="flex-c-m trans-04 p-lr-25">
                 <%= findUser.name%>
                 <% } else { %>
             <a href="#" class="flex-c-m p-lr-10 trans-04">
@@ -25,11 +25,11 @@
                     <i class="zmdi zmdi-sign-in"></i> Logout
                 </a>
             <% } else { %>
-                <a href="/userLogin" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
                     <i class="zmdi zmdi-account"></i> Login
                 </a>
 
-                <a href="/userRegister" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
                     <i class="zmdi zmdi-assignment"></i> Register
                 </a>
             <% } %>

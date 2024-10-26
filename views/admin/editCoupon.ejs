@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+
+<head>
+    <meta charset="utf-8" />
+    <title>Edit Coupon</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <style>
+        #btnBlock {
+            color: #fff;
+            background-color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        #btnUnblock {
+            color: #fff;
+            background-color: #28a745;
+            border: 1px solid #28a745;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+    <link rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png" />
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+
+    <!-- Include Toastify CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+   
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+        <main class="main-wrap">
+            <%- include('./partials/adminNav.ejs') %>
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Coupon</h2>
+                            <p>Add, edit or delete a Coupon</p>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <!-- Coupon -->
+                                    <% if (locals.coupon) { %>
+
+
+
+
+
+                                        <form id="addCoupon">
+                                            <div class="container">
+                                                <!-- Coupon Name -->
+                                                <div class="mb-4">
+                                                    <label for="couponName" class="form-label">Coupon Name</label>
+                                                    <input type="text" placeholder="Enter the coupon name"
+                                                        name="couponName" class="form-control" id="coupon_name"
+                                                        value="<%= coupon.couponName %>" />
+                                                    <input id="coupon_id" type="hidden" value="<%= coupon._id %>">
+                                                </div>
+
+                                                <!-- Coupon Code -->
+                                                <div class="mb-4">
+                                                    <label for="couponCode" class="form-label">Coupon Code</label>
+                                                    <input type="text" placeholder="Enter the coupon code"
+                                                        name="couponCode" class="form-control" id="coupon_code"
+                                                        value="<%= coupon.couponCode %>" />
+                                                </div>
+
+                                                <!-- Minimum Purchase -->
+                                                <div class="mb-4">
+                                                    <label for="minimumPurchase" class="form-label">Minimum
+                                                        Purchase</label>
+                                                    <input type="text" placeholder="Enter minimum purchase amount"
+                                                        name="minimumPurchase" class="form-control"
+                                                        id="minimum_purchase" value="<%=coupon.minimumPurchase %>" />
+                                                </div>
+
+                                                <!-- Discount -->
+                                                <div class="mb-4">
+                                                    <label for="discount" class="form-label">Discount In
+                                                        Percentage</label>
+                                                    <input type="text" placeholder="Enter discount value"
+                                                        name="discountInPercentage" class="form-control"
+                                                        id="discount_percentage"
+                                                        value="<%= coupon.discountInPercentage %>" />
+                                                </div>
+
+                                                <!-- Expiry Date -->
+                                                <div class="mb-4">
+                                                    <label for="date" class="form-label">Expiry Date</label>
+                                                    <input type="date" name="expiryDate" class="form-control"
+                                                        id="expiry_date" value="<%= coupon.expiryDate %>" />
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Submit Button -->
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Add Coupon</button>
+                                            </div>
+                                        </form>
+
+                                        <% } %>
+                                </div>
+
+
+                            </div>
+                            <!-- .row // -->
+                        </div>
+                        <!-- card body .// -->
+                    </div>
+                    <!-- card .// -->
+                </section>
+
+                <!-- content-main end// -->
+        </main>
+        <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="admin-assets/js/vendors/select2.min.js"></script>
+        <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="admin-assets/js/main.js" type="text/javascript"></script>
+        <!-- Include Toastify JS -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+        <!--Action  button -->
+
+
+
+
+        <script>
+            function addCoupon(event) {
+                event.preventDefault(); 
+        
+                let couponID = document.getElementById('coupon_id').value; 
+                let couponName = document.getElementById('coupon_name').value;
+                let couponCode = document.getElementById('coupon_code').value; 
+                let minimumPurchase = document.getElementById('minimum_purchase').value; 
+                let discountInPercentage = document.getElementById('discount_percentage').value; 
+                let expiryDate = document.getElementById('expiry_date').value; 
+
+
+                console.log("coupon Id from edit page",couponID)
+        
+                
+                let data = {
+                    couponId: couponID,
+                    couponName: couponName,
+                    couponCode: couponCode,
+                    minimumPurchase: minimumPurchase,
+                    discountInPercentage: discountInPercentage,
+                    expiryDate: expiryDate,
+                };
+        
+                
+                fetch('/admin/editCoupon', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Toastify({
+                            text: data.message,
+                            duration: 3000,
+                            gravity: "top", 
+                            position: "right", 
+                            backgroundColor: "#4CAF50", 
+                        }).showToast();
+        
+                        setTimeout(() => {
+                            window.location.href = '/admin/loadCoupon'; 
+                        }, 3000);
+                    } else {
+                        Toastify({
+                            text: data.errors ? data.errors.join("\n") : data.message,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#FF0000", 
+                        }).showToast();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Toastify({
+                        text: "Failed to submit coupon. Please try again.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#FF0000",
+                    }).showToast();
+                });
+            }
+        
+            document.getElementById("addCoupon").addEventListener('submit', addCoupon); 
+        </script>
+        
+        
+
+
+</body>
+
+</html>

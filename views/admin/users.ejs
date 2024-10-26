@@ -14,7 +14,7 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/icons/fotor-20240806223213.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png">
     <!-- Template CSS -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
 </head>
@@ -36,26 +36,7 @@
             <!--=================================================================================================================-->
             <div class="card mb-4">
                 <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div>
-                        <div class="col-lg-2 col-md-3 col-6">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-3 col-6">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
-                        </div>
-                    </div>
+                    
                 </header>
                 <div class="card-body">
                     <% if (locals.users) { %>
@@ -93,15 +74,18 @@
                             
                         <td class="text-end">
                             <% if (users[i].is_active) { %>
-                                <a href="/admin/blockUser?id=<%= users[i]._id %>" class="block-link">
-                                    <button type="button" id="btnBlock" class="btn btn-sm btn-danger rounded font-sm mt-15">Block</button>
-                                </a>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-danger rounded font-sm mt-15" 
+                                    onclick="toggleBlockUnblock('<%= users[i]._id %>', this)">Block</button>
                             <% } else { %>
-                                <a href="/admin/unBlockUser?id=<%= users[i]._id %>" class="unblock-link">
-                                    <button type="button" id="btnUnblock" class="btn btn-sm btn-success rounded font-sm mt-15">Unblock</button>
-                                </a>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-success rounded font-sm mt-15" 
+                                    onclick="toggleBlockUnblock('<%= users[i]._id %>', this)">Unblock</button>
                             <% } %>
                         </td>
+                        
                         </tr>
                        
                                     
@@ -135,13 +119,25 @@
 
         
      
-        function toggleBlockUnblock(button) {
-            if (button.textContent.trim() === 'Block') {
+async function toggleBlockUnblock(userId, button) {
+    let isBlocking = button.textContent.trim() === 'Block'; // Check if we're blocking or unblocking
+    let url = isBlocking ? '/admin/blockUser' : '/admin/unBlockUser'; // Set the URL based on action
+
+    // Sending the request to the server
+    try {
+        const response = await fetch(url + '?id=' + userId, {
+            method: 'POST', // Use POST method
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            // Update button and status based on the action performed
+            if (isBlocking) {
                 button.textContent = 'Unblock';
                 button.classList.remove('btn-danger');
                 button.classList.add('btn-success');
-    
-                // Change status to Inactive and blocking
                 let statusBadge = button.closest('tr').querySelector('.badge');
                 statusBadge.textContent = 'Inactive';
                 statusBadge.classList.remove('alert-success');
@@ -150,15 +146,20 @@
                 button.textContent = 'Block';
                 button.classList.remove('btn-success');
                 button.classList.add('btn-danger');
-    
-                // converting to Active
                 let statusBadge = button.closest('tr').querySelector('.badge');
                 statusBadge.textContent = 'Active';
                 statusBadge.classList.remove('alert-danger');
                 statusBadge.classList.add('alert-success');
             }
+        } else {
+            console.error('Failed to toggle user status');
         }
-    </script
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+    </script>
 
 </body>
 

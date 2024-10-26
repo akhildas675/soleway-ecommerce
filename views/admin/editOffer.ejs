@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+  <head>
+    <meta charset="utf-8" />
+    <title>Edit Offer Management</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+
+
+    <!-- Include Toastify CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+
+
+    <style>
+      #btnBlock {
+          color: #fff;
+          background-color: #ff7700;
+          border: 1px solid #ff7700;
+          padding: 5px 10px;
+          border-radius: 4px;
+      }
+      
+      #btnUnblock {
+          color: #fff;
+          background-color: #28a745;
+          border: 1px solid #28a745;
+          padding: 5px 10px;
+          border-radius: 4px;
+      }
+  </style>
+    <link
+      rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png"/>
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  </head>
+
+  <body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+    <main class="main-wrap">
+      <%- include('./partials/adminNav.ejs') %>
+      <section class="content-main">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title card-title">Edit Offer</h2>
+           
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Search Categories"
+              class="form-control bg-white"
+            />
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <% if (locals.offer) { %>
+                 
+              
+                <!-- Offer -->
+      
+                <form id="addOffer">
+                    <div class="container">
+                      <!-- Offer Name -->
+                      <div class="mb-4">
+                        <label for="couponName" class="form-label">Offer Name</label>
+                        <input
+                          type="text"
+                          placeholder="Enter the coupon name"
+                          name="offerName"
+                          class="form-control"
+                          id="offer_name" value="<%= offer.offerName %>"
+                          
+                        />
+                        <input id="offer_id" type="hidden" value="<%= offer._id %>">
+                      </div>
+                  
+                      
+                  
+                      
+                      <!-- Discount -->
+                      <div class="mb-4">
+                        <label for="discount" class="form-label">Discount In Percentage</label>
+                        <input
+                          type="text"
+                          placeholder="Enter discount value"
+                          name="discountInPercentage"
+                          class="form-control"
+                          id="discount_percentage" value="<%= offer.offerPercentage %>"
+                        />
+                      </div>
+                  
+                      
+                      
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                      <button type="submit" class="btn btn-primary">Add Offer</button>
+                    </div>
+                  </form>
+                  
+                
+      
+                <!-- ------------------------ -->
+                <% } %>
+              </div>
+             
+                                                                                       
+            </div>
+            <!-- .row // -->
+          </div>
+          <!-- card body .// -->
+        </div>
+        <!-- card .// -->
+      </section>
+      
+      <!-- content-main end// -->
+    </main>
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/vendors/select2.min.js"></script>
+    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin-assets/js/main.js" type="text/javascript"></script>
+
+    <!-- Include Toastify JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <!--Action  button -->
+
+    <script>
+        
+      
+      let buttons = document.querySelectorAll(".block-unblock");
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function (event) {
+          event.preventDefault();
+          let statusCell = this.closest("tr").querySelector(".status");
+          if (buttons[i].textContent.trim() === "Block") {
+            statusCell.textContent = "Inactive";
+            buttons[i].textContent = "Unblock";
+            buttons[i].classList.remove("btn-warning");
+            buttons[i].classList.add("btn-success");
+          } else {
+            statusCell.textContent = "Active";
+            buttons[i].textContent = "Block";
+            buttons[i].classList.remove("btn-success");
+            buttons[i].classList.add("btn-warning");
+          }
+        });
+      }
+    </script>
+
+
+
+<script>
+  async function addOffer(event) {
+    event.preventDefault();
+    let offerId = document.getElementById('offer_id').value;
+    let offerName = document.getElementById('offer_name').value;
+    let offerPercentage = document.getElementById('discount_percentage').value;
+    let parsedOffer = parseInt(offerPercentage);
+
+    let offerData = {
+      offerName: offerName,
+      offerPercentage: parsedOffer,
+      offerId: offerId,
+    };
+
+    try {
+      const response = await fetch('/admin/updateOffer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(offerData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        Toastify({
+          text: data.message || "Offer updated successfully!",
+          duration: 3000,
+          gravity: "top", 
+          position: "right",
+          backgroundColor: "green",
+          close: true,
+        }).showToast();
+
+        setTimeout(() => {
+          window.location.href = "/admin/loadOffer"; 
+        }, 3000);
+      } else {
+        const errorMessage = data.errors && data.errors.length > 0
+          ? data.errors.join(', ')
+          : data.message || "Error updating offer";
+
+        Toastify({
+          text: errorMessage,
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+          backgroundColor: "red",
+          close: true,
+        }).showToast();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+
+      Toastify({
+        text: "An error occurred. Please try again.",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "red",
+        close: true,
+      }).showToast();
+    }
+  }
+
+  document.getElementById("addOffer").addEventListener('submit', addOffer);
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  </body>
+</html>

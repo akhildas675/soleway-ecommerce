@@ -1,296 +1,162 @@
-
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+<html>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<head>
+    <meta charset="utf-8">
+    <title>Login Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/x-icon">
+
+    <!-- Include Font Awesome CDN for eye icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="/logn_signup_assets/css/style.css">
+
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
 
     <style>
-         .styled-message {
-            color: red;
-            font-weight: bold;
+        /* Positioning the eye icon */
+        .password-wrapper {
+            position: relative;
         }
 
-        
-@import url('https://fonts.googleapis.com/css2?family=Muli');
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    background: url('/user-assets/images/Designer\ \(10\).jpeg') no-repeat center center fixed;
-    background-size: cover;
-    color: #000;
-    font-family: 'Muli', sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    overflow: hidden;
-    position: relative;
-}
-
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(120deg, #ffffffa0 0%, #a8a8a8a0 100%);
-    z-index: 1;
-}
-
-.container {
-    position: relative;
-    background-color: #fffefe;
-    padding: 20px;
-    border-radius: 5px;
-    z-index: 2;
-}
-
-.container h1 {
-    text-align: center;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.container a {
-    text-decoration: none;
-    color: rgb(154, 163, 255);
-}
-
-.btn {
-    cursor: pointer;
-    display: inline-block;
-    width: 100%;
-    background-color: rgb(156, 165, 255);
-    padding: 10px;
-    font-family: inherit;
-    font-size: 15px;
-    border: 0;
-    border-radius: 5px;
-    z-index: 2;
-}
-
-.form-control {
-    position: relative;
-    margin: 15px 0 35px;
-    width: 300px;
-    z-index: 2;
-}
-
-.btn:focus {
-    outline: 0;
-}
-
-.btn:active {
-    transform: scale(0.98);
-}
-
-.text {
-    margin-top: 20px;
-}
-
-.form-control input {
-    background-color: transparent;
-    border: 0;
-    border-bottom: 2px #000 solid;
-    display: block;
-    width: 100%;
-    padding: 9px 0;
-    font-size: 18px;
-    color: #000;
-}
-
-.form-control input:focus,
-.form-control input:valid {
-    outline: 0;
-    border-bottom-color: #4facfe;
-}
-
-.form-control label {
-    position: absolute;
-    top: 15px;
-    left: 0;
-    pointer-events: none;
-}
-
-.form-control label span {
-    display: inline-block;
-    font-size: 15px;
-    min-width: 5px;
-    transition: 0.3s cubic-bezier(0.58,-0.45,0.245,1.55);
-}
-
-.form-control input:focus + label span,
-.form-control input:valid + label span {
-    color: #4facfe;
-    transform: translateY(-30px);
-}
-
-.toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 18px;
-    color: #888;
-}
-.google-login {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.btn-google {
-    display: inline-flex;
-    align-items: center;
-    background-color: #ffffff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    font-family: inherit;
-    font-size: 30px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-google i {
-    margin-right: 10px;
-    font-size: 20px; /* Adjust the size of the Google icon */
-}
-
-.btn-google:hover {
-    background-color: #ffffff;
-}
-
-.btn-google:active {
-    transform: scale(0.98);
-}
-
-
-
-
+        .password-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #333;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-     
-        <div class="form-container">
-            <h1>Login</h1>
-            <div>
-                <% if (typeof message !== 'undefined') { %>
-                    <p id="temporaryMessage" class="styled-message"><%= message %></p>
-                <% } %>
+    <div class="wrapper" style="background-image: url('/logn_signup_assets/images/loginRegistraionbg.jpeg');">
+        <div class="inner">
+            <div class="image-holder">
+                <img src="/logn_signup_assets/images/Soleway Register Image.png" alt="">
             </div>
-            
-            <form id="loginForm" action="/verifylog" method="post" onsubmit="return validateForm()" novalidate>
-                <div class="form-control">
-                    <input type="email" name="email" required value="akhildasdas191@gmail.com">
-                    <label>Email</label>
+            <form id="userLogin">
+                <h3>Login Form</h3>
+
+                <div class="form-wrapper">
+                    <input type="email" placeholder="Email Address" class="form-control" name="email" id="user_email" value="akhildasdas191@gmail.com">
+                    <i class="zmdi zmdi-email"></i>
                 </div>
-                <div id="emailError" class="error"></div>
+
+                <div class="form-wrapper password-wrapper">
+                    <input type="password" placeholder="Password" class="form-control" name="password" id="user_password" value="123456">
+                    <i class="fas fa-eye-slash" id="togglePassword"></i> 
+                </div>
+
+                <button type="submit">Login
+                    <i class="zmdi zmdi-arrow-right"></i>
+                </button>
+
+                <p style="text-align: center; font-size: larger;">OR</p> 
+
+                <div class="google-login" style="text-align: center;">
+                    <a href="/login/google" class="btn-google" style="display: inline-flex; align-items: center; padding: 17px 15px; background-color: #333; text-decoration: none; border: 1px solid #333;">
+                        <i class="fab fa-google" style="color: #ffffff; font-size: 18px; margin-right: 10px;"></i>
+                        <span style="font-size: 12px; color: #fffffff0;">Login with Google</span>
+                    </a>
+                </div>
+                <br>
+                <br>
+                <p style="text-align: center;">You have no account? Please <a href="/Register">Register</a></p>
+                <p style="text-align: center;">
+                    Forgot your password? <a href="/emailVerify">Click here to reset it.</a>
+                </p>
                 
-                <div class="form-control">
-                    <input type="password" name="password" id="password" required value="123456">
-                    <label>Password</label>
-                    <span class="toggle-password" onclick="togglePassword()">show</span>
-                </div>
-                <div id="passwordError" class="error"></div>
-                <button type="submit" class="btn">Login</button>
-                <p class="text">You have no account? Please <a href="userRegister">Register</a></p>
-                <div id="forgotPassword"><p><a href="/emailVerify">Forgot password</a></p></div>
             </form>
-
-            <div class="google-login" style="text-align: center;">
-                <a href="/login/google" class="btn-google" style="display: inline-block; text-decoration: none;">
-                    <i class="fa-brands fa-google" style="color: #3d91ff; font-size: 30px;"></i>
-                    <span style="display: block; font-size: 20px; margin-top: 8px;">Login with Google</span>
-                </a>
-            </div>
-            
-            
-
         </div>
     </div>
-</body>
-</html>
 
-<script>
-  function validateForm() {
-    const email = document.querySelector('input[name="email"]').value.trim();
-    const password = document.querySelector('input[name="password"]').value.trim();
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
 
-    const emailError = document.getElementById('emailError');
-    const passwordError = document.getElementById('passwordError');
+    <script>
+        async function loginUser(event) {
+            event.preventDefault();
 
-    emailError.textContent = "";
-    passwordError.textContent = "";
+            const userEmail = document.getElementById('user_email').value;
+            const userPassword = document.getElementById('user_password').value;
 
-    let isValid = true;
+            let data = {
+                email: userEmail,
+                password: userPassword,
+            };
 
-    if (email === '') {
-        emailError.textContent = 'Email field is required';
-        isValid = false;
-    } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            emailError.textContent = 'Enter a valid email';
-            isValid = false;
-        }
-    }
+            try {
+                const response = await fetch('/verifylog', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
 
-    if (password === '') {
-        passwordError.textContent = 'Password field is required';
-        isValid = false;
-    }
+                const result = await response.json();
 
-    if (!isValid) {
-        setTimeout(() => {
-            emailError.textContent = "";
-            passwordError.textContent = "";
-        }, 3000);
-    }
-    return isValid;
-}
+                if (response.ok) {
 
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    if (!validateForm()) {
-        event.preventDefault();
-    }
-});
+                    Toastify({
+                        text: result.message || "Login successful",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "green",
+                    }).showToast();
 
-function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-}
+                    setTimeout(() => window.location.href = '/', 3000);
+                } else {
 
-const labels=document.querySelectorAll('.form-control label')
-
-labels.forEach(label=>{
-    label.innerHTML=label.innerText.split('')
-    .map((letter, idx)=>`<span style="transition-delay:${idx*10}ms">${letter}</span>`
-).join('')
-})
-
-document.addEventListener('DOMContentLoaded', () => {
-                var messageContent = document.getElementById('temporaryMessage');
-                if (messageContent) {
-                    setTimeout(() => {
-                        messageContent.style.display = 'none';
-                    }, 3000); 
+                    Toastify({
+                        text: result.message || "Login error",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "red",
+                    }).showToast();
                 }
-            });
-</script>
+            } catch (error) {
+                console.log(error);
+
+                Toastify({
+                    text: "An error occurred. Please try again.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                }).showToast();
+            }
+        }
+
+        document.getElementById("userLogin").addEventListener('submit', loginUser);
+
+      
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('user_password');
+
+        togglePassword.addEventListener('click', function () {
+          
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+          
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
+</body>
+
+</html>

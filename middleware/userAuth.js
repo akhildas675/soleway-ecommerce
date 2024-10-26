@@ -3,13 +3,13 @@ const User=require('../Model/userModel')
 
 const isLogin = async (req,res,next)=>{
     try{
-        console.log("inside auth");
+        // console.log("inside auth");
         if(req.session.userData){
            
             next()
         }
         else{
-            res.redirect('/userLogin')
+            res.redirect('/Login')
             
         }
 
