@@ -598,8 +598,17 @@
                                             <!-- Total Amount with Offer and Coupon Applied -->
                                             <div class="order-row">
                                                 <p><strong>Total Amount:</strong></p>
-                                                
                                                 <p>₹ <%= orderedData.totalAmount %></p>
+                                            </div>
+                    
+                                            <!-- Payment Status -->
+                                            <div class="order-row">
+                                                <p><strong>Payment Status:</strong></p>
+                                                <p class="<%= orderedData.paymentStatus === 'Received' ? 'text-success' : 
+                                                                orderedData.paymentStatus === 'Pending' ? 'text-warning' : 
+                                                                'text-danger' %>">
+                                                    <%= orderedData.paymentStatus %>
+                                                </p>
                                             </div>
                     
                                             <!-- Order Status -->
@@ -671,13 +680,16 @@
                                                                     <td>
                                                                         <p>Order has been returned</p>
                                                                     </td>
+                                                                <% } else if (orderedData.orderStatus === "Pending") { %>
+                                                                    <td>
+                                                                        <a href="#" class="btn btn-primary pay-btn" 
+                                                                           onclick="rePayment('<%= orderedData._id %>')">Pay</a>
+                                                                    </td>
                                                                 <% } else { %>
                                                                     <td>
                                                                         <p>Order cannot be canceled or returned</p>
                                                                     </td>
                                                                 <% } %>
-                                                                
-                                                                
                                                             </tr>
                                                         <% } %>
                                                     <% } else { %>
@@ -705,11 +717,11 @@
                                             <% } %>
                                         </div>
                                         <br>
-                                        <% if (orderedData.orderStatus=='Delivered'|| orderedData.paymentMethod=='Online') { %>
+                    
+                                        <!-- Invoice Download Button (only when Online payment is received) -->
+                                        <% if (orderedData.paymentMethod === 'Online' && orderedData.paymentStatus === 'Received') { %>
                                             <a style="background-color: #000000;" href="/order/invoice/download/<%= orderedData.orderId %>" class="btn btn-primary">Download Invoice</a>
                                         <% } %>
-                                        
-
                                     <% } else { %>
                                         <p>No order details found.</p>
                                     <% } %>
@@ -717,6 +729,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     
                     
     
@@ -840,6 +853,8 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 <script>
   function openReturnModal(orderId) {
@@ -912,6 +927,95 @@
   $('#reasonModal').on('hidden.bs.modal', function () {
     location.reload();  
   });
+</script>
+
+
+<script>
+async function rePayment(orderId) {
+  try {
+    const response = await fetch(`/rePay`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ orderId })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const options = {
+        key: "rzp_test_72sGbnDINNYlKN",
+        amount: result.amount,
+        currency: "INR",
+        name: "SOLEWAY",
+        description: "Order Payment",
+        order_id: result.orderId,
+        handler: async function (response) {
+          const { razorpay_payment_id } = response;
+
+          const verifyResponse = await fetch(`/rePay`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              orderId,
+              paymentId: razorpay_payment_id
+            })
+          });
+
+          const verifyResult = await verifyResponse.json();
+
+          if (verifyResult.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Payment Successful',
+              text: 'Your payment was successful and the order has been placed!',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Verification Failed',
+              text: 'We encountered an issue verifying your payment. Please try again.',
+              confirmButtonText: 'Retry'
+            });
+          }
+        },
+        prefill: {
+          name: "SOLEWAY",
+          email: "akhildas@example.com",
+          contact: "7896541230",
+        },
+        theme: {
+          color: "#3399cc"
+        }
+      };
+
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.open();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Failed',
+        text: result.message || 'Failed to initiate payment retry.',
+        confirmButtonText: 'OK'
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An unexpected error occurred. Please try again later.',
+      confirmButtonText: 'OK'
+    });
+    console.error('Error initiating payment retry:', error);
+  }
+}
+
 </script>
 
   

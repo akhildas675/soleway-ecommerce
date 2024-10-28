@@ -102,6 +102,7 @@ userRoute.post("/removeCoupon", Auth.isLogin, orderController.removeCoupon);
 userRoute.get("/orderSuccess", Auth.isLogin, orderController.successOrder);
 userRoute.post("/orderCancel", Auth.isLogin, orderController.cancelation);
 userRoute.post("/returnOrder", Auth.isLogin, orderController.returnOrder);
+userRoute.post("/rePay",Auth.isLogin,orderController.rePayment)
 userRoute.get(
   "/order/invoice/download/:orderId",
   Auth.isLogin,

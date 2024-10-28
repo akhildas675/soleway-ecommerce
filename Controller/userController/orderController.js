@@ -12,8 +12,7 @@ const Razorpay = require("razorpay");
 const Wallet = require("../../Model/walletModel");
 const Coupon = require("../../Model/couponModel");
 const { default: mongoose } = require("mongoose");
-const puppeteer = require('puppeteer');
-
+const puppeteer = require("puppeteer");
 
 const loadCheckout = async (req, res) => {
   try {
@@ -481,7 +480,10 @@ const onlinepay = async (req, res) => {
       paymentStatus,
       paymentId,
       appliedCouponCode,
+      initial,
     } = req.body;
+    console.log("body ----->", req.body);
+
     const userId = req.session.userData;
 
     // Find user, cart, and address details
@@ -504,7 +506,7 @@ const onlinepay = async (req, res) => {
     let couponDetails = {};
     let discountAmount = 0;
 
-    // Calculate total amount from cart
+    // Calculate total amount
     let totalAmount = findCart.cartProducts.reduce((acc, item) => {
       const productPrice = item.productId.offerPrice
         ? item.productId.offerPrice
@@ -545,13 +547,13 @@ const onlinepay = async (req, res) => {
       }
     }
 
-    // Final amount after applying discount 
+    // Final amount after applying discount
     const finalAmount = totalAmount - discountAmount;
 
-    if (!paymentId) {
-      // Generate Razorpay order and send response to frontend
+    if (initial) {
+      // Generate Razorpay order
       const onlineOrder = await instance.orders.create({
-        amount: finalAmount * 100, // Razorpay expects amount in paise
+        amount: finalAmount * 100,
         currency: "INR",
       });
 
@@ -562,11 +564,16 @@ const onlinepay = async (req, res) => {
       });
     }
 
-    // Order after payment success
-    if (paymentStatus === "Received" && paymentId) {
+    // Handle Failed payment status
+    if (paymentStatus === "Failed") {
+      console.log("entered to failed payment if");
       const orderIds = [];
+      const productIdsToRemove = [];
 
+      // Generate order ID
       function generateOrderId() {
+        console.log("called generateOrderId");
+
         const timeAndDate = Date.now().toString();
         const randomChars =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -578,7 +585,9 @@ const onlinepay = async (req, res) => {
         return orderId + timeAndDate;
       }
 
-      // Create orders for each product in the cart
+      console.log("user cart -->", findCart);
+
+      // Create orders with pending status for each product in the cart
       for (let item of findCart.cartProducts) {
         const product = item.productId;
         const productPrice = product.offerPrice
@@ -599,7 +608,86 @@ const onlinepay = async (req, res) => {
           orderId: newOrderId,
           products: [
             {
-              productId: product._id, 
+              productId: product._id,
+              quantity: item.quantity,
+              size: item.size,
+            },
+          ],
+          address: {
+            addressName: findAddress.name,
+            mobile: findAddress.mobile,
+            homeAddress: findAddress.homeAddress,
+            city: findAddress.city,
+            district: findAddress.district,
+            state: findAddress.state,
+            pincode: findAddress.pincode,
+          },
+          totalAmount: finalProductTotal,
+          coupon: couponDetails,
+          paymentMethod: paymentMethod,
+          orderStatus: "Pending",
+          paymentStatus: "Failed",
+        });
+        console.log("new order ---------->", newOrder);
+
+        const savedOrder = await newOrder.save();
+        orderIds.push(savedOrder._id);
+
+        // id for removal from cart
+        productIdsToRemove.push(item._id);
+      }
+
+      // Remove ordered items
+      await Cart.updateOne(
+        { userId: userId },
+        { $pull: { cartProducts: { _id: { $in: productIdsToRemove } } } }
+      );
+
+      return res.json({
+        message: "Order created with pending status, items removed from cart",
+        orderIds,
+      });
+    }
+
+    // Order after payment success
+    if (paymentStatus === "Received" && paymentId) {
+      const orderIds = [];
+
+      // Generate order ID
+      function generateOrderId() {
+        const timeAndDate = Date.now().toString();
+        const randomChars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let orderId = "OID";
+        while (orderId.length < 13) {
+          const randomIndex = Math.floor(Math.random() * randomChars.length);
+          orderId += randomChars.charAt(randomIndex);
+        }
+        return orderId + timeAndDate;
+      }
+
+      // Create orders for each product in the cart after successful payment
+      for (let item of findCart.cartProducts) {
+        const product = item.productId;
+        const productPrice = product.offerPrice
+          ? product.offerPrice
+          : product.realPrice;
+        const productTotal = productPrice * item.quantity;
+
+        const productDiscount = appliedCouponCode
+          ? (productTotal / totalAmount) * discountAmount
+          : 0;
+        const finalProductTotal = productTotal - productDiscount;
+
+        const newOrderId = generateOrderId();
+
+        // Create the order
+        const newOrder = new Order({
+          userId: userId,
+          orderId: newOrderId,
+          products: [
+            {
+              productId: product._id,
               quantity: item.quantity,
               size: item.size,
             },
@@ -650,8 +738,85 @@ const onlinepay = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Error in online payment processing:", error);
+    console.log(
+      "Error in online payment processing------------------->:",
+      error
+    );
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const rePayment = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    const { orderId, paymentId } = req.body;
+
+    const findOrder = await Order.findById(orderId).populate("items.productId"); // Assuming items contain productId, size, and quantity
+    if (!findOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    const totalAmount = findOrder.totalAmount;
+
+    if (!paymentId) {
+      //  Razorpay order if paymentId is not provided
+      const razorpayOrder = await instance.orders.create({
+        amount: totalAmount * 100,
+        currency: "INR",
+        receipt: `receipt_${orderId}`,
+        payment_capture: 1,
+      });
+
+      return res.json({
+        success: true,
+        message: "Payment initiated, awaiting payment confirmation",
+        orderId: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+      });
+    } else {
+      //  update order status to "Order Placed"
+      findOrder.paymentId = paymentId;
+      findOrder.orderStatus = "Order Placed";
+      findOrder.paymentStatus = "Received";
+
+      //  update product stock by size
+
+      for (const item of findOrder.items) {
+        const product = item.productId;
+        if (!product) continue;
+
+        const result = await Products.updateOne(
+          {
+            _id: product._id,
+            "sizes.size": item.size,
+          },
+          { $inc: { "sizes.$.quantity": -item.quantity } }
+        );
+
+        // Check if stock  updated
+        if (!result.modifiedCount) {
+          console.warn(
+            `Stock update failed for product: ${product.productName}, Size: ${item.size}`
+          );
+        } else {
+          console.log(
+            `Stock updated for product: ${product.productName}, Size: ${item.size}`
+          );
+        }
+      }
+      await findOrder.save();
+
+      return res.json({
+        success: true,
+        message:
+          "Payment successful, order status updated to 'Order Placed', and stock adjusted",
+      });
+    }
+  } catch (error) {
+    console.error("Error in rePayment:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -831,8 +996,6 @@ const returnOrder = async (req, res) => {
       });
     }
 
-   
-
     // Verify the orderId is valid and the order exists
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -950,75 +1113,77 @@ const returnOrder = async (req, res) => {
 const getInvoice = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-    
-    
-    const order = await Order.findOne({ orderId: orderId })
-      .populate({
-        path: 'products.productId',
-        model: 'Product',
-        select: 'productName offerPrice', 
-      });
+
+    const order = await Order.findOne({ orderId: orderId }).populate({
+      path: "products.productId",
+      model: "Product",
+      select: "productName offerPrice",
+    });
 
     if (!order) {
-      return res.status(404).send('Order not found');
+      return res.status(404).send("Order not found");
     }
 
-  
-    res.render('invoice', { order });
+    res.render("invoice", { order });
   } catch (error) {
     console.log(error);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 };
-
 
 const invoiceDownload = async (req, res) => {
   try {
     const orderId = req.params.orderId;
 
-    // order with product details 
-    const order = await Order.findOne({ orderId: orderId }).populate('products.productId'); 
+    // order with product details
+    const order = await Order.findOne({ orderId: orderId }).populate(
+      "products.productId"
+    );
 
     if (!order) {
-      return res.status(404).send('Order not found');
+      return res.status(404).send("Order not found");
     }
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // Create the invoice URL
-    const invoiceUrl = `${req.protocol}://${req.get('host')}/order/invoice/${orderId}`;
+    const invoiceUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/order/invoice/${orderId}`;
 
     // Navigate to the invoice page
-    await page.goto(invoiceUrl, { waitUntil: 'networkidle0' });
+    await page.goto(invoiceUrl, { waitUntil: "networkidle0" });
 
     // Generate the PDF
     const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true
+      format: "A4",
+      printBackground: true,
     });
 
     await browser.close();
 
     // allow file download
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice_${orderId}.pdf`
+    );
 
     // Send the PDF file as a response
     res.send(pdf);
-
   } catch (error) {
     console.log(error);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 };
-
 
 module.exports = {
   loadCheckout,
   codPlaceOrder,
   successOrder,
   onlinepay,
+  rePayment,
   updateOrderStatus,
   applyCoupon,
   removeCoupon,
@@ -1027,5 +1192,4 @@ module.exports = {
   returnOrder,
   getInvoice,
   invoiceDownload,
-
 };
