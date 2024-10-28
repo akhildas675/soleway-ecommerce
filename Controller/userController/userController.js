@@ -12,6 +12,7 @@ const { EnumCurrency } = require("paytm-pg-node-sdk");
 const Razorpay = require("razorpay");
 const Wallet = require("../../Model/walletModel");
 const Coupon = require("../../Model/couponModel");
+const Feedback=require("../../Model/feedback")
 
 const loadHome = async (req, res) => {
   try {
@@ -935,6 +936,75 @@ const walletPaymentSuccess = async (req, res) => {
   }
 };
 
+const loadContact=async (req,res)=>{
+  try {
+    const userId = req.session.userData;
+    const findUser = await User.findById(userId);
+    const categories = await Category.find({ is_active: true });
+
+    const products = await Products.find({ is_active: true })
+      .populate('categoryId')
+      .limit(8);
+
+    const cart = await Cart.findOne({ userId }, { cartProducts: 1 });
+    const cartCount = cart ? cart.cartProducts.length : 0;
+
+    const wishlist = await Wishlist.findOne({ userId }, { wishlistProducts: 1 });
+    const wishlistCount = wishlist ? wishlist.wishlistProducts.length : 0;
+
+    let userWishlist = [];
+    if (wishlist) {
+      userWishlist = wishlist.wishlistProducts.map(p => p.productId.toString());
+    }
+    res.render('contact',{
+      findUser,
+      categories,
+      wishlist: userWishlist,
+      cartCount,
+      wishlistCount,
+      
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const addFeedback = async (req, res) => {
+  try {
+      const { name, email, subject, comment } = req.body;
+      const userId = req.session.userData;
+
+    
+      if (!userId) return res.status(400).json({ message: "User is not logged in." });
+      if (!name.trim()) return res.status(400).json({ message: "Name is required." });
+      if (!subject.trim()) return res.status(400).json({ message: "Subject is required." });
+      if (!comment.trim()) return res.status(400).json({ message: "Message is required." });
+
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.trim()) return res.status(400).json({ message: "Email is required." });
+      if (!emailRegex.test(email)) {
+          return res.status(400).json({ message: "Please enter a valid email address." });
+      }
+
+      // Create new feedback document
+      const feedback = new Feedback({
+          userId,
+          name: name.trim(),
+          email: email.trim(),
+          subject: subject.trim(),
+          comment: comment.trim(),
+      });
+
+      await feedback.save();
+      res.status(201).json({ message: "Feedback submitted successfully" });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error submitting feedback" });
+  }
+};
+
+
 
 
 
@@ -967,4 +1037,6 @@ module.exports = {
   addWallet,
   walletPaymentSuccess,
   addReview,
+  loadContact,
+  addFeedback,
 };

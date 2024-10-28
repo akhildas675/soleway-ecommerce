@@ -126,6 +126,9 @@ userRoute.post(
   userController.walletPaymentSuccess
 );
 
+userRoute.get("/Contact",Auth.isLogin,userController.loadContact)
+userRoute.post("/feedback",Auth.isLogin,userController.addFeedback)
+
 //Search products
 
 userRoute.get("/searchProducts", Auth.isLogin, userController.searchProducts);
