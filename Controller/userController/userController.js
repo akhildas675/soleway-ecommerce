@@ -140,20 +140,23 @@ const googleAuth = async (req, res) => {
     const googleUser = req.user;
     const email = googleUser.emails[0].value;
 
-    const findUser = await User.findOne({ email });
-    // console.log('finduser',findUser);
+   
+    const findUser = await User.findOne({ email: email, is_active: true });
 
     if (!findUser) {
-      res.redirect("/userRegister");
+    
+      return res.status(403).send("Your account is inactive or blocked. Please contact support.");
     }
-    req.session.userData = findUser;
-    // console.log('woohooo');
 
+    
+    req.session.userData = findUser;
     res.redirect("/");
   } catch (error) {
-    console.log("Error during the google Authentication", error.message);
+    console.log("Error during Google Authentication:", error.message);
+    res.status(500).send("An error occurred during authentication. Please try again.");
   }
 };
+
 
 const loadRegister = async (req, res) => {
   try {

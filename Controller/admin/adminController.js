@@ -37,28 +37,29 @@ const verifyAdminLogin = async (req, res) => {
       if (passwordMatch) {
         if (adminData.is_admin) {
           req.session.adminData = adminData._id;
-
-          res.redirect("/admin/Home");
+          return res.status(200).json({ success: true, redirectUrl: "/admin/Home" });
         } else {
-          res.render("adminLogin", { message: "Access denied. Not an admin." });
+          return res.status(403).json({ success: false, message: "Access denied. Not an admin." });
         }
       } else {
-        res.render("adminLogin", { message: "Incorrect password" });
+        return res.status(401).json({ success: false, message: "Incorrect password" });
       }
     } else {
-      res.render("adminLogin", { message: "Admin not found" });
+      return res.status(404).json({ success: false, message: "Admin not found" });
     }
   } catch (error) {
     console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 const adminLoad = async (req, res) => {
   try {
     const orders = await Order.find();
     const categories = await Category.find();
 
-    // Find only products with at least one review and populate user details in reviews
+    // Find review
     const reviewedProducts = await Products.find({ "review.0": { $exists: true } }).populate('review.userId', 'name');
 
     const feedback = await Feedback.find().limit(5);
@@ -193,7 +194,7 @@ const adminLoad = async (req, res) => {
       totalAmountByMonth,
       totalAmountByYear,
       feedback,
-      reviewedProducts, // Only products with reviews
+      reviewedProducts, 
     });
   } catch (error) {
     console.log(error);
