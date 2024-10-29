@@ -18,6 +18,40 @@
     <!-- Template CSS -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .card-body {
+            padding: 1.5rem;
+            background-color: #fff;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+        .chart-container {
+            width: 1000px;
+            height: 500px;
+            margin-bottom: 20px;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        .pagination-area {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,52 +67,18 @@
                 <p>Whole data about your business here</p>
             </div>
             <div>
-                <a href="/admin/salesReport" class="btn btn-primary">
+                <button class="btn btn-primary" id="createReportBtn">
                     <i class="text-muted material-icons md-post_add"></i> Create Report
-                </a>
+                </button>
             </div>
         </div>
-        <style>
-            .card-body {
-                padding: 1.5rem;
-                background-color: #fff;
-                border-radius: 0.25rem;
-                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            }
-            .card-title {
-                font-size: 1.25rem;
-                font-weight: 500;
-                margin-bottom: 1rem;
-            }
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-            }
-            .container {
-                max-width: 1200px;
-                margin: 50px auto;
-            }
-            .chart-container {
-                width: 1000px;
-                height: 500px;
-                margin-bottom: 20px;
-            }
-            .filter-container {
-                margin-bottom: 20px;
-            }
-            .pagination-area {
-                margin-top: 30px;
-                margin-bottom: 50px;
-            }
-        </style>
+    
         <!-- Dashboard Stats -->
         <div class="row">
             <% if (orders && orders.length > 0) { %>
-                <% let totalRevenue = 0; %>
-                <% for (let i = 0; i < orders.length; i++) { %>
-                    <% totalRevenue += parseFloat(orders[i].totalAmount); %>
-                <% } %>
+                <% let totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.totalAmount), 0); %>
+    
+                <!-- Total Revenue -->
                 <div class="col-lg-3">
                     <div class="card card-body mb-4">
                         <article class="icontext">
@@ -92,6 +92,8 @@
                         </article>
                     </div>
                 </div>
+    
+                <!-- Total Orders -->
                 <div class="col-lg-3">
                     <div class="card card-body mb-4">
                         <article class="icontext">
@@ -106,15 +108,8 @@
                     </div>
                 </div>
     
-                <% let totalQuantity = 0; %>
-                <% orders.forEach(order => { %>
-                    <% if (order.products && Array.isArray(order.products)) { %>
-                        <% order.products.forEach(item => { %>
-                            <% totalQuantity += item.quantity; %>
-                        <% }) %>
-                    <% } %>
-                <% }) %>
-    
+                <!-- Total Quantity -->
+                <% let totalQuantity = orders.reduce((sum, order) => sum + (order.products || []).reduce((qSum, item) => qSum + item.quantity, 0), 0); %>
                 <div class="col-lg-3">
                     <div class="card card-body mb-4">
                         <article class="icontext">
@@ -128,22 +123,21 @@
                         </article>
                     </div>
                 </div>
-                
-                <% if (categories) { %>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-info-light">
-                                    <i class="text-info material-icons md-shopping_basket"></i>
-                                </span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Category</h6>
-                                    <span><%= categories.length %></span>
-                                </div>
-                            </article>
-                        </div>
+    
+                <!-- Categories Count -->
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-info-light">
+                                <i class="text-info material-icons md-shopping_basket"></i>
+                            </span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Categories</h6>
+                                <span><%= categories.length %></span>
+                            </div>
+                        </article>
                     </div>
-                <% } %>
+                </div>
             <% } %>
         </div>
     
@@ -155,7 +149,6 @@
                     <option value="monthly" selected>Monthly</option>
                     <option value="yearly">Yearly</option>
                 </select>
-                
             </div>
             <div class="chart-container">
                 <canvas id="myChart" class="chart-canvas"></canvas>
@@ -163,62 +156,117 @@
         </div>
     
         <% if (bestSellingCategories && bestSellingCategories.length > 0) { %>
-            <div class="col-lg-9">
-                <div class="card mb-4">
-                    <article class="card-body">
-                        <h5 class="card-title">Best Selling Products</h5>
-                        <table id="bestSellingProductsTable" class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Total Sales</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% bestSellingProduct.forEach(product => { %>
+            <!-- First Row: Best Selling Products and Categories -->
+            <div class="row">
+    
+                <!-- Best Selling Products -->
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Best Selling Products</h5>
+                            <table id="bestSellingProductsTable" class="table">
+                                <thead>
                                     <tr>
-                                        <td><%= product.productName %></td>
-                                        <td><%= product.totalSales %></td>
+                                        <th>Product</th>
+                                        <th>Total Sales</th>
                                     </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </article>
+                                </thead>
+                                <tbody>
+                                    <% bestSellingProduct.forEach(product => { %>
+                                        <tr>
+                                            <td><%= product.productName %></td>
+                                            <td><%= product.totalSales %></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </article>
+                    </div>
                 </div>
-                <div class="card mb-4">
-                    <article class="card-body">
-                        <h5 class="card-title">Best Selling Categories</h5>
-                        <table id="bestSellingCategoriesTable" class="table">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Total Sales</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% bestSellingCategories.forEach(category => { %>
+    
+                <!-- Best Selling Categories -->
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Best Selling Categories</h5>
+                            <table id="bestSellingCategoriesTable" class="table">
+                                <thead>
                                     <tr>
-                                        <td><%= category.name %></td>
-                                        <td><%= category.totalSales %></td>
+                                        <th>Category</th>
+                                        <th>Total Sales</th>
                                     </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </article>
+                                </thead>
+                                <tbody>
+                                    <% bestSellingCategories.forEach(category => { %>
+                                        <tr>
+                                            <td><%= category.name %></td>
+                                            <td><%= category.totalSales %></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </article>
+                    </div>
                 </div>
             </div>
-            <div id="dataContainer"
-     data-order-counts='<%= JSON.stringify(orderCountsByMonth) %>'
-     data-product-counts='<%= JSON.stringify(productCountsByMonth) %>'
-     data-order-year-counts='<%= JSON.stringify(orderCountsByYear) %>'
-     data-product-year-counts='<%= JSON.stringify(productCountsByYear) %>'
-     style="display: none;">
-</div>
-
-
-
+    
+            <!-- Second Row: Product Reviews and Customer Feedback -->
+            <div class="row">
+    
+                <!-- Product Reviews -->
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Product Reviews</h5>
+                            <% reviewedProducts.forEach(product => { %>
+                                <h6><%= product.productName %> (Brand: <%= product.brandName %>)</h6>
+                                <ul class="list-unstyled">
+                                    <% product.review.forEach(review => { %>
+                                        <li>
+                                            <strong><%= review.userId.name %></strong> - Rating: <%= review.rating %>/5
+                                            <p class="text-muted"><%= review.comment %></p>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            <% }); %>
+                        </article>
+                    </div>
+                </div>
+    
+                <!-- Customer Feedback -->
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Customer Feedback</h5>
+                            <ul class="list-unstyled">
+                                <% feedback.forEach(item => { %>
+                                    <li class="mb-3">
+                                        <strong><%= item.name %></strong>
+                                        <p class="text-muted"><%= item.comment %></p>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </article>
+                    </div>
+                </div>
+                
+            </div>
         <% } %>
+    
+        <!-- Hidden Data for Chart -->
+        <div id="dataContainer"
+             data-order-counts='<%= JSON.stringify(orderCountsByMonth) %>'
+             data-product-counts='<%= JSON.stringify(productCountsByMonth) %>'
+             data-order-year-counts='<%= JSON.stringify(orderCountsByYear) %>'
+             data-product-year-counts='<%= JSON.stringify(productCountsByYear) %>'
+             style="display: none;">
+        </div>
     </section>
+    
+    
+    
+    
+    
     
     <script>
        const dataContainer = document.getElementById('dataContainer');
@@ -309,6 +357,41 @@
         return labels;
     }
     </script>
+ <script>
+    document.getElementById('createReportBtn').addEventListener('click', async function(event) {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('/admin/salesReport', { method: 'GET' });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'delivered_orders_report.xlsx';
+                link.click();
+
+                Swal.fire({
+                    title: 'Download Successful',
+                    text: 'Your sales report has been downloaded!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                throw new Error('Report generation failed');
+            }
+        } catch (error) {
+            console.error('Error generating report:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while generating the report.',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        }
+    });
+</script>
+
     
     
     <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>

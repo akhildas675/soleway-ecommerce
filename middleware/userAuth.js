@@ -3,7 +3,7 @@ const User=require('../Model/userModel')
 
 const isLogin = async (req,res,next)=>{
     try{
-        // console.log("inside auth");
+       
         if(req.session.userData){
            
             next()
@@ -26,8 +26,8 @@ const isLogOut = async (req,res,next)=>{
             res.redirect("/")
 
         }else{
-            // console.log("login")
-            // res.redirect('/login')
+            
+            
             next()
         }
        

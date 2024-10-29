@@ -190,9 +190,16 @@ const insertUser = async (req, res) => {
     }
     if (!password) {
       errors.push("Password is required.");
-    } else if (password.length < 6) {
-      errors.push("Password must be at least 6 characters long.");
+    } else if (password.length < 8 || password.length > 12) {
+      errors.push("Password must be between 8 and 12 characters long.");
+    } else if (!/[A-Z]/.test(password)) {
+      errors.push("Password must contain at least one uppercase letter.");
+    } else if (!/[0-9]/.test(password)) {
+      errors.push("Password must contain at least one number.");
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push("Password must contain at least one special character.");
     }
+    
     if (!cPassword) {
       errors.push("Confirm password is required.");
     } else if (password && password !== cPassword) {
@@ -234,7 +241,7 @@ const otpGet = async (req, res) => {
 
     // Generate random OTP
     let randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    // console.log("Generated OTP: ", randomOtp);
+    console.log("Generated OTP: ", randomOtp);
     req.session.otp = randomOtp;
 
     const { email, name } = req.session.data;
@@ -247,7 +254,7 @@ const otpGet = async (req, res) => {
 
     // Send the OTP via email
     let info = await transporter.sendMail(mailOptions);
-    // console.log("Email sent: " + info.response);
+    console.log("Email sent: " + info.response);
 
     // Render OTP input page with an empty message initially
     res.status(200).render("userOtp", { message: "" });
@@ -395,7 +402,7 @@ const resetPasswordOtp = async (req, res) => {
 
     let randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
     req.session.resetPOtp = randomOtp;
-    // console.log(randomOtp, "forget password otp");
+    console.log(randomOtp, "forget password otp");
 
     const resetPasswordOptions = {
       from: process.env.EMAIL,
@@ -910,7 +917,7 @@ const walletPaymentSuccess = async (req, res) => {
     let wallet = await Wallet.findOne({ userId });
 
     if (!wallet) {
-      //no wallet , create one
+      //no wallet , create new one
       wallet = new Wallet({
         userId,
         balance: amount, 

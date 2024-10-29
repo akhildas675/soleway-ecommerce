@@ -63,8 +63,8 @@ userRoute.get(
   Auth.userBlocked,
   userController.productDetailedView
 );
-userRoute.get("/About",Auth.isLogin,userController.loadAbout);
-userRoute.get('/Blog',Auth.isLogin,userController.loadBlog)
+userRoute.get("/About", Auth.isLogin, userController.loadAbout);
+userRoute.get("/Blog", Auth.isLogin, userController.loadBlog);
 // userRoute.get('/productView',Auth.isLogin,userController.productDetailedView)
 
 // shop paRoutes
@@ -102,7 +102,7 @@ userRoute.post("/removeCoupon", Auth.isLogin, orderController.removeCoupon);
 userRoute.get("/orderSuccess", Auth.isLogin, orderController.successOrder);
 userRoute.post("/orderCancel", Auth.isLogin, orderController.cancelation);
 userRoute.post("/returnOrder", Auth.isLogin, orderController.returnOrder);
-userRoute.post("/rePay",Auth.isLogin,orderController.rePayment)
+userRoute.post("/rePay", Auth.isLogin, orderController.rePayment);
 userRoute.get(
   "/order/invoice/download/:orderId",
   Auth.isLogin,
@@ -126,8 +126,8 @@ userRoute.post(
   userController.walletPaymentSuccess
 );
 
-userRoute.get("/Contact",Auth.isLogin,userController.loadContact)
-userRoute.post("/feedback",Auth.isLogin,userController.addFeedback)
+userRoute.get("/Contact", Auth.isLogin, userController.loadContact);
+userRoute.post("/feedback", Auth.isLogin, userController.addFeedback);
 
 //Search products
 

@@ -45,4 +45,5 @@ const couponSchema = mongoose.Schema({
   },
 });
 
+
 module.exports = mongoose.model('Coupon', couponSchema);

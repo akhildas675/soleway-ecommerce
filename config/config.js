@@ -12,4 +12,5 @@ const googleAuth={
 module.exports={
     config,
     googleAuth,
+    
 }

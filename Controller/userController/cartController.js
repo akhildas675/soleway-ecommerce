@@ -137,7 +137,7 @@ const updateCart = async (req, res) => {
     cartProduct.quantity = quantity;
     await cart.save();
 
-    // console.log("Cart", cart);
+    
 
     return res.json({
       success: true,

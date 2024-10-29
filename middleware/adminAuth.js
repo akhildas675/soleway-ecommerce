@@ -1,7 +1,7 @@
 const isLogin= async (req,res,next)=>{
     try {
         if(req.session.adminData){
-            // console.log("middle",req.session.adminData);
+           
             
             next()
         }else{

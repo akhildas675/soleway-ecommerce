@@ -59,13 +59,13 @@ app.use('/admin',adminRoute)
 
 app.use('*', (req, res) => {
     res.render('user/404')
-  })
+  });
   
   
 app.use((err,req,res,next)=>{
     console.log(err.stack);
     res.render('user/500')
-})
+});
 
 
 

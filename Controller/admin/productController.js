@@ -341,7 +341,7 @@ const updateProduct = async (req, res) => {
 
     let salePrice = realPrice;
     if (findOffer.offerPercentage > 0) {
-      // console.log(findOffer.offerPercentage);
+   
       const discountAmount = realPrice * (findOffer.offerPercentage / 100);
       salePrice = realPrice - discountAmount;
     }

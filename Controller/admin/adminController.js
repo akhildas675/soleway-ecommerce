@@ -11,7 +11,8 @@ const Coupon = require("../../Model/couponModel");
 const Offer = require("../../Model/OfferModel");
 const ExcelJS=require('exceljs')
 const path=require('path');
-const fs=require('fs')
+const fs=require('fs');
+const Feedback=require('../../Model/feedback');
 
 const adminLogin = async (req, res) => {
   try {
@@ -56,18 +57,22 @@ const adminLoad = async (req, res) => {
   try {
     const orders = await Order.find();
     const categories = await Category.find();
-    const products = await Products.find(); 
+
+    // Find only products with at least one review and populate user details in reviews
+    const reviewedProducts = await Products.find({ "review.0": { $exists: true } }).populate('review.userId', 'name');
+
+    const feedback = await Feedback.find().limit(5);
 
     const orderCountsByMonth = Array.from({ length: 12 }, () => 0);
     orders.forEach(order => {
-      if (order.orderDate) { 
-        const monthIndex = new Date(order.orderDate).getMonth();  
+      if (order.orderDate) {
+        const monthIndex = new Date(order.orderDate).getMonth();
         orderCountsByMonth[monthIndex]++;
       }
     });
 
     const productCountsByMonth = Array.from({ length: 12 }, () => 0);
-    products.forEach(product => {
+    reviewedProducts.forEach(product => {
       if (product.date) {
         const monthIndex = new Date(product.date).getMonth();
         productCountsByMonth[monthIndex]++;
@@ -75,12 +80,7 @@ const adminLoad = async (req, res) => {
     });
 
     const orderCountsByYearData = await Order.aggregate([
-      {
-        $group: {
-          _id: { $year: "$orderDate" },
-          orderCount: { $sum: 1 }
-        }
-      },
+      { $group: { _id: { $year: "$orderDate" }, orderCount: { $sum: 1 } } },
       { $sort: { "_id": 1 } }
     ]);
 
@@ -91,28 +91,20 @@ const adminLoad = async (req, res) => {
     for (let i = 0; i < orderCountsByYearData.length; i++) {
       const year = orderCountsByYearData[i]._id;
       const orderCount = orderCountsByYearData[i].orderCount;
-
       while (currentYear - 5 + currentYearIndex < year) {
         orderCountsByYear.push(0);
         currentYearIndex++;
       }
-
       orderCountsByYear.push(orderCount);
       currentYearIndex++;
     }
-
     while (currentYear - 5 + currentYearIndex <= currentYear + 6) {
       orderCountsByYear.push(0);
       currentYearIndex++;
     }
 
     const productCountsByYearData = await Products.aggregate([
-      {
-        $group: {
-          _id: { $year: "$date" },
-          productCount: { $sum: 1 }
-        }
-      },
+      { $group: { _id: { $year: "$date" }, productCount: { $sum: 1 } } },
       { $sort: { "_id": 1 } }
     ]);
 
@@ -123,28 +115,20 @@ const adminLoad = async (req, res) => {
     for (let i = 0; i < productCountsByYearData.length; i++) {
       const year = productCountsByYearData[i]._id;
       const productCount = productCountsByYearData[i].productCount;
-
       while (currentYear1 - 5 + currentYearIndex1 < year) {
         productCountsByYear.push(0);
         currentYearIndex1++;
       }
-
       productCountsByYear.push(productCount);
       currentYearIndex1++;
     }
-
     while (currentYear1 - 5 + currentYearIndex1 <= currentYear1 + 6) {
       productCountsByYear.push(0);
       currentYearIndex1++;
     }
 
     const totalAmountByYearData = await Order.aggregate([
-      {
-        $group: {
-          _id: { $year: "$orderDate" },
-          totalAmount: { $sum: { $toDouble: "$totalAmount" } }
-        }
-      },
+      { $group: { _id: { $year: "$orderDate" }, totalAmount: { $sum: { $toDouble: "$totalAmount" } } } },
       { $sort: { "_id": 1 } }
     ]);
 
@@ -155,75 +139,35 @@ const adminLoad = async (req, res) => {
     for (let i = 0; i < totalAmountByYearData.length; i++) {
       const year = totalAmountByYearData[i]._id;
       const totalAmount = totalAmountByYearData[i].totalAmount;
-
       while (currentYear2 - 5 + currentYearIndex2 < year) {
         totalAmountByYear.push(0);
         currentYearIndex2++;
       }
-
       totalAmountByYear.push(totalAmount);
       currentYearIndex2++;
     }
-
     while (currentYear2 - 5 + currentYearIndex2 <= currentYear2 + 6) {
       totalAmountByYear.push(0);
       currentYearIndex2++;
     }
 
     const bestSellingProduct = await Order.aggregate([
-      { $unwind: "$products" },  
-      { 
-        $group: { 
-          _id: "$products.productId", 
-          totalSales: { $sum: "$products.quantity" } 
-        } 
-      },
+      { $unwind: "$products" },
+      { $group: { _id: "$products.productId", totalSales: { $sum: "$products.quantity" } } },
       { $sort: { totalSales: -1 } },
       { $limit: 10 },
-      { 
-        $lookup: { 
-          from: "products", 
-          localField: "_id", 
-          foreignField: "_id", 
-          as: "product" 
-        } 
-      },
+      { $lookup: { from: "products", localField: "_id", foreignField: "_id", as: "product" } },
       { $unwind: "$product" },
-      { 
-        $project: { 
-          productName: "$product.productName", 
-          totalSales: 1 
-        } 
-      }
+      { $project: { productName: "$product.productName", totalSales: 1 } }
     ]);
 
     const bestSellingCategories = await Order.aggregate([
       { $unwind: "$products" },
-      { 
-        $lookup: { 
-          from: "products", 
-          localField: "products.productId", 
-          foreignField: "_id", 
-          as: "productInfo" 
-        } 
-      },
+      { $lookup: { from: "products", localField: "products.productId", foreignField: "_id", as: "productInfo" } },
       { $unwind: "$productInfo" },
-      { 
-        $lookup: { 
-          from: "categories", 
-          localField: "productInfo.categoryId", 
-          foreignField: "_id", 
-          as: "category" 
-        } 
-      },
+      { $lookup: { from: "categories", localField: "productInfo.categoryId", foreignField: "_id", as: "category" } },
       { $unwind: "$category" },
-      { 
-        $group: { 
-          _id: "$category._id", 
-          name: { $first: "$category.categoryName" }, 
-          totalSales: { $sum: "$products.quantity" } 
-        } 
-      },
+      { $group: { _id: "$category._id", name: { $first: "$category.categoryName" }, totalSales: { $sum: "$products.quantity" } } },
       { $sort: { totalSales: -1 } },
       { $limit: 10 }
     ]);
@@ -247,13 +191,17 @@ const adminLoad = async (req, res) => {
       bestSellingProduct,
       bestSellingCategories,
       totalAmountByMonth,
-      totalAmountByYear
+      totalAmountByYear,
+      feedback,
+      reviewedProducts, // Only products with reviews
     });
   } catch (error) {
     console.log(error);
     res.status(500).send("Error loading admin dashboard");
   }
 };
+
+
 
 
 const loadUsers = async (req, res) => {
@@ -616,64 +564,91 @@ const updateOrderStatus=async (req,res)=>{
   }
 }
 
+
+
 const salesReport = async (req, res) => {
   try {
-      
-      const deliveredOrders = await Order.find({ orderStatus: 'Delivered' });
+    const deliveredOrders = await Order.find({ orderStatus: 'Delivered' })
+      .populate('userId')
+      .populate('products.productId');
 
-      if (deliveredOrders.length === 0) {
-          return res.status(404).json({ message: 'No delivered orders found' });
-      }
+    if (deliveredOrders.length === 0) {
+      return res.status(404).json({ message: 'No delivered orders found' });
+    }
 
-     
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Delivered Orders Report');
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Delivered Orders Report');
 
-     
-      worksheet.columns = [
-          { header: 'Order ID', key: 'orderId', width: 20 },
-          { header: 'User ID', key: 'userId', width: 20 },
-          { header: 'Product ID', key: 'productId', width: 20 },
-          { header: 'Quantity', key: 'quantity', width: 10 },
-          { header: 'Size', key: 'size', width: 10 },
-          { header: 'Total Amount', key: 'totalAmount', width: 15 },
-          { header: 'Order Date', key: 'orderDate', width: 20 },
-          { header: 'Delivery Date', key: 'deliveryDate', width: 20 }
-      ];
+    worksheet.columns = [
+      { header: 'Order ID', key: 'orderId', width: 20 },
+      { header: 'User ID', key: 'userId', width: 20 },
+      { header: 'Product ID', key: 'productId', width: 20 },
+      { header: 'Product Name', key: 'productName', width: 30 },
+      { header: 'Quantity', key: 'quantity', width: 10 },
+      { header: 'Size', key: 'size', width: 10 },
+      { header: 'Total Amount', key: 'totalAmount', width: 15 },
+      { header: 'Order Date', key: 'orderDate', width: 20 },
+      { header: 'Delivery Date', key: 'deliveryDate', width: 20 },
+      { header: 'Address Name', key: 'addressName', width: 20 },
+      { header: 'Mobile', key: 'mobile', width: 15 },
+      { header: 'Home Address', key: 'homeAddress', width: 30 },
+      { header: 'City', key: 'city', width: 15 },
+      { header: 'District', key: 'district', width: 15 },
+      { header: 'State', key: 'state', width: 15 },
+      { header: 'Pincode', key: 'pincode', width: 10 },
+      { header: 'Coupon Code', key: 'couponCode', width: 15 },
+      { header: 'Discount Amount', key: 'discountAmount', width: 15 },
+      { header: 'Order Status', key: 'orderStatus', width: 15 },
+      { header: 'Payment Status', key: 'paymentStatus', width: 15 },
+      { header: 'Payment Method', key: 'paymentMethod', width: 15 },
+      { header: 'Return Reason', key: 'returnReason', width: 25 },
+    ];
 
-     
-      deliveredOrders.forEach(order => {
-          const deliveryDate = new Date().toLocaleDateString();
+    deliveredOrders.forEach(order => {
+      const { address, coupon } = order;
+      const deliveryDate = new Date().toLocaleDateString();
 
-          order.products.forEach(product => {
-              worksheet.addRow({
-                  orderId: order.orderId,
-                  userId: order.userId,
-                  productId: product.productId,
-                  quantity: product.quantity,
-                  size: product.size,
-                  totalAmount: order.totalAmount,
-                  orderDate: order.orderDate.toLocaleDateString(),
-                  deliveryDate: deliveryDate,
-              });
-          });
+      order.products.forEach(product => {
+        worksheet.addRow({
+          orderId: order.orderId,
+          userId: order.userId._id.toString(),
+          productId: product.productId._id.toString(),
+          productName: product.productId.name || 'N/A', 
+          quantity: product.quantity,
+          size: product.size,
+          totalAmount: order.totalAmount,
+          orderDate: order.orderDate.toLocaleDateString(),
+          deliveryDate: deliveryDate,
+          addressName: address.addressName,
+          mobile: address.mobile,
+          homeAddress: address.homeAddress,
+          city: address.city,
+          district: address.district,
+          state: address.state,
+          pincode: address.pincode,
+          couponCode: coupon?.couponCode || 'N/A',
+          discountAmount: coupon?.discountAmount || 0,
+          orderStatus: order.orderStatus,
+          paymentStatus: order.paymentStatus,
+          paymentMethod: order.paymentMethod,
+          returnReason: order.returnReason || 'N/A',
+        });
       });
+    });
 
-     
-      const filePath = './reports/delivered_orders_report.xlsx';
-      await workbook.xlsx.writeFile(filePath);
-      
-     +68
-      res.status(200).json({
-          message: 'Sales report generated successfully',
-          filePath: filePath,
-      });
+    // Send the file as a download to the client
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=delivered_orders_report.xlsx');
+
+    await workbook.xlsx.write(res);
+    res.status(200).end();
   } catch (error) {
-      console.error('Error generating sales report:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.error('Error generating sales report:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
-//------------------------------
+
+
 
 
 module.exports = {

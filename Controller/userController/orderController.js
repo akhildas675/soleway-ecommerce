@@ -31,7 +31,7 @@ const loadCheckout = async (req, res) => {
     });
 
 
-    //store the error messages
+    //store the error messages 
     let adjustments = []; 
 
     for (let item of findCartItems.cartProducts) {
@@ -187,13 +187,11 @@ const codPlaceOrder = async (req, res) => {
     );
     const findAddress = await Address.findById(addressId);
 
-    // console.log("Find User:", findUser);
-    // console.log("Find Cart:", findCart);
-    // console.log("Find Address:", findAddress);
+
 
     // Validation user, cart, adnd address
     if (!findUser || !findCart || !findAddress) {
-      // console.log("Invalid user, cart, or address");
+      
       return res
         .status(400)
         .json({ message: "Invalid user, cart, or address" });
@@ -201,7 +199,7 @@ const codPlaceOrder = async (req, res) => {
 
     // Check cart is empty or not
     if (!findCart.cartProducts || findCart.cartProducts.length === 0) {
-      // console.log("No products in the cart");
+      
       return res.status(400).json({ message: "No products in the cart" });
     }
 
@@ -215,8 +213,7 @@ const codPlaceOrder = async (req, res) => {
       return acc + productPrice * item.quantity;
     }, 0);
 
-    // console.log("Total Amount:", totalAmount);
-    // console.log("Applied coupon from cod:", appliedCouponCode);
+
 
     // Check if the coupon is valid and apply it
     if (appliedCouponCode) {
@@ -235,7 +232,7 @@ const codPlaceOrder = async (req, res) => {
             discountAmount: discountAmount.toFixed(2),
           };
 
-          // console.log("Discount Amount from cod:", discountAmount);
+ 
 
           // Redeem the coupon after placing the order
           coupon.redeemedUsers.push({

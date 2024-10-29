@@ -91,7 +91,7 @@ const editingCategory = async (req, res) => {
     });
 
     if (categoryExisting) {
-      // console.log(categoryData);
+  
       res.redirect("/admin/categoryAdd?error=exists");
     } else {
       const updated = await Category.findByIdAndUpdate(

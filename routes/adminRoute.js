@@ -27,7 +27,7 @@ adminRoute.use(
 
 adminRoute.get("/signIn", Auth.isLogout, adminController.adminLogin);
 adminRoute.post("/loginAdmin", Auth.isLogout, adminController.verifyAdminLogin);
-adminRoute.get('/salesReport',Auth.isLogin,adminController.salesReport)
+adminRoute.get("/salesReport", Auth.isLogin, adminController.salesReport);
 
 //Admin controller
 
@@ -111,7 +111,11 @@ adminRoute.post(
 
 adminRoute.get("/orderMng", Auth.isLogin, adminController.adminOrderMng);
 adminRoute.get("/orderInfo", Auth.isLogin, adminController.orderDetailsOfUser);
-adminRoute.post("/updateOrderStatus",Auth.isLogin,adminController.updateOrderStatus)
+adminRoute.post(
+  "/updateOrderStatus",
+  Auth.isLogin,
+  adminController.updateOrderStatus
+);
 
 //coupon management
 
@@ -130,8 +134,7 @@ adminRoute.get("/editOffer", Auth.isLogin, productController.loadEditOffer);
 adminRoute.post("/updateOffer", Auth.isLogin, productController.updateOffer);
 // adminRoute.get('/blockOffer',Auth.isLogin,productController.blockOffer)
 // adminRoute.get('/unblockOffer',Auth.isLogin,productController.unblockOffer)
-adminRoute.delete('/deleteOffer',Auth.isLogin,productController.deleteOffer)
-
+adminRoute.delete("/deleteOffer", Auth.isLogin, productController.deleteOffer);
 
 // adminRoute.get('/find',productController.findThePage)
 

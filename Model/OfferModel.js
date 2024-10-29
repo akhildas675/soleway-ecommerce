@@ -19,4 +19,5 @@ const offerSchema = mongoose.Schema({
   },
 });
 
+
 module.exports = mongoose.model("Offer", offerSchema);
