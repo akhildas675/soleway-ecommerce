@@ -661,7 +661,7 @@
 
             <script>
                 function removeFromWishList(productId){
-                   console.log("ProductId",productId)
+                //    console.log("ProductId",productId)
                 }
             </script>
 
@@ -678,7 +678,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Response Data:", data);  
+            // console.log("Response Data:", data);  
             const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
             const icon = button.querySelector('i');
 

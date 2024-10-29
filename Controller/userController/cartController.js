@@ -44,7 +44,7 @@ const addToCart = async (req, res) => {
 
     let currentSize = findSQ.sizes.find((obj) => obj._id.toString() === sizeId);
 
-    console.log("current sizess", currentSize);
+    // console.log("current sizess", currentSize);
 
     if (!currentSize || currentSize.quantity <= 0) {
       return res.json({
@@ -102,7 +102,7 @@ const addToCart = async (req, res) => {
 const updateCart = async (req, res) => {
   try {
     const { productId, sizeId, quantity, totalAmount } = req.body;
-    console.log("Request Body:", req.body);
+    // console.log("Request Body:", req.body);
 
     const userId = req.session.userData;
 
@@ -137,7 +137,7 @@ const updateCart = async (req, res) => {
     cartProduct.quantity = quantity;
     await cart.save();
 
-    console.log("Cart", cart);
+    // console.log("Cart", cart);
 
     return res.json({
       success: true,

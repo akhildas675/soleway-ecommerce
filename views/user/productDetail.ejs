@@ -129,9 +129,7 @@
 								<a href="/Shop">Shop</a>
 							</li>
 
-							<li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Features</a>
-							</li>
+							
 
 							<li>
 								<a href="blog.html">Blog</a>
@@ -813,7 +811,7 @@
 					$(this).on('click', function () {
 					});
 
-					console.log("The name of the product", nameProduct)
+					// console.log("The name of the product", nameProduct)
 				});
 
 			</script>
@@ -861,7 +859,7 @@
 							}
 						});
 
-						console.log('Rating selected:', ratingInput.value); 
+						// console.log('Rating selected:', ratingInput.value); 
 					};
 				});
 
@@ -942,7 +940,7 @@
 							});
 						} else {
 							selectedSizeId = target.getAttribute('data-id');
-							console.log(selectedSizeId);
+							// console.log(selectedSizeId);
 
 							let options = document.querySelectorAll('.size-option');
 							options.forEach(option => option.classList.remove('selected'));
@@ -982,7 +980,7 @@
 })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
+        // console.log('Success:', data);
 
         let nameProduct = document.getElementById('productName').innerText;
 

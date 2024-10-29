@@ -368,7 +368,7 @@ const addCoupon = async (req, res) => {
     } else {
       const today = new Date();
 
-      console.log("Today's date and time:", today);
+      // console.log("Today's date and time:", today);
       const expiry = new Date(expiryDate);
 
       if (expiry <= today) {
@@ -419,7 +419,7 @@ const loadEditCoupon = async (req, res) => {
 
 const editCoupon = async (req, res) => {
   try {
-      console.log("Edit coupon worked");
+      // console.log("Edit coupon worked");
 
       const {
           couponId,
@@ -430,7 +430,7 @@ const editCoupon = async (req, res) => {
           expiryDate,
       } = req.body;
 
-      console.log("this is from the edit req.body", req.body);
+      // console.log("this is from the edit req.body", req.body);
 
       let errors = [];
 
@@ -490,7 +490,7 @@ const editCoupon = async (req, res) => {
 const blockCoupon = async (req, res) => {
   try {
     const couponId = req.query.id;
-    console.log("couponId", couponId);
+    // console.log("couponId", couponId);
     const couponBlock = await Coupon.findByIdAndUpdate(couponId, {
       isActive: false,
     });
@@ -503,7 +503,7 @@ const blockCoupon = async (req, res) => {
 const unblockCoupon = async (req, res) => {
   try {
     const couponId = req.query.id;
-    console.log("couponID for unblock", couponId);
+    // console.log("couponID for unblock", couponId);
 
     const couponUnblock = await Coupon.findByIdAndUpdate(couponId, {
       isActive: true,
@@ -517,7 +517,7 @@ const unblockCoupon = async (req, res) => {
 const deleteCoupon = async (req, res) => {
   try {
     const { couponId } = req.body;
-    console.log("couponId for delete", couponId);
+    // console.log("couponId for delete", couponId);
 
     await Coupon.findByIdAndDelete(couponId);
 
@@ -547,7 +547,7 @@ const adminOrderMng = async (req, res) => {
     const findUser = await User.findById(userId);
 
     // console.log("Ordered Data:", orderedData);
-    console.log("Total Pages:", totalPages);
+    // console.log("Total Pages:", totalPages);
 
     res.render("adminOrderList", { orderedData, findUser, page, totalPages });
   } catch (error) {
@@ -560,11 +560,11 @@ const orderDetailsOfUser = async (req, res) => {
   try {
       // Get the order ID from the query parameters
       const orderId = req.query.id;
-      console.log("Order ID:", orderId);
+      // console.log("Order ID:", orderId);
       
       // Retrieve user ID from session
       const userId = req.session.userData;
-      console.log("User ID:", userId);
+      // console.log("User ID:", userId);
  
       const findUser = await User.findById(userId);
 
@@ -578,7 +578,7 @@ const orderDetailsOfUser = async (req, res) => {
           return res.status(404).send("Order not found");
       }
 
-      console.log("Ordered Data for Detail Page:", orderedData);
+      // console.log("Ordered Data for Detail Page:", orderedData);
 
     
       res.render("userOrderDetails", { 
@@ -597,7 +597,7 @@ const updateOrderStatus=async (req,res)=>{
   try {
     const {orderId,newStatus}=req.body;
 
-    console.log("this data from user order status manage",req.body)
+    // console.log("this data from user order status manage",req.body)
 
     const orderStatuses = ["Pending", "Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"];
     if (!orderStatuses.includes(newStatus)) {

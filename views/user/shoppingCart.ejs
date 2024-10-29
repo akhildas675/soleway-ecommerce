@@ -431,7 +431,7 @@
 						const sizeId = input.data('sizes-id');
 						const quantity = Number(input.val());
 
-						console.log("Total Amount", totalAmount)
+						// console.log("Total Amount", totalAmount)
 
 						fetch('/updateCart', {
 							method: 'POST',
@@ -448,7 +448,7 @@
 							.then(response => response.json())
 							.then(data => {
 								if (data.success) {
-									console.log('Cart updated successfully');
+									// console.log('Cart updated successfully');
 								} else {
 									console.error('Failed to update cart:', data.message);
 									swal({
@@ -483,7 +483,7 @@
 
 					function deleteCartItem(i) {
 						const id = document.getElementById('productId' + i).value;
-						console.log(id);
+						// console.log(id);
 
 						swal({
 							title: "Are you sure?",

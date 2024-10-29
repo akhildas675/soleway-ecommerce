@@ -803,7 +803,7 @@
         confirmButtonText: 'Yes, cancel it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log("Order id", orderId);
+            // console.log("Order id", orderId);
             
            
             fetch('/orderCancel', {
@@ -881,7 +881,7 @@
   };
 
   // Debugging log before sending the request
-  console.log("Sending return data:", returnData);
+//   console.log("Sending return data:", returnData);
 
   try {
     const response = await fetch('/returnOrder', {
@@ -893,7 +893,7 @@
     });
 
     const responseData = await response.json();
-    console.log("Response from server:", responseData);
+    // console.log("Response from server:", responseData);
 
     if (response.ok && responseData.success) {
       Swal.fire({

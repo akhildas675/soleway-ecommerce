@@ -280,9 +280,9 @@
                           
                           function removeImage(imageIndex) {
     const productId = document.getElementById('productId').value;
-    console.log("Image index:", imageIndex);
-    console.log("Delete button clicked");
-    console.log("productId", productId);
+    // console.log("Image index:", imageIndex);
+    // console.log("Delete button clicked");
+    // console.log("productId", productId);
 
     fetch('/admin/removeImage', {
         method: 'POST',
@@ -295,7 +295,7 @@
         })
     })
     .then(response => {
-        console.log('Response status:', response.status);
+        // console.log('Response status:', response.status);
         return response.json(); 
     })
     .then(data => {
@@ -304,11 +304,11 @@
             // Success message using Toastify
             Toastify({
                 text: data.message || "Image removed successfully",
-                duration: 3000, // 3 seconds
-                gravity: "top", // `top` or `bottom`
-                position: "right", // `left`, `center` or `right`
-                backgroundColor: "#4CAF50", // Green for success
-                close: true // Display a close button
+                duration: 3000, 
+                gravity: "top", 
+                position: "right", 
+                backgroundColor: "#4CAF50", 
+                close: true 
             }).showToast();
 
             document.querySelector(`[data-index="${imageIndex}"]`).closest('.image-container').remove();
@@ -319,7 +319,7 @@
                 duration: 3000,
                 gravity: "top",
                 position: "right",
-                backgroundColor: "#f44336", // Red for error
+                backgroundColor: "#f44336",
                 close: true
             }).showToast();
         }
@@ -473,6 +473,11 @@ document.getElementById('imageInput').addEventListener('change', function (event
 
 
                         </script>
+    <!-- Toastify CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<!-- Toastify JS -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

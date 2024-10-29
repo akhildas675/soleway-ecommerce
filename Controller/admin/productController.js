@@ -62,10 +62,10 @@ const productVerify = async (req, res) => {
       category,
     } = req.body;
 
-    console.log("this is the offer ID", offerId);
+    // console.log("this is the offer ID", offerId);
     const findOffer = await Offer.findOne({ _id: offerId });
-    console.log("Offer details", findOffer);
-    console.log("offer percentage", findOffer.offerPercentage);
+    // console.log("Offer details", findOffer);
+    // console.log("offer percentage", findOffer.offerPercentage);
 
     // Validation
     const errors = [];
@@ -184,14 +184,14 @@ const productVerify = async (req, res) => {
       discountAmount = realPrice * (percentageOfOffer / 100);
       salePrice = realPrice - discountAmount;
     }
-    console.log(salePrice, "Sale");
+    // console.log(salePrice, "Sale");
 
-    console.log(
-      "type of",
-      typeof percentageOfOffer,
-      "the offer",
-      percentageOfOffer
-    );
+    // console.log(
+    //   "type of",
+    //   typeof percentageOfOffer,
+    //   "the offer",
+    //   percentageOfOffer
+    // );
 
     const product = new Products({
       productName,
@@ -206,12 +206,12 @@ const productVerify = async (req, res) => {
     });
 
     const productData = await product.save();
-    console.log("productData", productData);
+    // console.log("productData", productData);
 
     if (productData) {
       return res.status(201).json({ message: "Product added successfully" });
     } else {
-      console.log("Error saving product");
+      // console.log("Error saving product");
       return res.status(500).json({ message: "Error adding product" });
     }
   } catch (error) {
@@ -253,7 +253,7 @@ const updateProduct = async (req, res) => {
       return res.status(400).json({ error: "Offer not found" });
     }
 
-    console.log("Offer details from product update:", findOffer);
+    // console.log("Offer details from product update:", findOffer);
 
     const sizes = [];
     const errors = [];
@@ -274,7 +274,7 @@ const updateProduct = async (req, res) => {
       }
     }
 
-    console.log("Received sizes:", sizes);
+    // console.log("Received sizes:", sizes);
 
     const productId = req.query.productId;
 
@@ -341,12 +341,12 @@ const updateProduct = async (req, res) => {
 
     let salePrice = realPrice;
     if (findOffer.offerPercentage > 0) {
-      console.log(findOffer.offerPercentage);
+      // console.log(findOffer.offerPercentage);
       const discountAmount = realPrice * (findOffer.offerPercentage / 100);
       salePrice = realPrice - discountAmount;
     }
 
-    console.log("Sale price after discount:", salePrice);
+    // console.log("Sale price after discount:", salePrice);
 
     existingProduct.productName = productName;
     existingProduct.description = description;
@@ -369,9 +369,9 @@ const updateProduct = async (req, res) => {
 
 
 const removeImageEditproduct = async (req, res) => {
-  console.log("remove function worked");
+  // console.log("remove function worked");
   const { index, productId } = req.body;
-  console.log(index);
+  // console.log(index);
 
   try {
     const product = await Products.findById(productId);
@@ -397,7 +397,7 @@ const removeImageEditproduct = async (req, res) => {
 const productBlocking = async (req, res) => {
   try {
     const productId = req.query.id;
-    console.log("productID:", productId);
+    // console.log("productID:", productId);
     await Products.findByIdAndUpdate(productId, { is_active: false });
     res.redirect("/admin/productsView");
   } catch (error) {
@@ -421,7 +421,7 @@ const productUnblocking = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    console.log("Product ID:", productId);
+    // console.log("Product ID:", productId);
 
    
     const productDelete = await Products.findByIdAndDelete(productId);

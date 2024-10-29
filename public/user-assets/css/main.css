@@ -2683,7 +2683,7 @@ p.stext-102 {
 ==================================================================*/
 .bg-none {background-color: transparent;}
 .bg0 {background-color: #fff;}
-.bg1 {background-color: #717fe0;}
+.bg1 {background-color: #0d0d0d;}
 .bg2 {background-color: #e6e6e6;}
 .bg3 {background-color: #222;}
 .bg5 {background-color: rgba(0,0,0,0.5);}
@@ -3147,26 +3147,26 @@ p.stext-102 {
 
 /*---------------------------------------------*/
 .hov-btn2:hover {
-  border-color: #6e6e6e;
-  background-color: #ababab;
-  color: #717fe0;
+  border-color: hsl(0, 0%, 43%);
+  background-color: #ffffff;
+  color: #353535;
 }
 
 /*---------------------------------------------*/
 .hov-btn3:hover {
-  border-color: #717fe0;
-  background-color: #717fe0;
-  color: #b1b1b1;
+  border-color: #000000;
+  background-color: #5d5d5d;
+  color: #ffffff;
 }
 
 .hov-btn3:hover i {
-  color: #c2c2c2;
+  color: #eaeaea;
 }
 
 /*---------------------------------------------*/
 .hov-tag1:hover {
-  color: #717fe0;
-  border-color: #717fe0;
+  color: #8a8a8a;
+  border-color: #a6a6a6;
 }
 
 

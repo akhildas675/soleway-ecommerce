@@ -91,14 +91,14 @@ const editingCategory = async (req, res) => {
     });
 
     if (categoryExisting) {
-      console.log(categoryData);
+      // console.log(categoryData);
       res.redirect("/admin/categoryAdd?error=exists");
     } else {
       const updated = await Category.findByIdAndUpdate(
         { _id: req.session.categoryId },
         { $set: { categoryName, description } }
       );
-      console.log(updated, "updated");
+      // console.log(updated, "updated");
 
       res.redirect("/admin/categoryAdd?success=true");
     }

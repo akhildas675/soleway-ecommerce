@@ -218,7 +218,7 @@ const insertUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ errors: ["Server error. Please try again later."] }); // Send errors as array
+    res.status(500).json({ errors: ["Server error. Please try again later."] }); 
   }
 };
 
@@ -234,7 +234,7 @@ const otpGet = async (req, res) => {
 
     // Generate random OTP
     let randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    console.log("Generated OTP: ", randomOtp);
+    // console.log("Generated OTP: ", randomOtp);
     req.session.otp = randomOtp;
 
     const { email, name } = req.session.data;
@@ -247,7 +247,7 @@ const otpGet = async (req, res) => {
 
     // Send the OTP via email
     let info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
+    // console.log("Email sent: " + info.response);
 
     // Render OTP input page with an empty message initially
     res.status(200).render("userOtp", { message: "" });
@@ -395,7 +395,7 @@ const resetPasswordOtp = async (req, res) => {
 
     let randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
     req.session.resetPOtp = randomOtp;
-    console.log(randomOtp, "forget password otp");
+    // console.log(randomOtp, "forget password otp");
 
     const resetPasswordOptions = {
       from: process.env.EMAIL,
@@ -406,10 +406,10 @@ const resetPasswordOtp = async (req, res) => {
 
     try {
       let info = await transporter.sendMail(resetPasswordOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       res.status(200).render("passwordOtp");
     } catch (error) {
-      console.log("Error sending email: " + error);
+      // console.log("Error sending email: " + error);
       res.status(500).send("Error sending email");
     }
   } catch (error) {
@@ -688,7 +688,7 @@ const addUserAddress = async (req, res) => {
     const userId = req.session.userData;
     const { name, mobile, homeAddress, city, district, state, pincode } = req.body;
 
-    console.log("Add userAddress data from body", req.body);
+    // console.log("Add userAddress data from body", req.body);
 
     let errors = [];
 
@@ -756,7 +756,7 @@ const editAddressPage = async (req, res) => {
 
     res.render("editAddress", { address, findUser });
   } catch (error) {
-    console.log("Error in editAddressPage:", error.message);
+    // console.log("Error in editAddressPage:", error.message);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -766,8 +766,8 @@ const editAddress = async (req, res) => {
     const addressId = req.body.addressId;
     const userId = req.session.userData;
 
-    console.log("Edit Address - Address ID form edit address page", addressId);
-    console.log("Edit Address - User ID  from edit address page", userId);
+    // console.log("Edit Address - Address ID form edit address page", addressId);
+    // console.log("Edit Address - User ID  from edit address page", userId);
 
     const updatedAddress = await Address.findOneAndUpdate(
       { _id: addressId, userId: userId },
@@ -784,7 +784,7 @@ const editAddress = async (req, res) => {
 
     res.redirect("/userInfo");
   } catch (error) {
-    console.log("Error in editAddress:", error.message);
+    // console.log("Error in editAddress:", error.message);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -794,8 +794,8 @@ const deleteAddress = async (req, res) => {
     const userId = req.session.userData;
     const addressId = req.body.addressId;
 
-    console.log("Delete Address - User ID:", userId);
-    console.log("Delete Address - Address ID:", addressId);
+    // console.log("Delete Address - User ID:", userId);
+    // console.log("Delete Address - Address ID:", addressId);
 
     const address = await Address.findOneAndDelete({
       _id: addressId,
@@ -804,7 +804,7 @@ const deleteAddress = async (req, res) => {
 
     res.status(200).send("Address deleted successfully");
   } catch (error) {
-    console.log("Error in deleteAddress:", error.message);
+    // console.log("Error in deleteAddress:", error.message);
     res.status(500).send("Internal Server Error");
   }
 };
@@ -831,9 +831,9 @@ const orderInfos = async (req, res) => {
 
     orderedData.products.forEach((product) => {
       if (product.productId && typeof product.productId === "object") {
-        console.log("Product Name:", product.productId.productName);
+        // console.log("Product Name:", product.productId.productName);
       } else {
-        console.log("Product ID not populated:", product.productId);
+        // console.log("Product ID not populated:", product.productId);
       }
     });
 

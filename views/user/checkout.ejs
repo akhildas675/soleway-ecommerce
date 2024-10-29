@@ -538,8 +538,7 @@
                                     <div class="default-form-box">
                                         <label>Select Shipping Address <span></span></label>
 
-                                        <% if (findAddress.length> 0) { %> <% for (let i=0; i < findAddress.length;
-                                                i++){ %>
+                                        <% if (findAddress.length> 0) { %> <% for (let i=0; i < findAddress.length; i++){ %>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="address"
                                                         id="address<%= i %>" value="<%=findAddress[i]._id %>" <%=i===0
@@ -710,10 +709,8 @@
                                                                 <span style="font-size: 16px">Price: ₹<%= price %>
                                                                 </span><br />
 
-                                                                <% if (product.productId.offerId &&
-                                                                    product.productId.offerId.offerPercentage) { %>
-                                                                    <span class="offer-available">Offer: <%=
-                                                                            product.productId.offerId.offerPercentage %>
+                                                    <% if (product.productId.offerId &&product.productId.offerId.offerPercentage) { %>
+                                                 <span class="offer-available">Offer: <%= product.productId.offerId.offerPercentage %>
                                                                             %
                                                                             Off</span><br />
                                                                     <% } else { %>
@@ -723,8 +720,7 @@
 
                                                                             <span style="font-size: 16px">Quantity: <%=
                                                                                     product.quantity %></span><br />
-                                                                            <span style="font-size: 16px">Total: ₹<%=
-                                                                                    productTotal.toFixed(2) %></span>
+                                                                <span style="font-size: 16px">Total: ₹<%=productTotal.toFixed(2) %></span>
                                                             </td>
                                                         </tr>
                                                         <% } %>
@@ -734,20 +730,17 @@
                                                                 <tr>
                                                                     <td colspan="2">
                                                                         <div id="availableCoupons">
-                                                                            <p>Available Coupons:</p>
+                                                                            <p>Select any one coupon:</p>
                                                                             <ul>
-                                                                                <% for (let i=0; i < coupon.length;
-                                                                                    i++){ %>
+                                                                                <% for (let i=0; i < coupon.length; i++){ %>
                                                                                     <li class="coupon-card">
                                                                                         <div>
                                                                                             <span
                                                                                                 class="coupon-name"><strong>
-                                                                                                    <%= coupon[i].couponName
-                                                                                                        %>
+                                                                                                    <%= coupon[i].couponN %>
                                                                                                 </strong></span>
                                                                                             <span class="coupon-code">
-                                                                                                <%= coupon[i].couponCode
-                                                                                                    %>
+                                                                                                <%= coupon[i].couponCode %>
                                                                                             </span>
                                                                                         </div>
                                                                                         <button id="coupon-btn-<%= i %>"
@@ -809,6 +802,9 @@
                 </div>
             </div>
             <% } %>
+            <!-- Hidden input to store adjustments data -->
+<input type="hidden" id="adjustmentsData" value='<%= JSON.stringify(adjustments) %>' />
+
 
                 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -825,6 +821,7 @@
 
                     async function applyOrRemoveCoupon(couponCode, index) {
                         const button = document.getElementById(`coupon-btn-${index}`);
+                       
                         const grandTotalElement = document.querySelector("#grandTotal");
 
                         if (button.disabled) {
@@ -1033,7 +1030,7 @@
                             })
                                 .then((response) => response.json())
                                 .then((data) => {
-                                    console.log("data", data);
+                                    // console.log("data", data);
 
                                     const orderId = data.orderId;
                                     const options = {
@@ -1045,7 +1042,7 @@
                                         order_id: orderId,
                                         handler: function (response) {
                                             if (response.razorpay_payment_id) {
-                                                console.log("paymentId:", response.razorpay_payment_id);
+                                                // console.log("paymentId:", response.razorpay_payment_id);
 
                                                 // Successful payment logic
                                                 fetch("/onlinePay", {
@@ -1150,6 +1147,7 @@
                                         confirmButtonText: "OK",
                                     });
                                 });
+                                //
                         }
                         else if (paymentMethod === "Wallet") {
                             fetch("/walletOrder", {
@@ -1176,9 +1174,7 @@
                                             Swal.fire({
                                                 icon: "error",
                                                 title: "Order Failed",
-                                                text:
-                                                    data.message ||
-                                                    "Insufficient wallet balance. Please add funds to your wallet.",
+                                                text: data.message ||"Insufficient wallet balance. Please add funds to your wallet.",
                                             });
                                         });
                                     } else {
@@ -1189,8 +1185,8 @@
                                             text: "Failed to place the order. Please try again.",
                                         });
                                     }
-                                })
-                                .catch((error) => {
+                                    
+                                }).catch((error) => {
                                     console.error("Error:", error);
                                     Swal.fire({
                                         icon: "error",
@@ -1198,9 +1194,10 @@
                                         text: "An error occurred while placing the order. Please try again.",
                                     });
                                 });
+                                
                         }
                     }
-
+            
                     function calculateGrandTotal() {
                         let total = 0;
 
@@ -1267,6 +1264,8 @@
 
                     <!-- Main JS -->
                     <script src="/userMng-assets/js/main.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
                     <script>
                         function toggleAddAddressForm() {
@@ -1354,7 +1353,32 @@
                             );
                             walletContainer.style.display = "none"; // Hide wallet balance
                         }
+
+
+
+
+                        document.addEventListener("DOMContentLoaded", function () {
+  
+  const adjustmentsData = document.getElementById("adjustmentsData").value;
+
+  
+  const adjustments = adjustmentsData ? JSON.parse(adjustmentsData) : [];
+
+  
+  if (adjustments && adjustments.length > 0) {
+    adjustments.forEach((adjustment) => {
+      Swal.fire({
+        title: "Cart Adjustment",
+        text: adjustment.message,
+        icon: "info",
+        confirmButtonText: "Okay",
+      });
+    });
+  }
+});
+
                     </script>
+                    
 </body>
 
 </html>

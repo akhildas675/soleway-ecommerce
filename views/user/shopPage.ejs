@@ -709,13 +709,13 @@
 				event.preventDefault();
 
 				const searchInput = document.querySelector('input[name="search-product"]').value;
-				console.log(searchInput, 'search input in handleSearch');
+				// console.log(searchInput, 'search input in handleSearch');
 
 				const urlParams = new URLSearchParams(window.location.search);
-				console.log(urlParams, 'URL params in handleSearch');
+				// console.log(urlParams, 'URL params in handleSearch');
 
 				const categoryId = urlParams.get('categoryId');
-				console.log(categoryId, 'categoryId in handleSearch');
+				// console.log(categoryId, 'categoryId in handleSearch');
 
 				let url = '/Shop?';
 
@@ -736,7 +736,7 @@
 		</script>
 <script>
     function toggleWishList(productId) {
-        console.log("Toggling wishlist...");
+        // console.log("Toggling wishlist...");
 
         fetch('/toggleWishlist', {
             method: 'POST',
@@ -747,7 +747,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Response Data:", data); 
+            // console.log("Response Data:", data); 
             const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
             const icon = button.querySelector('i');
 
