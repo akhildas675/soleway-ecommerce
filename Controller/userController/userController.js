@@ -677,7 +677,7 @@ const userDetails = async (req, res) => {
       findUser,
       addresses,
       orderedData,
-      wallet: wallet ? { ...wallet.toObject(), history: walletHistory } : { balance: 0, history: [] },
+      wallet,
       coupon,
       currentPage: orderPage,
       totalOrderPages: totalOrderPages,
