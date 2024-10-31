@@ -787,7 +787,7 @@ const rePayment = async (req, res) => {
     const userId = req.session.userData;
     const { orderId, paymentId } = req.body;
 
-    const findOrder = await Order.findById(orderId).populate("items.productId"); 
+    const findOrder = await Order.findById(orderId);
     if (!findOrder) {
       return res
         .status(404)
@@ -797,7 +797,7 @@ const rePayment = async (req, res) => {
     const totalAmount = findOrder.totalAmount;
 
     if (!paymentId) {
-      //  Razorpay order if paymentId is not provided
+      
       const razorpayOrder = await instance.orders.create({
         amount: totalAmount * 100,
         currency: "INR",
@@ -812,15 +812,14 @@ const rePayment = async (req, res) => {
         amount: razorpayOrder.amount,
       });
     } else {
-      //  update order status to "Order Placed"
+      // Update order status to "Order Placed"
       findOrder.paymentId = paymentId;
       findOrder.orderStatus = "Order Placed";
       findOrder.paymentStatus = "Received";
 
-      //  update product stock by size
-
-      for (const item of findOrder.items) {
-        const product = item.productId;
+      // Update product stock by size for each product in the order
+      for (const item of findOrder.products) {
+        const product = await Products.findById(item.productId); 
         if (!product) continue;
 
         const result = await Products.updateOne(
@@ -831,7 +830,7 @@ const rePayment = async (req, res) => {
           { $inc: { "sizes.$.quantity": -item.quantity } }
         );
 
-        // Check if stock  updated
+        // Check if stock was updated
         if (!result.modifiedCount) {
           console.warn(
             `Stock update failed for product: ${product.productName}, Size: ${item.size}`
@@ -855,6 +854,7 @@ const rePayment = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 const updateOrderStatus = async (req, res) => {
   try {
