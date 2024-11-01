@@ -26,7 +26,7 @@
     "passport-google-oauth2": "^0.2.0",
     "paypal-rest-sdk": "^1.8.1",
     "paytm-pg-node-sdk": "^1.0.4",
-    "pdfkit": "^0.15.0",
+    "pdfkit": "^0.15.1",
     "puppeteer": "^23.6.0",
     "razorpay": "^2.9.4",
     "react-toastify": "^10.0.5",

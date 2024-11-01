@@ -5,22 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice - Order <%= order.orderId %></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
 
+    .invoice-box {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .company-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .logo {
+      width: 80px;
+      margin-right: 10px;
+    }
+
+    table {
+      width: 100%;
+      line-height: 1.6;
+      color: #333;
+      border-collapse: collapse;
+    }
+
+    .table-header, .table-footer, .heading {
+      background-color: #e9ecef;
+      font-weight: bold;
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .top td, .information td, .item td, .total td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .top, .information, .item {
+      background-color: #fdfdfd;
+    }
+
+    .item td {
+      vertical-align: top;
+    }
+
+    .total td {
+      font-weight: bold;
+      background-color: #e9ecef;
+    }
+
+    .guidelines-title {
+      font-weight: bold;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    .guidelines-list {
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+
+    .text-center {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
   <div class="invoice-box">
     <table cellpadding="0" cellspacing="0">
+      <!-- Invoice Header -->
       <tr class="top">
         <td colspan="2">
           <table>
             <tr>
               <td class="title">
-                <!-- Logo with reduced size -->
                 <img src="/user-assets/images/icons/FAVICON SW.png" alt="Company Logo" class="logo">
-                <!-- Company name below the logo -->
                 <h2 class="company-name">SOLEWAY</h2>
               </td>
-              <td>
+              <td style="text-align: right;">
                 Invoice #: <strong><%= order.orderId %></strong><br>
                 Created: <strong><%= order.orderDate.toDateString() %></strong><br>
               </td>
@@ -29,6 +105,7 @@
         </td>
       </tr>
 
+      <!-- Billing and Payment Information -->
       <tr class="information">
         <td colspan="2">
           <table>
@@ -40,22 +117,24 @@
                 <%= order.address.city %>, <%= order.address.state %> - <%= order.address.pincode %><br>
                 Phone: <%= order.address.mobile %>
               </td>
-              <td>
+              <td style="text-align: right;">
                 <strong>Payment Method</strong><br>
                 <%= order.paymentMethod %><br>
                 Payment Status: <%= order.paymentStatus %><br>
-                <strong>Order Status</strong>: <%= order.orderStatus %>
+                Order Status: <%= order.orderStatus %>
               </td>
             </tr>
           </table>
         </td>
       </tr>
 
-      <tr class="heading">
+      <!-- Product Table Header -->
+      <tr class="table-header">
         <td>Product</td>
         <td>Price</td>
       </tr>
       
+      <!-- Product Details -->
       <% order.products.forEach(function(product) { %>
       <tr class="item">
         <td>
@@ -65,19 +144,19 @@
         <td>₹ <%= product.productId.offerPrice %></td>
       </tr>
       <% }); %>
-      
+
+      <!-- Total and Coupon Information -->
       <tr class="total">
-        <td></td>
-        <td>Total: ₹ <%= order.totalAmount %></td>
+        <td style="text-align: right;"><strong>Total Amount</strong></td>
+        <td><strong>₹ <%= order.totalAmount %></strong></td>
       </tr>
 
       <% if (order.coupon && order.coupon.discountAmount) { %>
       <tr class="total">
-        <td>Coupon Applied: <%= order.coupon.couponCode %></td>
+        <td style="text-align: right;"><strong>Coupon Applied: <%= order.coupon.couponCode %></strong></td>
         <td>Discount: ₹ <%= order.coupon.discountAmount %></td>
       </tr>
       <% } %>
-
     </table>
 
     <!-- Guidelines Section -->
@@ -91,6 +170,7 @@
         <li><strong>Order Confirmation:</strong> After completing your purchase, you will receive an order confirmation email with your order details and estimated delivery date.</li>
         <li><strong>Track Your Order:</strong> Use the tracking link provided in your confirmation email to monitor your order status until it arrives at your doorstep.</li>
         <li><strong>Easy Returns:</strong> If you’re not satisfied with your purchase, we offer an easy return policy within 30 days. Make sure the footwear is in its original condition for a hassle-free return.</li>
+        <li><strong>Online Payment Failure:</strong> If your online payment fails, the order will still be created. You can visit the "Order Details" page to retry the payment at your convenience.</li>
         <li><strong>Contact Us:</strong> If you have any questions or concerns regarding your order, please reach out to our customer support team via the contact information provided on our website.</li>
       </ul>
     </div>
@@ -98,103 +178,4 @@
     <p class="text-center">Thank you for shopping with us!</p>
   </div>
 </body>
-
-<style>
-  .invoice-box {
-    max-width: 800px;
-    margin: auto;
-    padding: 30px;
-    border: 1px solid #eee;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
-    line-height: 24px;
-    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-    color: #555;
-  }
-  .invoice-box table {
-    width: 100%;
-    line-height: inherit;
-    text-align: left;
-  }
-  .invoice-box table td {
-    padding: 5px;
-    vertical-align: top;
-  }
-  .invoice-box table tr td:nth-child(2) {
-    text-align: right;
-  }
-  .invoice-box table tr.top table td {
-    padding-bottom: 20px;
-  }
-  .invoice-box table tr.top table td.title {
-    font-size: 45px;
-    line-height: 45px;
-    color: #333;
-  }
-  .invoice-box table tr.information table td {
-    padding-bottom: 40px;
-  }
-  .invoice-box table tr.heading td {
-    background: #eee;
-    border-bottom: 1px solid #ddd;
-    font-weight: bold;
-  }
-  .invoice-box table tr.details td {
-    padding-bottom: 20px;
-  }
-  .invoice-box table tr.item td {
-    border-bottom: 1px solid #eee;
-  }
-  .invoice-box table tr.item.last td {
-    border-bottom: none;
-  }
-  .invoice-box table tr.total td:nth-child(2) {
-    border-top: 2px solid #eee;
-    font-weight: bold;
-  }
-
-  /* Logo styling */
-  .logo {
-    max-width: 100px; /* Reduce the logo size */
-  }
-
-  /* Styling for the company name */
-  .company-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-top: 5px; /* Adds spacing below the logo */
-  }
-
-  /* Guidelines styling */
-  .guidelines-section {
-    margin-top: 20px; /* Space above the guidelines */
-    padding: 10px;
-    border-top: 1px solid #ddd; /* Optional border for separation */
-  }
-
-  .guidelines-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-
-  .guidelines-list {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margin */
-    font-size: 12px; /* Adjust font size */
-  }
-
-  .guidelines-list li {
-    margin-bottom: 5px; /* Space between items */
-  }
-
-  .text-center {
-    text-align: center; /* Center text for thank you note */
-    margin-top: 20px; /* Add some margin above */
-  }
-</style>
-
-
 </html>
