@@ -13,17 +13,6 @@ const passport=require('passport')
 require('./passport')
 
 
-
-
-/** mongodb connected */
-// mongoose.connect("mongodb://localhost:27017/SoleWayDB", {
-// }).then(() => {
-//     console.log('Connected to MongoDB');
-// }).catch((error) => {
-//     console.error('Error connecting to MongoDB', error.message);
-// });
-//mongodb+srv://akhildas675:akhildas@#12@soleway.pvzk5.mongodb.net/soleway?retryWrites=true&w=majority&appName=SOLEWAY
-//
 mongoose.connect(process.env.MONGO_URL, {
 }).then(() => {
     console.log('Connected to MongoDB');

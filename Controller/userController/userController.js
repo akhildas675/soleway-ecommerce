@@ -233,6 +233,7 @@ const insertUser = async (req, res) => {
 };
 
 const otpGet = async (req, res) => {
+
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
