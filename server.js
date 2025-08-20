@@ -40,8 +40,8 @@ app.use(session({
 }));
 
 
-app.use('/', userRoute);
 app.use('/admin',adminRoute)
+app.use('/', userRoute);
 
 
 

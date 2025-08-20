@@ -24,8 +24,10 @@ adminRoute.use(
   "/uploads",
   express.static(path.join(__dirname, "public/uploads"))
 );
-
+//To get login page
 adminRoute.get("/signIn", Auth.isLogout, adminController.adminLogin);
+
+
 adminRoute.post("/loginAdmin", Auth.isLogout, adminController.verifyAdminLogin);
 adminRoute.get("/salesReport", Auth.isLogin, adminController.salesReport);
 
