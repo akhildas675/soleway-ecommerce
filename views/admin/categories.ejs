@@ -83,7 +83,7 @@
                         name="description"
                         class="form-control"
                         id="description"
-                        maxlength="40"
+                        maxlength="150"
                        
                       ></textarea>
                       <div id="descriptionError" style="color: red;"></div> <!-- Error message container for description -->
@@ -225,7 +225,7 @@ function validateForm() {
   if (description === '') {
     descriptionError.textContent = 'Description is required';
     isValid = false;
-  } else if (description.length > 40) {
+  } else if (description.length > 150) {
     descriptionError.textContent = 'Description must be 40 characters or less';
     isValid = false;
   }
