@@ -8,5 +8,6 @@
         "toastr",
         "uuidv",
         "verifylog"
-    ]
+    ],
+    "postman.settings.dotenv-detection-notification-visibility": false
 }
