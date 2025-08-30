@@ -21,4 +21,4 @@ The application is deployed using AWS services with NGINX and PM2 for high avail
 ## Links  
 
 - [Source Code](https://github.com/akhildas675/Soleway)  
-- [Live Demo](https://your-deployed-link.com)  
+- [Live Demo]([https://soleway-ecommerce.onrender.com/])  
