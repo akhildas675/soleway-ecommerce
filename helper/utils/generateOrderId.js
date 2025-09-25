@@ -1,6 +1,6 @@
 function generateOrderId(){
 
-    const timeAndDate = new Date.now().toString();
+    const timeAndDate = Date.now().toString();
     const randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let orderId = "OID";
     while(orderId.length<13){

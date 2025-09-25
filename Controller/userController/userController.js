@@ -874,6 +874,7 @@ const instance = new Razorpay({
 });
 
 const addWallet = async (req, res) => {
+
   try {
     let amount = parseFloat(req.body.amount);
     let errors = [];
@@ -903,33 +904,36 @@ const addWallet = async (req, res) => {
 };
 
 
-
 const walletPaymentSuccess = async (req, res) => {
+  console.log('Wallet payment success');
   try {
     const { paymentId, amount } = req.body;
     const userId = req.session.userData;
 
-    
-    const payment = await instance.payments.fetch(paymentId);
+    // Fetch payment
+    let payment = await instance.payments.fetch(paymentId);
+    console.log('payment in', payment);
 
-    // Check if payment is captured successfully
+    // capture it manually
+    if (payment.status !== 'captured') {
+      payment = await instance.payments.capture(paymentId, amount * 100, "INR");
+    }
+
+    // Now captured
     if (payment.status !== 'captured') {
       return res.status(400).json({ success: false, message: 'Payment not captured' });
     }
 
-    
+    // Update wallet
     let wallet = await Wallet.findOne({ userId });
-
     if (!wallet) {
-      //no wallet , create new one
       wallet = new Wallet({
         userId,
-        balance: amount, 
-        history: [{ amount, status: 'Credit', transactionDate: new Date() }],
+        balance: amount,
+        history: [{ amount, status: 'Credit', transactionDate: Date.now() }],
       });
     } else {
-      // Update existing wallet
-      wallet.balance += amount; 
+      wallet.balance += amount;
       wallet.history.push({
         amount,
         status: 'Credit',
@@ -937,9 +941,7 @@ const walletPaymentSuccess = async (req, res) => {
       });
     }
 
-    // Save 
     await wallet.save();
-
     res.json({ success: true });
   } catch (error) {
     console.log('Error in walletPaymentSuccess:', error);
