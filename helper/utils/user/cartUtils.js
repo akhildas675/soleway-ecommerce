@@ -1,4 +1,4 @@
-const Cart = require('../../Model/cartModel')
+const Cart = require('../../../Model/cartModel')
 
 
 const clearCart = async(userId)=>{
