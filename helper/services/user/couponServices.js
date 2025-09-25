@@ -1,4 +1,4 @@
-const Coupon = require("../../Model/couponModel");
+const Coupon = require("../../../Model/couponModel");
 
 const applyCoupon = async (couponCode, totalAmount, userId) => {
   try {

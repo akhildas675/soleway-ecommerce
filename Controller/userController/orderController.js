@@ -9,7 +9,7 @@ const puppeteer = require("puppeteer");
 
 // Import services
 const { processPurchase } = require('../../helper/services/purchaseServices');
-const { updateProductStock } = require("../../helper/utils/productUtils");
+const { updateProductStock } = require("../../helper/utils/user/productUtils");
 
 // Razorpay configuration (you can move this to config file)
 const Razorpay = require("razorpay");

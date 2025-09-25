@@ -1,7 +1,7 @@
-const Wallet = require('../../../Model/walletModel');
-const createSingleOrder = require('../orderServices');
-const {updateProductStock}= require('../../utils/productUtils');
-const {clearCart} = require('../../utils/cartUtils')
+const Wallet = require('../../../../Model/walletModel');
+const createSingleOrder = require('../../orderServices');
+const {updateProductStock}= require('../../../utils/user/productUtils');
+const {clearCart} = require('../../../utils/cartUtils')
 
 
 

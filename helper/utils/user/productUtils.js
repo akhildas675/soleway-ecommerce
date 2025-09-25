@@ -1,4 +1,4 @@
-const Products = require('../../Model/productModel')
+const Products = require('../../../Model/productModel')
 
 
 
