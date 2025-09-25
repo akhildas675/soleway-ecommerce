@@ -1,4 +1,4 @@
-const User = require("../../Model/userModel");
+const User = require('../../Model/userModel');
 const Products = require("../../Model/productModel");
 const Cart = require("../../Model/cartModel");
 const Order = require("../../Model/orderModel");
@@ -8,7 +8,7 @@ const Coupon = require("../../Model/couponModel");
 const puppeteer = require("puppeteer");
 
 // Import services
-const { processPurchase } = require('../../helper/services/purchaseServices');
+const { processPurchase } = require('../../helper/services/user/purchaseServices');
 const { updateProductStock } = require("../../helper/utils/user/productUtils");
 
 // Razorpay configuration (you can move this to config file)

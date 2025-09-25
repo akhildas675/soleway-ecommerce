@@ -1,6 +1,6 @@
 const {createOrders} = require('../orderServices');
 
-const {clearCart} = require('../../utils/cartUtils');
+const {clearCart} = require('../../../utils/user/cartUtils');
 
 
 // Razorpay instance (you can move this to a separate config file)
