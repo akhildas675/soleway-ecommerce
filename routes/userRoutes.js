@@ -10,7 +10,7 @@ const Auth = require("../middleware/userAuth");
 
 const orderController = require("../Controller/userController/orderController");
 const cartController = require("../Controller/userController/cartController");
-const { addCoupon } = require("../Controller/admin/adminController");
+const { addCoupon } = require("../Controller/adminController/adminController");
 const { invoice } = require("paypal-rest-sdk");
 
 userRoute.use(express.static("public"));

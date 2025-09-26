@@ -8,8 +8,8 @@ const Coupon = require("../../Model/couponModel");
 const Feedback = require("../../Model/feedback");
 
 // Import services
-const { validateUserRegistration, validateAddress, validateFeedback } = require("../../helper/utils/user/validationUtils");
-const { generateOTP, sendOTPEmail, sendPasswordResetOTP } = require("../../helper/utils/user/emailUtils");
+const { validateUserRegistration, validateAddress, validateFeedback } = require("../../helper/utils/userUtils/validationUtils");
+const { generateOTP, sendOTPEmail, sendPasswordResetOTP } = require("../../helper/utils/userUtils/emailUtils");
 const { getCommonPageData } = require("../../helper/services/user/userDataService");
 const { getActiveProducts, getNewArrivals, getProductWithDetails, getRelatedProducts, searchAndFilterProducts } = require("../../helper/services/user/productService");
 const { createUser, authenticateUser, updateUserPassword } = require("../../helper/services/user/authService");
