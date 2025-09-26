@@ -15,63 +15,14 @@
 			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
 		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+		<!-- In the <head> section -->
+<link rel="stylesheet" href="/public/user-assets/css/cart.css">
+
+<script src="/public/cart.js"></script>
+
 </head>
-<style>
-	.btn-danger {
-		color: #6436ff;
-		background-color: #dc354500;
-		border-color: #dc354500;
-	}
-</style>
-<style>
 
 	
-/* Responsive table wrapper */
-.table-responsive-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* Enable smooth scrolling for mobile devices */
-  width: 100%;
-}
-
-/* Table styling */
-.table-shopping-cart {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 500px; /* Ensures table doesn't collapse on small screens */
-}
-
-/* Make sure the table doesn't break alignment */
-.table-shopping-cart th, .table-shopping-cart td {
-  padding: 10px;
-  text-align: left;
-  white-space: nowrap; /* Prevents content from wrapping inside cells */
-}
-
-/* Fix column widths for small screens */
-@media only screen and (max-width: 576px) {
-  /* Ensure that columns maintain enough space for readability */
-  .table-shopping-cart th,
-  .table-shopping-cart td {
-    padding: 8px;
-    font-size: 14px; /* Make text smaller */
-  }
-  
-  /* Adjust image size for smaller screens */
-  .table-shopping-cart img {
-    width: 50px;
-    height: auto;
-  }
-  
-  .table-shopping-cart .column-1, .table-shopping-cart .column-3, .table-shopping-cart .column-2, 
-  .table-shopping-cart .column-4, .table-shopping-cart .column-5, .table-shopping-cart .column-6 {
-    min-width: 100px; /* Ensure columns don't shrink too much */
-  }
-}
-
-
-</style>
-
-
 
 <body class="animsition">
 
@@ -118,22 +69,7 @@
 							</ul>
 						</div>
 
-						<!-- Icon header -->
-						<!-- <div class="wrap-icon-header flex-w flex-r-m">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-								<i class="zmdi zmdi-search"></i>
-							</div>
-
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-								data-notify="2">
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</div>
-
-							<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="0">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>
-						</div> -->
+						
 					</nav>
 				</div>
 		</div>
@@ -147,20 +83,7 @@
 
 			<!-- Icon header -->
 			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
-				</div>
-
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-					data-notify="2">
-					<i class="zmdi zmdi-shopping-cart"></i>
-				</div>
-
-				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
-					data-notify="0">
-					<i class="zmdi zmdi-favorite-outline"></i>
-				</a> -->
-			</div>
+			
 
 			<!-- Button show menu -->
 			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
@@ -254,285 +177,680 @@
 	<!-- Shoping Cart -->
 
 
+<style>
+/* Remove horizontal scrollbar and make table truly responsive */
+.table-responsive-wrap {
+    width: 100%;
+    overflow: visible; /* Remove horizontal scroll */
+}
 
+/* Base table styling */
+.table-shopping-cart {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+    background: white;
+}
 
+/* Table header styling */
+.table_head th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 15px 10px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+    vertical-align: middle;
+}
 
+/* Table row styling - Remove green hover effect */
+.table_row {
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s ease;
+    background-color: white !important; /* Force white background */
+}
 
-	<% if (locals.cartData && cartData.cartProducts.length> 0) { %>
-		<form class="bg0 p-t-75 p-b-85" method="post" action="/orderData">
-			<div class="container">
-			  <div class="row">
-				<div class="col-lg-10 col-xl-8 m-lr-auto m-b-50">
-				  <div class="m-l-25 m-r--38 m-lr-0-xl">
-					<div class="table-responsive-wrap">
-					  <table class="table-shopping-cart">
-						<tr class="table_head">
-						  <th class="column-1">Product</th>
-						  <th class="column-3">Price</th>
-						  <th class="column-2">Size</th>
-						  <th class="column-4">Quantity</th>
-						  <th class="column-5">Total</th>
-						  <th class="column-6">Action</th>
-						</tr>
-						<% for(let i=0; i < cartData.cartProducts.length; i++) { %>
-						<% if(cartData.cartProducts[i].productId) { %>
-						<tr class="table_row">
-						  <td class="column-1">
-							<div class="product-info">
-							  <div class="how-itemcart1">
-								<img src="../<%= cartData.cartProducts[i].productId.images ? cartData.cartProducts[i].productId.images[0] : 'default-image.jpg' %>" alt="IMG">
-							  </div>
-							  <div class="product-name">
-								<span>
-								  <%= cartData.cartProducts[i].productId.productName %>
-								</span>
-								<input type="hidden" id="productId<%= i %>" value="<%= cartData.cartProducts[i]._id %>">
-							  </div>
-							</div>
-						  </td>
-						  <td class="column-3">₹
-							<%= cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice %>
-						  </td>
-						  <td class="column-2" id="size">
-							<%= cartData.cartProducts[i].size %>
-						  </td>
-						  <td class="column-4">
-							<div class="wrap-num-product flex-w m-l-auto m-r-0">
-							  <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" onclick="decreaseQuantity(this)">
-								<i class="fs-16 zmdi zmdi-minus"></i>
-							  </div>
-							  <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= cartData.cartProducts[i].quantity %>" min="1" max="10" data-product-id="<%= cartData.cartProducts[i].productId._id %>" data-sizes-id="<%= cartData.cartProducts[i].size %>" data-price="<%= cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice %>">
-							  <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" onclick="increaseQuantity(this)">
-								<i class="fs-16 zmdi zmdi-plus"></i>
-							  </div>
-							</div>
-						  </td>
-						  <td class="column-5 total-price">₹
-							<%= (cartData.cartProducts[i].quantity * (cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice)).toFixed(2) %>
-						  </td>
-						  <td class="column-6">
-							<button type="button" class="btn btn-danger" onclick="deleteCartItem('<%= i%>')">
-							  <i class="bi bi-trash"></i>
-							</button>
-						  </td>
-						</tr>
-						<% } else { %>
-						<tr class="table_row">
-						  <td colspan="6" class="column-1">
-							<span>Product not found or inactive.</span>
-						  </td>
-						</tr>
-						<% } %>
-						<% } %>
-					  </table>
-					</div>
-		  
-					<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-					  <div class="total-amount m-b-10">
-						<strong>Total Amount: ₹ <span id="total-amount"></span></strong>
-					  </div>
-					  <a href="/Checkout" class="flex-c-m stext-101 cl0 size-119 bg11 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-						Proceed to Checkout
-					  </a>
-					</div>
-				  </div>
-				</div>
-			  </div>
-			</div>
-		  </form>
-		  
-		<% } else { %>
-			<div class="container text-center my-5">
-				<div class="row justify-content-center">
-					<div class="col-md-6">
-						<div class="alert alert-warning" role="alert">
-							<i class="bi bi-cart-x" style="font-size: 3rem;"></i>
-							<h4 class="alert-heading mt-3">Your cart is empty!</h4>
-							<p>Looks like you haven't added anything to your cart yet.</p>
-							<hr>
-							<a href="/Shop" class="btn btn-primary">Start Shopping</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<% } %>
+.table_row:hover {
+    background-color: #f8f9fa !important; /* Force light gray on hover */
+}
 
+/* Remove any existing green backgrounds */
+.table_row.table-success,
+.table_row.success,
+.table_row.bg-success,
+.table-success {
+    background-color: white !important;
+}
 
+/* Override any Bootstrap or framework green classes */
+.table_row.table-success:hover,
+.table_row.success:hover,
+.table_row.bg-success:hover {
+    background-color: #f8f9fa !important;
+}
 
-				<!-- grandTotal total calculateGrandTotal -->
-				<script>
-					function calculateTotal() {
-						const rows = document.querySelectorAll('.table_row');
-						let totalAmount = 0;
+/* Additional override for any green background classes */
+tr[class*="success"],
+tr[class*="green"] {
+    background-color: white !important;
+}
 
-						rows.forEach(row => {
-							const quantityInput = row.querySelector('.num-product');
-							const price = parseFloat(quantityInput.dataset.price);
-							const quantity = parseInt(quantityInput.value);
-							const totalPrice = quantity * price;
+tr[class*="success"]:hover,
+tr[class*="green"]:hover {
+    background-color: #f8f9fa !important;
+}
 
-							// Update the total price for each row
-							row.querySelector('.total-price').textContent = `₹ ${totalPrice.toFixed(2)}`;
-							totalAmount += totalPrice;
-						});
+.table_row td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    text-align: center;
+}
 
-						// Update the total amount 
-						document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+/* Product info styling */
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+}
 
-						// Return the total amount 
-						return totalAmount;
-					}
+.how-itemcart1 {
+    flex-shrink: 0;
+}
 
-					function decreaseQuantity(element) {
-						const input = $(element).closest('.wrap-num-product').find('.num-product');
-						let numProduct = Number(input.val());
+.how-itemcart1 img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
 
-						if (numProduct > 1) {
-							input.val(--numProduct);
-							updateCartAndTotal(input);
-						}
-					}
+.product-name {
+    flex: 1;
+    min-width: 0;
+}
 
-					function increaseQuantity(element) {
-						const input = $(element).closest('.wrap-num-product').find('.num-product');
-						let numProduct = Number(input.val());
-						const maxProduct = input.attr('max');
+.product-name span {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    display: block;
+    word-wrap: break-word;
+}
 
-						if (numProduct < maxProduct) {
-							input.val(++numProduct);
-							updateCartAndTotal(input);
-						} else {
-							swal({
-								title: "Maximum Limit Reached",
-								text: "You can only add up to 10 items of this product.",
-								icon: "warning",
-								button: "OK",
-							});
-						}
-					}
+/* Quantity controls - Single layer design */
+.wrap-num-product {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+    max-width: 120px;
+    margin: 0 auto;
+}
 
-					function updateCartAndTotal(input) {
-						const quantity = Number(input.val());
-						const price = Number(input.data('price'));
-						const total = quantity * price;
+.btn-num-product-down,
+.btn-num-product-up {
+    width: 35px;
+    height: 35px;
+    border: none !important;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    color: #6c757d;
+}
 
-						// Update the row total
-						$(input).closest('.table_row').find('.total-price').text('₹ ' + total.toFixed(2));
+.btn-num-product-down:hover,
+.btn-num-product-up:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
 
-						// Calculate the new total amount
-						const totalAmount = calculateTotal();
+.btn-num-product-down:active,
+.btn-num-product-up:active {
+    background: #e9ecef;
+}
 
-						// Update the cart with the new total amount
-						updateCart(input, totalAmount);
-					}
+.num-product {
+    width: 50px;
+    height: 35px;
+    text-align: center;
+    border: none !important;
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    background: white;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    box-shadow: none !important;
+}
 
-					function updateCart(input, totalAmount) {
-						const productId = input.data('product-id');
-						const sizeId = input.data('sizes-id');
-						const quantity = Number(input.val());
+.num-product:focus {
+    background: #fff;
+    border-color: #80bdff !important;
+}
 
-						// console.log("Total Amount", totalAmount)
+/* Action button styling */
+.btn-danger {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
 
-						fetch('/updateCart', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								productId: productId,
-								sizeId: sizeId,
-								quantity: quantity,
-								totalAmount: totalAmount 
-							}),
-						})
-							.then(response => response.json())
-							.then(data => {
-								if (data.success) {
-									// console.log('Cart updated successfully');
-								} else {
-									console.error('Failed to update cart:', data.message);
-									swal({
-										title: "Error!",
-										text: data.message,
-										icon: "error",
-										button: "Retry",
-									}).then(() => {
-										window.location.reload();
-									});
-								}
-							})
-							.catch(error => {
-								console.error('Error updating cart:', error);
-								swal({
-									title: "Error!",
-									text: "There was an error updating the cart. Please try again.",
-									icon: "error",
-									button: "Retry",
-								});
-							});
-					}
+.btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
 
-					window.onload = function () {
-						$('.num-product').on('change', function () {
-							updateCartAndTotal($(this));
-						});
+/* Total amount section */
+.flex-w.flex-sb-m {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
 
-						calculateTotal();
-					};
+/* Mobile responsive design */
+@media (max-width: 768px) {
+    /* Hide table headers and restructure table as cards */
+    .table_head {
+        display: none;
+    }
 
+    .table-shopping-cart,
+    .table-shopping-cart tbody,
+    .table_row {
+        display: block;
+        width: 100%;
+    }
 
-					function deleteCartItem(i) {
-						const id = document.getElementById('productId' + i).value;
-						// console.log(id);
+    .table_row {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-						swal({
-							title: "Are you sure?",
-							text: "Once deleted, you will not be able to recover this item!",
-							icon: "warning",
-							buttons: true,
-							dangerMode: true,
-						})
-							.then((willDelete) => {
+    .table_row td {
+        display: block;
+        padding: 8px 0;
+        text-align: left;
+        border: none;
+        position: relative;
+    }
 
-								if (willDelete) {
+    /* Add labels for mobile */
+    .table_row td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #495057;
+        display: inline-block;
+        width: 80px;
+        margin-right: 10px;
+    }
 
-									fetch('/deleteCartItem', {
-										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json'
-										},
-										body: JSON.stringify({
-											id
-										})
-									})
-										.then(response => response.json())
-										.then(data => {
-											if (data.success) {
+    .column-1:before { content: "Product: "; }
+    .column-2:before { content: "Size: "; }
+    .column-3:before { content: "Price: "; }
+    .column-4:before { content: "Qty: "; }
+    .column-5:before { content: "Total: "; }
+    .column-6:before { content: "Action: "; }
 
-												swal("Item has been deleted!", {
-													icon: "success",
-												}).then(() => {
-													window.location.reload();
-												});
-											} else {
+    /* Product info adjustments for mobile */
+    .product-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 
-												swal("Failed to delete item!", data.message, "error");
-											}
-										})
-										.catch(error => {
-											console.error("Error deleting item:", error);
+    .how-itemcart1 img {
+        width: 60px;
+        height: 60px;
+    }
 
-											swal("Error!", "An error occurred while deleting the item.", "error");
-										});
-								} else {
+    /* Quantity controls for mobile */
+    .wrap-num-product {
+        max-width: none;
+        justify-content: flex-start;
+        margin: 0;
+    }
 
-									swal("Your item is safe!");
-								}
-							});
-					}
+    /* Total section mobile */
+    .flex-w.flex-sb-m {
+        text-align: center;
+    }
 
+    .flex-w.flex-sb-m .total-amount,
+    .flex-w.flex-sb-m a {
+        display: block;
+        margin-bottom: 15px;
+    }
+}
 
-				</script>
+@media (max-width: 576px) {
+    .how-itemcart1 img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .product-name span {
+        font-size: 13px;
+    }
+
+    .btn-num-product-down,
+    .btn-num-product-up {
+        width: 32px;
+        height: 32px;
+    }
+
+    .num-product {
+        width: 45px;
+        height: 32px;
+        font-size: 13px;
+    }
+}
+
+/* Success feedback animation */
+.table-success {
+    background-color: #d1edff !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+</style>
+
+<!-- Updated EJS Template -->
+<% if (locals.cartData && cartData.cartProducts.length > 0) { %>
+    <form class="bg0 p-t-75 p-b-85" method="post" action="/orderData">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 m-lr-auto m-b-50">
+                    <div class="m-l-25 m-r--38 m-lr-0-xl">
+                        <div class="table-responsive-wrap">
+                            <table class="table-shopping-cart">
+                                <thead>
+                                    <tr class="table_head">
+                                        <th class="column-1">Product</th>
+                                        <th class="column-3">Price</th>
+                                        <th class="column-2">Size</th>
+                                        <th class="column-4">Quantity</th>
+                                        <th class="column-5">Total</th>
+                                        <th class="column-6">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(let i=0; i < cartData.cartProducts.length; i++) { %>
+                                        <% if(cartData.cartProducts[i].productId) { %>
+                                            <tr class="table_row">
+                                                <td class="column-1" data-label="Product">
+                                                    <div class="product-info">
+                                                        <div class="how-itemcart1">
+                                                            <img src="../<%= cartData.cartProducts[i].productId.images ? cartData.cartProducts[i].productId.images[0] : 'default-image.jpg' %>" alt="IMG">
+                                                        </div>
+                                                        <div class="product-name">
+                                                            <span><%= cartData.cartProducts[i].productId.productName %></span>
+                                                            <input type="hidden" id="productId<%= i %>" value="<%= cartData.cartProducts[i]._id %>">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="column-3" data-label="Price">₹<%= cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice %></td>
+                                                <td class="column-2" data-label="Size"><%= cartData.cartProducts[i].size %></td>
+                                                <td class="column-4" data-label="Quantity">
+                                                    <div class="wrap-num-product">
+                                                        <div class="btn-num-product-down" onclick="decreaseQuantity(this)">
+                                                            <i class="fs-16 zmdi zmdi-minus"></i>
+                                                        </div>
+                                                        <input class="num-product" type="number" name="num-product<%= i %>" value="<%= cartData.cartProducts[i].quantity %>" min="1" max="10" data-product-id="<%= cartData.cartProducts[i].productId._id %>" data-sizes-id="<%= cartData.cartProducts[i].size %>" data-price="<%= cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice %>">
+                                                        <div class="btn-num-product-up" onclick="increaseQuantity(this)">
+                                                            <i class="fs-16 zmdi zmdi-plus"></i>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="column-5 total-price" data-label="Total">₹<%= (cartData.cartProducts[i].quantity * (cartData.cartProducts[i].productId.offerPrice || cartData.cartProducts[i].productId.realPrice)).toFixed(2) %></td>
+                                                <td class="column-6" data-label="Action">
+                                                    <button type="button" class="btn btn-danger" onclick="deleteCartItem('<%= i%>')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% } else { %>
+                                            <tr class="table_row">
+                                                <td colspan="6" class="column-1" data-label="Error">
+                                                    <span>Product not found or inactive.</span>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+                            <div class="total-amount m-b-10">
+                                <strong>Total Amount: ₹ <span id="total-amount"></span></strong>
+                            </div>
+                            <a href="/Checkout" class="flex-c-m stext-101 cl0 size-119 bg11 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+                                Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+<% } else { %>
+    <div class="container text-center my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-cart-x" style="font-size: 3rem;"></i>
+                    <h4 class="alert-heading mt-3">Your cart is empty!</h4>
+                    <p>Looks like you haven't added anything to your cart yet.</p>
+                    <hr>
+                    <a href="/Shop" class="btn btn-primary">Start Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<!-- Updated JavaScript with better mobile support -->
+<script>
+// Calculate total amount for all cart items
+function calculateTotal() {
+    const rows = document.querySelectorAll('.table_row');
+    let totalAmount = 0;
+
+    rows.forEach(row => {
+        const quantityInput = row.querySelector('.num-product');
+        if (quantityInput) {
+            const price = parseFloat(quantityInput.dataset.price);
+            const quantity = parseInt(quantityInput.value);
+            const totalPrice = quantity * price;
+
+            // Update the total price for each row
+            const totalPriceElement = row.querySelector('.total-price');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `₹${totalPrice.toFixed(2)}`;
+            }
+            totalAmount += totalPrice;
+        }
+    });
+
+    // Update the total amount
+    const totalAmountElement = document.getElementById('total-amount');
+    if (totalAmountElement) {
+        totalAmountElement.textContent = totalAmount.toFixed(2);
+    }
+
+    return totalAmount;
+}
+
+// Decrease quantity function
+function decreaseQuantity(element) {
+    const wrapDiv = element.closest('.wrap-num-product');
+    const input = wrapDiv.querySelector('.num-product');
+    let numProduct = Number(input.value);
+
+    if (numProduct > 1) {
+        input.value = --numProduct;
+        updateCartAndTotal(input);
+    }
+}
+
+// Increase quantity function
+function increaseQuantity(element) {
+    const wrapDiv = element.closest('.wrap-num-product');
+    const input = wrapDiv.querySelector('.num-product');
+    let numProduct = Number(input.value);
+    const maxProduct = parseInt(input.getAttribute('max'));
+
+    if (numProduct < maxProduct) {
+        input.value = ++numProduct;
+        updateCartAndTotal(input);
+    } else {
+        swal({
+            title: "Maximum Limit Reached",
+            text: "You can only add up to " + maxProduct + " items of this product.",
+            icon: "warning",
+            button: "OK",
+        });
+    }
+}
+
+// Update cart and calculate total
+function updateCartAndTotal(input) {
+    const quantity = Number(input.value);
+    const price = Number(input.dataset.price);
+    const total = quantity * price;
+
+    // Update the row total
+    const tableRow = input.closest('.table_row');
+    const totalPriceElement = tableRow.querySelector('.total-price');
+    if (totalPriceElement) {
+        totalPriceElement.textContent = '₹' + total.toFixed(2);
+    }
+
+    // Calculate the new total amount
+    const totalAmount = calculateTotal();
+
+    // Update the cart with the new total amount
+    updateCart(input, totalAmount);
+}
+
+// Update cart via API
+function updateCart(input, totalAmount) {
+    const productId = input.dataset.productId;
+    const sizeId = input.dataset.sizesId;
+    const quantity = Number(input.value);
+
+    // Show loading state
+    input.disabled = true;
+    const tableRow = input.closest('.table_row');
+    tableRow.classList.add('loading');
+
+    fetch('/updateCart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId: productId,
+            sizeId: sizeId,
+            quantity: quantity,
+            totalAmount: totalAmount
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remove loading state
+        input.disabled = false;
+        tableRow.classList.remove('loading');
+        
+        if (data.success) {
+            console.log('Cart updated successfully');
+            showUpdateFeedback(input, 'success');
+        } else {
+            console.error('Failed to update cart:', data.message);
+            swal({
+                title: "Error!",
+                text: data.message,
+                icon: "error",
+                button: "OK",
+            });
+            location.reload();
+        }
+    })
+    .catch(error => {
+        // Remove loading state
+        input.disabled = false;
+        tableRow.classList.remove('loading');
+        console.error('Error updating cart:', error);
+        swal({
+            title: "Error!",
+            text: "There was an error updating the cart. Please try again.",
+            icon: "error",
+            button: "Retry",
+        });
+    });
+}
+
+// Show visual feedback for successful update
+// Remove or modify this part in your showUpdateFeedback function
+function showUpdateFeedback(input, type) {
+    const row = input.closest('.table_row');
+    const originalClass = row.className;
+    
+    if (type === 'success') {
+        // Comment out or change this line:
+        // row.classList.add('table-success');
+        row.style.backgroundColor = '#e3f2fd'; 
+        setTimeout(() => {
+            row.style.backgroundColor = '';
+        }, 1000);
+    }
+}
+
+// Handle manual input changes
+function handleQuantityChange(input) {
+    const minQuantity = parseInt(input.getAttribute('min')) || 1;
+    const maxQuantity = parseInt(input.getAttribute('max')) || 10;
+    let quantity = parseInt(input.value);
+
+    // Validate quantity
+    if (isNaN(quantity) || quantity < minQuantity) {
+        input.value = minQuantity;
+        quantity = minQuantity;
+    } else if (quantity > maxQuantity) {
+        input.value = maxQuantity;
+        quantity = maxQuantity;
+        swal({
+            title: "Maximum Limit Reached",
+            text: "You can only add up to " + maxQuantity + " items of this product.",
+            icon: "warning",
+            button: "OK",
+        });
+    }
+
+    updateCartAndTotal(input);
+}
+
+// Delete cart item function
+function deleteCartItem(index) {
+    const idElement = document.getElementById('productId' + index);
+    if (!idElement) {
+        console.error('Product ID element not found');
+        return;
+    }
+    
+    const id = idElement.value;
+
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this item!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            fetch('/deleteCartItem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    swal("Item has been deleted!", {
+                        icon: "success",
+                    }).then(() => {
+                        // Remove the row from DOM instead of reloading
+                        const row = idElement.closest('.table_row');
+                        if (row) {
+                            row.style.opacity = '0.5';
+                            setTimeout(() => {
+                                row.remove();
+                                calculateTotal();
+                                
+                                // Check if cart is empty
+                                const remainingRows = document.querySelectorAll('.table_row');
+                                if (remainingRows.length === 0) {
+                                    location.reload(); // Reload to show empty cart message
+                                }
+                            }, 300);
+                        }
+                    });
+                } else {
+                    swal("Failed to delete item!", data.message, "error");
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting item:", error);
+                swal("Error!", "An error occurred while deleting the item.", "error");
+            });
+        } else {
+            swal("Your item is safe!");
+        }
+    });
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all quantity inputs
+    const quantityInputs = document.querySelectorAll('.num-product');
+    quantityInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            handleQuantityChange(this);
+        });
+        
+        input.addEventListener('blur', function() {
+            handleQuantityChange(this);
+        });
+    });
+
+    // Calculate initial total
+    calculateTotal();
+    
+    console.log('Cart functionality initialized');
+});
+
+// Alternative initialization if DOMContentLoaded doesn't work
+window.onload = function() {
+    if (!document.querySelector('.num-product[data-initialized]')) {
+        const quantityInputs = document.querySelectorAll('.num-product');
+        quantityInputs.forEach(input => {
+            input.setAttribute('data-initialized', 'true');
+            input.addEventListener('change', function() {
+                handleQuantityChange(this);
+            });
+        });
+        calculateTotal();
+    }
+};
+</script>
+
+<!-- Updated JavaScript with better mobile support -->
+<script>
+// Calculate total amount for all cart items
+
+</script>
 
 
 
@@ -599,6 +917,8 @@
 					</script>
 					<!--===============================================================================================-->
 					<script src="js/main.js"></script>
+					<!-- Before closing </body> tag -->
+
 
 </body>
 

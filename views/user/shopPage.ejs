@@ -8,7 +8,7 @@
 
 
 	<%- include('./partials/solewayCss.ejs') %>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 		<link rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
 		<style>
@@ -27,54 +27,59 @@
 
 			/* Default state for the wishlist button */
 			.btn-addwish-b2 {
-  border: 1px solid transparent;
-  background-color: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+				border: 1px solid transparent;
+				background-color: transparent;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
 
-/* Default heart icon color (not active) */
-.btn-addwish-b2 .bi-heart {
-  color: grey; /* Default color for outline heart */
-}
+			/* Default heart icon color (not active) */
+			.btn-addwish-b2 .bi-heart {
+				color: grey;
+				/* Default color for outline heart */
+			}
 
-/* Active state: When the product is in the wishlist */
-.btn-addwish-b2.active {
-  background-color: rgb(255, 255, 255); /* Change the button background to red when active */
-  border-color: rgb(255, 255, 255);
-}
+			/* Active state: When the product is in the wishlist */
+			.btn-addwish-b2.active {
+				background-color: rgb(255, 255, 255);
+				/* Change the button background to red when active */
+				border-color: rgb(255, 255, 255);
+			}
 
-/* Active heart icon (filled heart) */
-.btn-addwish-b2.active .bi-heart-fill {
-  color: rgb(253, 0, 0); /* Change the heart icon to white when active */
-}
+			/* Active heart icon (filled heart) */
+			.btn-addwish-b2.active .bi-heart-fill {
+				color: rgb(253, 0, 0);
+				/* Change the heart icon to white when active */
+			}
 
-/* Active state hover effect (optional) */
-.btn-addwish-b2.active:hover {
-  transform: scale(1.1); /* Enlarge button slightly on hover */
-}
+			/* Active state hover effect (optional) */
+			.btn-addwish-b2.active:hover {
+				transform: scale(1.1);
+				/* Enlarge button slightly on hover */
+			}
 
-/* Heart icon inside the button (when not active) */
-.btn-addwish-b2 .bi-heart {
-  transition: color 0.3s ease;
-}
+			/* Heart icon inside the button (when not active) */
+			.btn-addwish-b2 .bi-heart {
+				transition: color 0.3s ease;
+			}
 
-/* Heart icon inside the button (when active) */
-.btn-addwish-b2.active .bi-heart,
-.btn-addwish-b2.active .bi-heart-fill {
-  transition: color 0.3s ease;
-}
-
+			/* Heart icon inside the button (when active) */
+			.btn-addwish-b2.active .bi-heart,
+			.btn-addwish-b2.active .bi-heart-fill {
+				transition: color 0.3s ease;
+			}
 		</style>
 </head>
 
 <style>
-
 	.active {
-    font-weight: bold; /* Example style */
-    color: rgb(0, 0, 0);      /* Change color to indicate active state */
-    text-decoration: underline; /* Optional */
-}
+		font-weight: bold;
+		/* Example style */
+		color: rgb(0, 0, 0);
+		/* Change color to indicate active state */
+		text-decoration: underline;
+		/* Optional */
+	}
 
 	/* Custom styling for pagination */
 	.pagination .page-item .page-link {
@@ -141,13 +146,11 @@
 													<i class="zmdi zmdi-sign-in"></i> Logout
 												</a>
 												<% } else { %>
-													<a href="/Login"
-														class="btn btn-small flex-c-m trans-04 p-lr-10">
+													<a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
 														<i class="zmdi zmdi-account"></i> Login
 													</a>
 
-													<a href="/Register"
-														class="btn btn-small flex-c-m trans-04 p-lr-10">
+													<a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
 														<i class="zmdi zmdi-assignment"></i> Register
 													</a>
 													<% } %>
@@ -195,22 +198,22 @@
 							<i class="zmdi zmdi-search"></i>
 						</div> -->
 
-						
+
 						<% if (findUser) { %> <!-- Only check if user is logged in -->
-							<a href="/Cart" 
-							   class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" 
-							   data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
+							<a href="/Cart"
+								class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+								data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
 								<i class="zmdi zmdi-shopping-cart"></i>
-								
+
 							</a>
-						
-							<a href="/Wishlist" 
-							   class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" 
-							   data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+
+							<a href="/Wishlist"
+								class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+								data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
 								<i class="zmdi zmdi-favorite-outline"></i>
-								
+
 							</a>
-						<% } %>
+							<% } %>
 					</div>
 				</nav>
 			</div>
@@ -231,12 +234,12 @@
 
 				<% if (findUser) { %> <!-- Use cartCount instead of locals.cartCount -->
 					<a href="/Cart"
-					  class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-					  data-notify="<%= cartCount > 0 ? cartCount : 0  %>">
-					  <i class="zmdi zmdi-shopping-cart"></i>
+						class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+						data-notify="<%= cartCount > 0 ? cartCount : 0  %>">
+						<i class="zmdi zmdi-shopping-cart"></i>
 					</a>
-				  
-				  
+
+
 
 					<a href="/Wishlist"
 						class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
@@ -257,22 +260,22 @@
 
 		<!-- Menu Mobile -->
 		<div class="menu-mobile">
-			
-			<ul class="main-menu-m" >
+
+			<ul class="main-menu-m">
 				<li>
 					<a href="/" style="text-decoration: none;">Home</a>
-					
-					
+
+
 				</li>
 
 				<li class="active-menu">
 					<a href="/Shop" style="text-decoration: none;">Shop</a>
 				</li>
 
-				
+
 
 				<li>
-					<a href="/Blog"  style="text-decoration: none;">Blog</a>
+					<a href="/Blog" style="text-decoration: none;">Blog</a>
 				</li>
 
 				<li>
@@ -287,24 +290,24 @@
 
 				</li>
 
-				
+
 				<% if (locals.findUser) { %>
 					<li>
 						<a href="/logout" style="text-decoration: none;">Logout</a>
-	
+
 					</li>
 					<% } else { %>
 						<li>
 							<a href="/Login" style="text-decoration: none;">Login</a>
-		
+
 						</li>
 						<li>
 							<a href="/Register" style="text-decoration: none;">Register</a>
-		
-						</li>
-						
 
-						
+						</li>
+
+
+
 						<% } %>
 
 
@@ -313,11 +316,11 @@
 			</ul>
 		</div>
 		<!-- Modal Search -->
-		
+
 	</header>
 
 	<!-- Cart -->
-	
+
 
 	<!-- Product -->
 	<div class="bg0 m-t-23 p-b-140">
@@ -328,7 +331,7 @@
 						All Products
 					</a>
 
-					
+
 				</div>
 
 				<div class="flex-w flex-c-m m-tb-10">
@@ -381,61 +384,67 @@
 							</div>
 							<ul>
 								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>" class="filter-link stext-106 trans-04 <%= !query.sort ? 'active' : '' %>">
+									<a href="/Shop?page=<%= currentPage %>"
+										class="filter-link stext-106 trans-04 <%= !query.sort ? 'active' : '' %>">
 										Default
 									</a>
 								</li>
 								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=lowToHigh&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'lowToHigh' ? 'active' : '' %>">
+									<a href="/Shop?page=<%= currentPage %>&sort=lowToHigh&category=<%= query.category %>"
+										class="filter-link stext-106 trans-04 <%= query.sort === 'lowToHigh' ? 'active' : '' %>">
 										Price: Low to High
 									</a>
 								</li>
 								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=HighToLow&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'HighToLow' ? 'active' : '' %>">
+									<a href="/Shop?page=<%= currentPage %>&sort=HighToLow&category=<%= query.category %>"
+										class="filter-link stext-106 trans-04 <%= query.sort === 'HighToLow' ? 'active' : '' %>">
 										Price: High to Low
 									</a>
 								</li>
 								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=nameSortAToZ&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortAToZ' ? 'active' : '' %>">
+									<a href="/Shop?page=<%= currentPage %>&sort=nameSortAToZ&category=<%= query.category %>"
+										class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortAToZ' ? 'active' : '' %>">
 										Sort: A to Z
 									</a>
 								</li>
 								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=nameSortZToA&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortZToA' ? 'active' : '' %>">
+									<a href="/Shop?page=<%= currentPage %>&sort=nameSortZToA&category=<%= query.category %>"
+										class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortZToA' ? 'active' : '' %>">
 										Sort: Z to A
 									</a>
 								</li>
 							</ul>
 						</div>
-						
+
 						<div class="filter-col2 p-r-15 p-b-27">
 							<div class="mtext-102 cl16 p-b-15">
 								Category
 							</div>
-							<% if (category && category.length > 0) { %>
+							<% if (category && category.length> 0) { %>
 								<ul>
 									<li class="p-b-6">
-										<a href="/Shop?page=<%= currentPage %>" class="filter-link stext-106 trans-04 <%= !query.category ? 'active' : '' %>">
+										<a href="/Shop?page=<%= currentPage %>"
+											class="filter-link stext-106 trans-04 <%= !query.category ? 'active' : '' %>">
 											All
 										</a>
 									</li>
-									<% for (let i = 0; i < category.length; i++) { %>
+									<% for (let i=0; i < category.length; i++) { %>
 										<li class="p-b-6">
-											<a href="/Shop?page=<%= currentPage %>&category=<%= category[i]._id %>&sort=<%= query.sort %>" 
-											   class="filter-link stext-106 trans-04 <%= query.category === category[i]._id.toString() ? 'active' : '' %>">
+											<a href="/Shop?page=<%= currentPage %>&category=<%= category[i]._id %>&sort=<%= query.sort %>"
+												class="filter-link stext-106 trans-04 <%= query.category === category[i]._id.toString() ? 'active' : '' %>">
 												<%= category[i].categoryName %>
 											</a>
 										</li>
-									<% } %>
+										<% } %>
 								</ul>
-							<% } %>
+								<% } %>
 						</div>
-						
+
 					</div>
 				</div>
-				
-				
-				
+
+
+
 			</div>
 
 			<!-- products showing -->
@@ -461,11 +470,12 @@
 											class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
 											style="text-decoration: none;">
 											<%= products[i].productName %>
-										 </a>
-										 
+										</a>
+
 
 										<span class="stext-105 cl3">
-											Price: <%= products[i].offerPrice ? products[i].offerPrice:products[i].realPrice %>
+											Price: <%= products[i].offerPrice ?
+												products[i].offerPrice:products[i].realPrice %>
 										</span>
 									</div>
 
@@ -473,26 +483,26 @@
 									<% if (locals.findUser) { %>
 										<div class="block2-txt-child2 flex-r p-t-3">
 											<!-- Toggle 'active' class based on whether the product is in the wishlist -->
-											<a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= wishlist.includes(products[i]._id.toString()) ? 'active' : '' %>" 
-												data-product-id="<%= products[i]._id %>" 
+											<a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= wishlist.includes(products[i]._id.toString()) ? 'active' : '' %>"
+												data-product-id="<%= products[i]._id %>"
 												onclick="toggleWishList('<%= products[i]._id %>')">
 												<!-- Use Bootstrap heart icons -->
 												<% if (wishlist.includes(products[i]._id.toString())) { %>
 													<!-- Filled heart icon when the product is in the wishlist -->
 													<i class="bi bi-heart-fill"></i>
-												<% } else { %>
-													<!-- Outline heart icon when the product is not in the wishlist -->
-													<i class="bi bi-heart"></i>
-												<% } %>
+													<% } else { %>
+														<!-- Outline heart icon when the product is not in the wishlist -->
+														<i class="bi bi-heart"></i>
+														<% } %>
 											</a>
 										</div>
-									<% } else { %>
-										<div class="block2-txt-child2 flex-r p-t-3">
-											<!-- Empty space when user is not logged in -->
-										</div>
-									<% } %>
-									
-									
+										<% } else { %>
+											<div class="block2-txt-child2 flex-r p-t-3">
+												<!-- Empty space when user is not logged in -->
+											</div>
+											<% } %>
+
+
 
 								</div>
 							</div>
@@ -504,60 +514,54 @@
 
 
 			<!-- Pagination -->
-			
 
-				<div class="flex-c-m flex-w w-full p-t-38">
-					<nav aria-label="Page navigation">
-						<ul class="pagination">
-							<% if (currentPage> 1) { %>
-								<li class="page-item">
-									<a class="page-link"
-										href="?page=<%= currentPage - 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
-										aria-label="Previous">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-								<% } %>
-	
-									<% for (let i=1; i <=totalPages; i++) { %>
-										<li class="page-item <%= i === currentPage ? 'active' : '' %>">
-											<a class="page-link"
-												href="?page=<%= i %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>">
-												<%= i %>
-											</a>
-										</li>
-										<% } %>
-	
-											<% if (currentPage < totalPages) { %>
-												<li class="page-item">
-													<a class="page-link"
-														href="?page=<%= currentPage + 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
-														aria-label="Next">
-														<span aria-hidden="true">&raquo;</span>
-													</a>
-												</li>
-												<% } %>
-						</ul>
-					</nav>
-				</div>
 
+			<div class="flex-c-m flex-w w-full p-t-38">
+				<nav aria-label="Page navigation">
+					<ul class="pagination">
+						<% if (currentPage> 1) { %>
+							<li class="page-item">
+								<a class="page-link"
+									href="?page=<%= currentPage - 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
+									aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<% } %>
+
+								<% for (let i=1; i <=totalPages; i++) { %>
+									<li class="page-item <%= i === currentPage ? 'active' : '' %>">
+										<a class="page-link"
+											href="?page=<%= i %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>">
+											<%= i %>
+										</a>
+									</li>
+									<% } %>
+
+										<% if (currentPage < totalPages) { %>
+											<li class="page-item">
+												<a class="page-link"
+													href="?page=<%= currentPage + 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
+													aria-label="Next">
+													<span aria-hidden="true">&raquo;</span>
+												</a>
+											</li>
+											<% } %>
+					</ul>
+				</nav>
 			</div>
 
-
-
-
-
-
-
-
-
-			<!-- Load more -->
-			<!-- <div class="flex-c-m flex-w w-full p-t-45">
-				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-					Load More
-				</a>
-			</div> -->
 		</div>
+
+
+
+
+
+
+
+
+
+	</div>
 	</div>
 
 
@@ -572,7 +576,7 @@
 		</div>
 
 		<!-- Modal1 -->
-		
+
 
 		<!--===============================================================================================-->
 		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -620,42 +624,7 @@
 		<script src="vendor/isotope/isotope.pkgd.min.js"></script>
 		<!--===============================================================================================-->
 		<script src="vendor/sweetalert/sweetalert.min.js"></script>
-		<script>
-			// $('.js-addwish-b2, .js-addwish-detail').on('click', function (e) {
-			// 	e.preventDefault();
-			// });
 
-			// $('.js-addwish-b2').each(function () {
-			// 	var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-			// 	$(this).on('click', function () {
-			// 		swal(nameProduct, "is added to wishlist !", "success");
-
-			// 		$(this).addClass('js-addedwish-b2');
-			// 		$(this).off('click');
-			// 	});
-			// });
-
-			// $('.js-addwish-detail').each(function () {
-			// 	var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-
-			// 	$(this).on('click', function () {
-			// 		swal(nameProduct, "is added to wishlist !", "success");
-
-			// 		$(this).addClass('js-addedwish-detail');
-			// 		$(this).off('click');
-			// 	});
-			// });
-
-			// /*---------------------------------------------*/
-
-			// $('.js-addcart-detail').each(function () {
-			// 	var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-			// 	$(this).on('click', function () {
-			// 		swal(nameProduct, "is added to cart !", "success");
-			// 	});
-			// });
-
-		</script>
 		<!--===============================================================================================-->
 		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 		<script>
@@ -676,33 +645,7 @@
 		<!--===============================================================================================-->
 		<script src="js/main.js"></script>
 		<!--===============================================================================================-->
-		<!-- <script>
-    document.getElementById('lowToHigh').addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default link action
-        sortProducts('sortLowToHigh');
-    });
 
-    document.getElementById('highToLow').addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default link action
-        sortProducts('sortHighToLow');
-    });
-
-    function sortProducts(sortOrder) {
-        fetch('/Shop', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'fetch-request': 'true' // Custom header to indicate a fetch request
-            },
-            body: JSON.stringify({ sort: sortOrder })
-        })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('products-container').innerHTML = html;
-        })
-        .catch(error => console.log('Error:', error));
-    }
-</script> -->
 
 		<script>
 			function handleSearch(event) {
@@ -734,72 +677,72 @@
 				return false;
 			}
 		</script>
-<script>
-    function toggleWishList(productId) {
-        // console.log("Toggling wishlist...");
+		<script>
+			function toggleWishList(productId) {
+				// console.log("Toggling wishlist...");
 
-        fetch('/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId: productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // console.log("Response Data:", data); 
-            const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
-            const icon = button.querySelector('i');
+				fetch('/toggleWishlist', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ productId: productId })
+				})
+					.then(response => response.json())
+					.then(data => {
+						// console.log("Response Data:", data); 
+						const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
+						const icon = button.querySelector('i');
 
-            if (data.success) {
-               
-                if (data.action === 'added') {
-                    button.classList.add('active');
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill'); 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: data.message || 'Product added to wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                       
-                        window.location.reload();
-                    });
-                } else {
-                    button.classList.remove('active');
-                    icon.classList.remove('bi-heart-fill'); 
-                    icon.classList.add('bi-heart'); 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Removed!',
-                        text: data.message || 'Product removed from wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                     
-                        window.location.reload();
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: data.message || 'Failed to update wishlist',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating the wishlist',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-</script>
+						if (data.success) {
+
+							if (data.action === 'added') {
+								button.classList.add('active');
+								icon.classList.remove('bi-heart');
+								icon.classList.add('bi-heart-fill');
+								Swal.fire({
+									icon: 'success',
+									title: 'Success!',
+									text: data.message || 'Product added to wishlist successfully',
+									confirmButtonText: 'OK'
+								}).then(() => {
+
+									window.location.reload();
+								});
+							} else {
+								button.classList.remove('active');
+								icon.classList.remove('bi-heart-fill');
+								icon.classList.add('bi-heart');
+								Swal.fire({
+									icon: 'success',
+									title: 'Removed!',
+									text: data.message || 'Product removed from wishlist successfully',
+									confirmButtonText: 'OK'
+								}).then(() => {
+
+									window.location.reload();
+								});
+							}
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: data.message || 'Failed to update wishlist',
+								confirmButtonText: 'OK'
+							});
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'An error occurred while updating the wishlist',
+							confirmButtonText: 'OK'
+						});
+					});
+			}
+		</script>
 
 </body>
 
