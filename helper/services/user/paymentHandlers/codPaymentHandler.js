@@ -1,5 +1,5 @@
 const {createOrders}=require('../orderServices');
-const {clearCart}=require('../../../utils/user/cartUtils');
+const {clearCart}=require('../../../utils/userUtils/cartUtils');
 
 
 const handleCodPayments = async (data)=>{

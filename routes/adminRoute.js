@@ -2,11 +2,11 @@
 
 const express = require("express");
 const adminRoute = express();
-const adminController = require("../Controller/admin/adminController");
+const adminController = require("../Controller/adminController/adminController");
 const path = require("path");
 const Auth = require("../middleware/adminAuth");
-const categoryController = require("../Controller/admin/categoryController");
-const productController = require("../Controller/admin/productController");
+const categoryController = require("../Controller/adminController/categoryController");
+const productController = require("../Controller/adminController/productController");
 
 const multerImage = require("../config/multer");
 const multer = require("multer");
@@ -106,7 +106,7 @@ adminRoute.post(
 adminRoute.post(
   "/removeImage",
   Auth.isLogin,
-  productController.removeImageEditproduct
+  productController.removeImageEditProduct
 );
 
 //order management

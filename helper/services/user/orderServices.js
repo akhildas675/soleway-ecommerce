@@ -1,6 +1,6 @@
 const Order = require('../../../Model/orderModel');
-const { generateOrderId } = require('../../utils/user/generateOrderId');
-const {updateProductStock}=require('../../utils/user//productUtils')
+const { generateOrderId } = require('../../utils/userUtils/generateOrderId');
+const {updateProductStock}=require('../../utils/userUtils/productUtils')
 
 
 
