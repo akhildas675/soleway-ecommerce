@@ -28,23 +28,16 @@ const addToCart = async (req, res) => {
   try {
     const { productId, sizeId, totalAmount } = req.body;
 
-    // console.log("Data From Body", req.body);
-
     //find the product
     const findSQ = await Products.findById(productId);
     const userId = req.session.userData;
-
-    // console.log("Find SQ",findSQ)
 
     if (!findSQ) {
       return res.json({ success: false, message: "Cannot find product" });
     }
 
     //========Check both Size id is are equal======
-
     let currentSize = findSQ.sizes.find((obj) => obj._id.toString() === sizeId);
-
-    // console.log("current sizess", currentSize);
 
     if (!currentSize || currentSize.quantity <= 0) {
       return res.json({
@@ -61,7 +54,6 @@ const addToCart = async (req, res) => {
         item.size === currentSize.size
     );
     //already in the cart add quantity
-
     if (cartProduct) {
       if (cartProduct.quantity + 1 > currentSize.quantity) {
         return res.json({
@@ -77,8 +69,6 @@ const addToCart = async (req, res) => {
         size: currentSize.size,
         quantity: 1,
       };
-
-      // console.log("Cartproducts",cartProduct)
 
       if (existingCart) {
         existingCart.cartProducts.push(newProduct);
@@ -102,7 +92,6 @@ const addToCart = async (req, res) => {
 const updateCart = async (req, res) => {
   try {
     const { productId, sizeId, quantity, totalAmount } = req.body;
-    // console.log("Request Body:", req.body);
 
     const userId = req.session.userData;
 
@@ -137,8 +126,6 @@ const updateCart = async (req, res) => {
     cartProduct.quantity = quantity;
     await cart.save();
 
-    
-
     return res.json({
       success: true,
       message: "Cart updated successfully",
@@ -153,7 +140,6 @@ const updateCart = async (req, res) => {
 const deleteItemInCart = async (req, res) => {
   try {
     const { id } = req.body;
-    // console.log('req.body', req.body);
 
     const userId = req.session.userData;
 
@@ -185,32 +171,43 @@ const deleteItemInCart = async (req, res) => {
 
 const loadWishlist = async (req, res) => {
   try {
-      const userId = req.session.userData; 
-      if (!userId) {
-          return res.json({ success: false, message: "User not authenticated" });
-      }
+    const userId = req.session.userData;
+    if (!userId) {
+      return res.json({ success: false, message: "User not authenticated" });
+    }
 
-      const findUser = await User.findById(userId);
-      const wishlistData = await Wishlist.findOne({ userId })
-          .populate("wishlistProducts.productId");
+    const findUser = await User.findById(userId);
+    const wishlistData = await Wishlist.findOne({ userId }).populate(
+      "wishlistProducts.productId"
+    );
+    const cartData = await Cart.findOne({ userId }); // Fetch cart data to get cart count
 
-      let userWishlist = [];
-      if (wishlistData && wishlistData.wishlistProducts) {
-          userWishlist = wishlistData.wishlistProducts.map(p => p.productId._id.toString());
-      }
+    let userWishlist = [];
+    let wishlistCount = 0;
+    if (wishlistData && wishlistData.wishlistProducts) {
+      userWishlist = wishlistData.wishlistProducts.map((p) =>
+        p.productId._id.toString()
+      );
+      wishlistCount = wishlistData.wishlistProducts.length; // Calculate wishlist count
+    }
 
-     
-      res.render("wishlist", {
-          wishlistData,
-          findUser,
-          userWishlist 
-      });
+    let cartCount = 0;
+    if (cartData && cartData.cartProducts) {
+      cartCount = cartData.cartProducts.length; // Calculate cart count
+    }
+
+    res.render("wishlist", {
+      wishlistData,
+      findUser,
+      userWishlist,
+      cartCount, // Pass cartCount to the template
+      wishlistCount, // Pass wishlistCount to the template
+    });
   } catch (error) {
-      console.log(error);
-      res.json({ success: false, message: "Internal Server Error" });
+    console.log(error);
+    res.json({ success: false, message: "Internal Server Error" });
   }
 };
-
 
 const addToWishlist = async (req, res) => {
   try {
@@ -231,25 +228,28 @@ const addToWishlist = async (req, res) => {
       (p) => p.productId.toString() === productId
     );
 
+    let action;
     if (productIndex > -1) {
       // Remove product from wishlist
       wishlist.wishlistProducts.splice(productIndex, 1);
-      await wishlist.save();
-      return res.json({
-        success: true,
-        message: "Product removed from wishlist",
-        action: "removed",
-      });
+      action = "removed";
     } else {
       // Add product to wishlist
       wishlist.wishlistProducts.push({ productId });
-      await wishlist.save();
-      return res.json({
-        success: true,
-        message: "Product added to wishlist",
-        action: "added",
-      });
+      action = "added";
     }
+
+    await wishlist.save();
+
+    // Get updated wishlist count
+    const wishlistCount = wishlist.wishlistProducts.length;
+
+    return res.json({
+      success: true,
+      message: `Product ${action} ${action === "added" ? "to" : "from"} wishlist`,
+      action,
+      wishlistCount, // Include updated wishlist count
+    });
   } catch (error) {
     console.error("Server Error:", error);
     return res.json({ success: false, message: "Internal Server Error" });

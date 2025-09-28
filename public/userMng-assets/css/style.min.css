@@ -18666,7 +18666,7 @@ table {
 }
 
 .dashboard_tab_button li .btn.active {
-    background: #717fe0
+    background: #000
 }
 
 .dashboard_content .h4,
@@ -20716,3 +20716,6 @@ table {
     background-position: center 50%;
     background-repeat: no-repeat
 }
+
+
+

@@ -7,184 +7,27 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png">
-    <!-- Template CSS -->
+    
+    <!-- CSS Dependencies -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 50px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 800px;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .close {
-            color: #aaa;
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10000;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-        }
-
-        .image-preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 5px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-        }
-
-        .image-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 6px;
-            position: relative;
-            width: 80px;
-            background: #fafafa;
-        }
-
-        .img-thumbnail {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            margin-bottom: 4px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        .file-name {
-            font-size: 9px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 4px;
-            max-width: 70px;
-            line-height: 1.2;
-        }
-
-        .image-preview button {
-            margin: 1px;
-            font-size: 9px;
-            padding: 2px 4px;
-            min-height: auto;
-        }
-
-        .img-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-height: 80vh;
-            overflow: hidden;
-        }
-
-        .img-container img {
-            max-width: 100%;
-            max-height: 60vh;
-            object-fit: contain;
-        }
-
-        .small-input {
-            max-width: 100px;
-        }
-
-        .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .remove-btn:hover {
-            background: #c82333;
-        }
-
-        .crop-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: center;
-        }
-
-        #imageInput {
-            margin-bottom: 10px;
-        }
-
-        .upload-info {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-    </style>
+  
 </head>
 
 <body>
     <div class="screen-overlay"></div>
-    <!-- Include your admin aside and nav here -->
+    <%- include('./partials/adminAside.ejs') %>
     
     <main class="main-wrap">
+        <%- include('./partials/adminNav.ejs') %>
+        
         <form id="productAdd" enctype="multipart/form-data">
             <section class="content-main">
                 <div class="row">
@@ -193,9 +36,10 @@
                             <h2 class="content-title">Add New Product</h2>
                         </div>
                     </div>
+                    
+                    <!-- Product Information Section -->
                     <div class="col-lg-6">
                         <div class="card mb-4">
-                            <div class="card-header"></div>
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product Name</label>
@@ -203,37 +47,33 @@
                                         id="product_name" name="productName">
                                     <div id="productNameError" class="error" style="color: red;"></div>
                                 </div>
+                                
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
                                     <textarea placeholder="Type here" class="form-control" rows="4"
                                         name="description" id="description" maxlength="150"></textarea>
                                     <div id="descriptionError" class="error" style="color: red;"></div>
                                 </div>
+                                
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="mb-4">
                                             <label class="form-label">Price</label>
-                                            <div class="row gx-2">
-                                                <input placeholder="Enter Amount" type="text"
-                                                    class="form-control" pattern="^[1-9][0-9]*(.[0-9]+)?$"
-                                                    name="realPrice" id="realPrice">
-                                                <div id="realPriceError" class="error" style="color: red;"></div>
-                                            </div>
+                                            <input placeholder="Enter Amount" type="text" class="form-control" 
+                                                pattern="^[1-9][0-9]*(.[0-9]+)?$" name="realPrice" id="realPrice">
+                                            <div id="realPriceError" class="error" style="color: red;"></div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4"></div>
-                                    <div class="col-lg-4">
+                                    
+                                    <div class="col-lg-6">
                                         <div class="mb-4">
                                             <label class="form-label">Brand</label>
-                                            <div class="row gx-2">
-                                                <input placeholder="Brand" type="text" class="form-control"
-                                                    name="brandName" id="brand">
-                                                <div id="brandError" class="error" style="color: rgb(60, 0, 255);"></div>
-                                            </div>
+                                            <input placeholder="Brand" type="text" class="form-control"
+                                                name="brandName" id="brand">
+                                            <div id="brandError" class="error" style="color: red;"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-4"></div>
                             </div>
                         </div>
 
@@ -253,509 +93,146 @@
                                         <tbody id="sizeQuantityContainer">
                                             <tr id="row7">
                                                 <td>
-                                                    <input type="text" placeholder="Size"
-                                                        class="form-control small-input" id="size7" name="size7"
-                                                        oninput="validateInput(this, 'size')">
+                                                    <input type="text" placeholder="Size" class="form-control small-input" 
+                                                        id="size7" name="size7" oninput="validateInput(this, 'size')">
                                                     <div id="size7Error" class="error" style="color: red;"></div>
                                                 </td>
                                                 <td>
-                                                    <input type="text" placeholder="Quantity"
-                                                        class="form-control small-input" id="quantity7"
-                                                        name="quantity7" oninput="validateInput(this, 'quantity')">
+                                                    <input type="text" placeholder="Quantity" class="form-control small-input" 
+                                                        id="quantity7" name="quantity7" oninput="validateInput(this, 'quantity')">
                                                     <div id="quantity7Error" class="error" style="color: red;"></div>
                                                 </td>
                                                 <td>
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm cancel-btn" data-row="row7"
+                                                    <button type="button" class="btn btn-danger btn-sm" 
                                                         onclick="removeRow('row7')">Remove</button>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <button type="button" id="addSizeQuantityBtn" class="btn btn-primary mt-3">Add
-                                    Another Size and Quantity</button>
+                                <button type="button" id="addSizeQuantityBtn" class="btn btn-primary mt-3">
+                                    Add Another Size and Quantity
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Media Section -->
+                    <!-- Media and Category Section -->
                     <div class="col-lg-3">
-                        <div class="container mt-4">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Media</h4>
+                        <!-- Media Upload Card -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="upload-area" id="uploadArea">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted">Click to select images or drag and drop</p>
+                                    <input id="imageInput" class="form-control" type="file"
+                                        accept="image/jpeg,image/jpg,image/png,image/webp" 
+                                        name="images" multiple onchange="handleImageSelection(event)">
                                 </div>
-                                <div class="card mb-4">
-                                    <div class="card-body">
-                                        <div class="input-upload">
-                                            <div class="upload-info">
-                                                Select at least 3 images (Maximum 5 images allowed)
-                                            </div>
-                                            <input id="imageInput" class="form-control" type="file"
-                                                accept="image/jpeg,image/jpg,image/png,image/webp" name="images"
-                                                multiple onchange="handleImageSelection(event)">
-                                            <div id="imageError" class="error" style="color: red;"></div>
-                                            
-                                            <div class="image-preview-container" id="imagePreviewContainer">
-                                                <!-- Image previews will be displayed here -->
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div id="imageError" class="error" style="color: red;"></div>
+                                
+                                <!-- Image Preview Container -->
+                                <div class="image-preview-container" id="imagePreviewContainer">
+                                    <!-- Image previews will be displayed here -->
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Crop Modal -->
-                        <div id="myModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <div class="img-container">
-                                    <img id="image" src="" alt="Image Preview">
-                                    <div class="crop-controls">
-                                        <button id="btn-crop" class="btn btn-success" type="button">Crop & Save</button>
-                                        <button id="btn-cancel" class="btn btn-secondary" type="button">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hidden fields for crop data -->
-                        <input type="hidden" id="hiddenField1" name="hiddenField1" value="">
-                        <input type="hidden" id="hiddenField2" name="hiddenField2" value="">
-                        <input type="hidden" id="hiddenField3" name="hiddenField3" value="">
-                        <input type="hidden" id="hiddenField4" name="hiddenField4" value="">
-                        <input type="hidden" id="hiddenField5" name="hiddenField5" value="">
-
-                        <!-- Categories Section -->
+                        <!-- Category Selection -->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <h4>Select Categories</h4>
                             </div>
-                            <div class="card-body">
-                                <div class="row gx-2">
-                                    <div class="col-sm-6 mb-3">
+                            <% if (locals.categories) { %>
+                                <div class="card-body">
+                                    <div class="mb-3">
                                         <label class="form-label">Category</label>
                                         <select class="form-select" name="category" id="category">
-                                            <option value="">Select Category</option>
-                                            <!-- Categories will be populated here -->
+                                            <% for (let i = 0; i < categories.length; i++) { %>
+                                                <option value="<%= categories[i]._id %>">
+                                                    <%= categories[i].categoryName %>
+                                                </option>
+                                            <% } %>
                                         </select>
                                         <div id="categoryError" class="error" style="color: red;"></div>
                                     </div>
                                 </div>
-                            </div>
+                            <% } %>
                         </div>
 
-                        <!-- Offers Section -->
+                        <!-- Offer Selection -->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <h4>Select Offer</h4>
                             </div>
                             <div class="card-body">
-                                <div class="row gx-2">
-                                    <div class="col-sm-6 mb-3">
-                                        <label class="form-label">Offers</label>
-                                        <select class="form-select" name="offerId" id="offer">
-                                            <option value="">Select Offer</option>
-                                            <!-- Offers will be populated here -->
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Offers</label>
+                                    <select class="form-select" name="offerId" id="offer">
+                                        <% for (let i = 0; i < offer.length; i++) { %>
+                                            <option value="<%= offer[i]._id %>">
+                                                <% if (offer[i].offerPercentage === 0) { %>
+                                                    No Offer
+                                                <% } else { %>
+                                                    <%= offer[i].offerPercentage %>% OFF
+                                                <% } %>
+                                            </option>
+                                        <% } %>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row gx-2">
-                            <button type="submit" class="btn btn-md rounded font-sm hover-up">Add Product</button>
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
                         </div>
-                        <div id="errorMessages" style="color: red;"></div>
                     </div>
                 </div>
             </section>
         </form>
+
+        <!-- Crop Modal -->
+        <div id="cropModal" class="crop-modal">
+            <div class="crop-modal-content">
+                <span class="close-btn" onclick="closeCropModal()">&times;</span>
+                <h5 class="mb-3">Crop Image</h5>
+                <div class="crop-container">
+                    <img id="cropImage" src="" alt="Image to crop">
+                </div>
+                <div class="crop-controls">
+                    <button id="btn-crop" class="btn btn-success" type="button">
+                        <i class="fas fa-crop"></i> Crop & Save
+                    </button>
+                    <button id="btn-cancel" class="btn btn-secondary" type="button">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden fields for crop data -->
+        <input type="hidden" id="hiddenField1" name="hiddenField1" value="">
+        <input type="hidden" id="hiddenField2" name="hiddenField2" value="">
+        <input type="hidden" id="hiddenField3" name="hiddenField3" value="">
+        <input type="hidden" id="hiddenField4" name="hiddenField4" value="">
+        <input type="hidden" id="hiddenField5" name="hiddenField5" value="">
     </main>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    
+    <!-- JavaScript Dependencies -->
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <script>
-        // Global variables
-        let croppedImages = [];
-        let currentCropper = null;
-        let currentImageIndex = -1;
-        let imageFiles = [];
-        
-        // Form submission
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('productAdd');
-            const imageInput = document.getElementById('imageInput');
-
-            form.addEventListener('submit', async function (event) {
-                event.preventDefault();
-
-                // Validate images
-                if (imageFiles.length < 3) {
-                    toastr.error('Please provide at least 3 images.');
-                    return;
-                }
-
-                const formData = new FormData();
-                
-                // Add all form fields
-                const formElements = form.elements;
-                for (let i = 0; i < formElements.length; i++) {
-                    const element = formElements[i];
-                    if (element.name && element.type !== 'file') {
-                        formData.append(element.name, element.value);
-                    }
-                }
-
-                // Add image files
-                for (let i = 0; i < imageFiles.length; i++) {
-                    formData.append('images', imageFiles[i]);
-                }
-
-                // Add cropped image data
-                for (let i = 0; i < croppedImages.length; i++) {
-                    if (croppedImages[i]) {
-                        formData.append(`croppedData${i}`, croppedImages[i]);
-                    }
-                }
-
-                try {
-                    const response = await fetch('/admin/createProduct', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-
-                    if (result.errors) {
-                        for (const [key, errorMessage] of Object.entries(result.errors)) {
-                            toastr.error(errorMessage, 'Validation Error');
-                        }
-                    } else if (response.ok) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Product added successfully!',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            window.location.href = '/admin/productsView';
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    toastr.error('An error occurred while adding the product.');
-                }
-            });
-        });
-
-        // Image handling
-        function handleImageSelection(event) {
-            const files = Array.from(event.target.files);
-            
-            if (files.length > 5) {
-                toastr.error('You can only select up to 5 images.');
-                event.target.value = '';
-                return;
-            }
-
-            if (files.length < 3) {
-                toastr.warning('Please select at least 3 images.');
-            }
-
-            // Validate file types
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            for (let file of files) {
-                if (!allowedTypes.includes(file.type)) {
-                    toastr.error('Invalid file type. Only JPEG, JPG, PNG, and WebP are allowed.');
-                    event.target.value = '';
-                    return;
-                }
-            }
-
-            imageFiles = files;
-            displayImagePreviews(files);
-        }
-
-        function displayImagePreviews(files) {
-            const container = document.getElementById('imagePreviewContainer');
-            container.innerHTML = '';
-
-            files.forEach((file, index) => {
-                const previewDiv = createImagePreview(file, index);
-                container.appendChild(previewDiv);
-            });
-        }
-
-        function createImagePreview(file, index) {
-            const previewDiv = document.createElement('div');
-            previewDiv.className = 'image-preview';
-            previewDiv.setAttribute('data-index', index);
-
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
-            img.alt = file.name;
-            img.className = 'img-thumbnail';
-
-            const fileName = document.createElement('div');
-            fileName.className = 'file-name';
-            fileName.textContent = file.name;
-
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-btn';
-            removeBtn.innerHTML = '×';
-            removeBtn.type = 'button';
-            removeBtn.onclick = () => removeImage(index);
-
-            const cropBtn = document.createElement('button');
-            cropBtn.className = 'btn btn-primary btn-sm';
-            cropBtn.textContent = 'Crop';
-            cropBtn.type = 'button';
-            cropBtn.onclick = () => openCropModal(file, index, img);
-
-            previewDiv.appendChild(removeBtn);
-            previewDiv.appendChild(img);
-            previewDiv.appendChild(fileName);
-            previewDiv.appendChild(cropBtn);
-
-            return previewDiv;
-        }
-
-        function removeImage(index) {
-            // Remove from imageFiles array
-            imageFiles.splice(index, 1);
-            
-            // Remove cropped data if exists
-            if (croppedImages[index]) {
-                croppedImages.splice(index, 1);
-            }
-
-            // Update file input
-            const dt = new DataTransfer();
-            imageFiles.forEach(file => dt.items.add(file));
-            document.getElementById('imageInput').files = dt.files;
-
-            // Refresh display
-            displayImagePreviews(imageFiles);
-
-            toastr.info('Image removed successfully.');
-        }
-
-        function openCropModal(file, index, imgElement) {
-            const modal = document.getElementById('myModal');
-            const image = document.getElementById('image');
-            
-            currentImageIndex = index;
-            
-            image.src = URL.createObjectURL(file);
-            modal.style.display = 'block';
-
-            // Destroy existing cropper if any
-            if (currentCropper) {
-                currentCropper.destroy();
-            }
-
-            // Initialize cropper after image loads
-            image.onload = function() {
-                currentCropper = new Cropper(image, {
-                    aspectRatio: 1,
-                    viewMode: 2,
-                    dragMode: 'move',
-                    autoCropArea: 0.8,
-                    restore: false,
-                    guides: true,
-                    center: true,
-                    highlight: false,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false,
-                });
-            };
-        }
-
-        // Crop button event
-        document.getElementById('btn-crop').addEventListener('click', function() {
-            if (!currentCropper) return;
-
-            const canvas = currentCropper.getCroppedCanvas({
-                width: 400,
-                height: 400,
-                minWidth: 256,
-                minHeight: 256,
-                maxWidth: 1024,
-                maxHeight: 1024,
-                fillColor: '#fff',
-                imageSmoothingEnabled: false,
-                imageSmoothingQuality: 'high',
-            });
-
-            const croppedDataURL = canvas.toDataURL('image/jpeg', 0.9);
-            const cropData = currentCropper.getData();
-
-            // Store cropped data
-            croppedImages[currentImageIndex] = {
-                dataURL: croppedDataURL,
-                cropData: cropData
-            };
-
-            // Update preview image
-            const previewImg = document.querySelector(`[data-index="${currentImageIndex}"] .img-thumbnail`);
-            if (previewImg) {
-                previewImg.src = croppedDataURL;
-            }
-
-            // Update hidden field
-            const hiddenField = document.getElementById(`hiddenField${currentImageIndex + 1}`);
-            if (hiddenField) {
-                hiddenField.value = JSON.stringify({
-                    index: currentImageIndex,
-                    x: cropData.x,
-                    y: cropData.y,
-                    width: cropData.width,
-                    height: cropData.height
-                });
-            }
-
-            closeCropModal();
-            toastr.success('Image cropped successfully!');
-        });
-
-        // Cancel crop button
-        document.getElementById('btn-cancel').addEventListener('click', closeCropModal);
-
-        // Close modal
-        document.querySelector('.close').addEventListener('click', closeCropModal);
-
-        function closeCropModal() {
-            const modal = document.getElementById('myModal');
-            modal.style.display = 'none';
-            
-            if (currentCropper) {
-                currentCropper.destroy();
-                currentCropper = null;
-            }
-            
-            currentImageIndex = -1;
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('myModal');
-            if (event.target === modal) {
-                closeCropModal();
-            }
-        });
-
-        // Size and Quantity Management
-        let sizeCounter = 8;
-        const maxFields = 6;
-
-        document.getElementById('addSizeQuantityBtn').addEventListener('click', function () {
-            const container = document.getElementById('sizeQuantityContainer');
-            const rows = container.getElementsByTagName('tr');
-            
-            if (rows.length > 0) {
-                const lastRow = rows[rows.length - 1];
-                const sizeInput = lastRow.querySelector('input[name^="size"]');
-                const quantityInput = lastRow.querySelector('input[name^="quantity"]');
-
-                const isSizeValid = validateInput(sizeInput, 'size');
-                const isQuantityValid = validateInput(quantityInput, 'quantity');
-
-                if (!isSizeValid || !isQuantityValid) {
-                    toastr.error('Please fill out the current row correctly before adding a new one.');
-                    return;
-                }
-            }
-
-            if (rows.length >= maxFields) {
-                toastr.warning('Maximum of 6 size and quantity rows reached.');
-                return;
-            }
-
-            const newRow = createSizeQuantityRow(sizeCounter);
-            container.appendChild(newRow);
-            sizeCounter++;
-        });
-
-        function createSizeQuantityRow(counter) {
-            const newRow = document.createElement('tr');
-            newRow.id = `row${counter}`;
-
-            newRow.innerHTML = `
-                <td>
-                    <input type="text" placeholder="Size" class="form-control small-input" 
-                           id="size${counter}" name="size${counter}" 
-                           oninput="validateInput(this, 'size')">
-                    <div id="size${counter}Error" class="error" style="color: red;"></div>
-                </td>
-                <td>
-                    <input type="text" placeholder="Quantity" class="form-control small-input" 
-                           id="quantity${counter}" name="quantity${counter}" 
-                           oninput="validateInput(this, 'quantity')">
-                    <div id="quantity${counter}Error" class="error" style="color: red;"></div>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm" 
-                            onclick="removeRow('row${counter}')">Remove</button>
-                </td>
-            `;
-
-            return newRow;
-        }
-
-        function removeRow(rowId) {
-            const container = document.getElementById('sizeQuantityContainer');
-            if (container.getElementsByTagName('tr').length > 1) {
-                document.getElementById(rowId).remove();
-                toastr.info('Row removed successfully.');
-            } else {
-                toastr.warning('At least one size and quantity row is required.');
-            }
-        }
-
-        function validateInput(input, type) {
-            const errorDiv = document.getElementById(`${input.id}Error`);
-            const value = input.value.trim();
-
-            if (type === 'size') {
-                if (value === '' || isNaN(value) || parseFloat(value) <= 4 || parseFloat(value) > 15) {
-                    errorDiv.textContent = 'Please enter a valid size (5-15).';
-                    return false;
-                }
-            } else if (type === 'quantity') {
-                if (value === '' || isNaN(value) || parseFloat(value) < 0) {
-                    errorDiv.textContent = 'Please enter a valid positive number.';
-                    return false;
-                }
-            }
-
-            errorDiv.textContent = '';
-            return true;
-        }
-
-        // Initialize toastr options
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-    </script>
+    
+    <script src="admin-assets/js/addProductScript.js"></script>
+  
 </body>
 </html>

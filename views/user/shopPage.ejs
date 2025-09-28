@@ -2,748 +2,554 @@
 <html lang="en">
 
 <head>
-	<title>Shop Page</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shop Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <%- include('./partials/solewayCss.ejs') %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+    
+    <style>
+        /* Utility Classes */
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+        }
 
-	<%- include('./partials/solewayCss.ejs') %>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-		<link rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
-		<style>
-			.btn-small {
-				padding: 5px 10px;
-				font-size: 12px;
-				line-height: 1.5;
-				border-radius: 3px;
-				display: inline-flex;
-				align-items: center;
-			}
+        .btn-small i {
+            margin-right: 5px;
+        }
 
-			.btn-small i {
-				margin-right: 5px;
-			}
+        /* Wishlist Button Styles */
+        .btn-addwish-b2 {
+            border: 1px solid transparent;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-			/* Default state for the wishlist button */
-			.btn-addwish-b2 {
-				border: 1px solid transparent;
-				background-color: transparent;
-				cursor: pointer;
-				transition: all 0.3s ease;
-			}
+        .btn-addwish-b2 .bi-heart {
+            color: #6c757d;
+            transition: color 0.3s ease;
+        }
 
-			/* Default heart icon color (not active) */
-			.btn-addwish-b2 .bi-heart {
-				color: grey;
-				/* Default color for outline heart */
-			}
+        .btn-addwish-b2.active {
+            background-color: #fff;
+            border-color: #fff;
+        }
 
-			/* Active state: When the product is in the wishlist */
-			.btn-addwish-b2.active {
-				background-color: rgb(255, 255, 255);
-				/* Change the button background to red when active */
-				border-color: rgb(255, 255, 255);
-			}
+        .btn-addwish-b2.active .bi-heart-fill {
+            color: #fd0000;
+        }
 
-			/* Active heart icon (filled heart) */
-			.btn-addwish-b2.active .bi-heart-fill {
-				color: rgb(253, 0, 0);
-				/* Change the heart icon to white when active */
-			}
+        .btn-addwish-b2.active:hover {
+            transform: scale(1.1);
+        }
 
-			/* Active state hover effect (optional) */
-			.btn-addwish-b2.active:hover {
-				transform: scale(1.1);
-				/* Enlarge button slightly on hover */
-			}
+        /* Filter Active State */
+        .filter-link.active {
+            font-weight: bold;
+            color: #000;
+            text-decoration: underline;
+        }
 
-			/* Heart icon inside the button (when not active) */
-			.btn-addwish-b2 .bi-heart {
-				transition: color 0.3s ease;
-			}
+        /* Pagination Styles */
+        .pagination .page-item .page-link {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #dee2e6;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
 
-			/* Heart icon inside the button (when active) */
-			.btn-addwish-b2.active .bi-heart,
-			.btn-addwish-b2.active .bi-heart-fill {
-				transition: color 0.3s ease;
-			}
-		</style>
+        .pagination .page-item .page-link:hover {
+            background-color: #000;
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        /* Search Enhancement */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding-right: 80px; /* Space for buttons */
+        }
+
+        .search-buttons {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 5px;
+        }
+
+        .search-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+
+        .search-btn:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 
-<style>
-	.active {
-		font-weight: bold;
-		/* Example style */
-		color: rgb(0, 0, 0);
-		/* Change color to indicate active state */
-		text-decoration: underline;
-		/* Optional */
-	}
-
-	/* Custom styling for pagination */
-	.pagination .page-item .page-link {
-		background-color: #f8f9fa;
-		/* Background color of the page link */
-		color: #000000;
-		/* Text color of the page link */
-		border: 1px solid #dee2e6;
-		/* Border color */
-		margin: 0 5px;
-		/* Spacing between numbers */
-		border-radius: 5px;
-		/* Rounded corners */
-	}
-
-	/* Hover effect */
-	.pagination .page-item .page-link:hover {
-		background-color: #000000;
-		/* Hover background color */
-		color: white;
-		/* Hover text color */
-	}
-
-	/* Active page styling */
-	.pagination .page-item.active .page-link {
-		background-color: #000000;
-		/* Background color for active page */
-		color: white;
-		/* Text color for active page */
-		border-color: #000000;
-		/* Border color for active page */
-	}
-</style>
-
 <body class="animsition">
-
-	<!-- Header -->
-	<header class="header-v4">
-		<!-- Header desktop -->
-		<div class="container-menu-desktop">
-			<!-- Topbar -->
-			<div class="top-bar">
-				<div class="content-topbar flex-sb-m h-full container">
-					<div class="left-top-bar">
-						Free shipping for standard order over $100
-					</div>
-
-					<div class="right-top-bar flex-w h-full">
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
-							Help & FAQs
-						</a>
-
-						<% if (locals.findUser) { %>
-							<a href="/Account" class="flex-c-m trans-04 p-lr-25">
-								<%= findUser.name%>
-									<% } else { %>
-										<a href="#" class="flex-c-m p-lr-10 trans-04">
-											Guest User
-										</a>
-										<%}%>
-
-											<% if (locals.findUser) { %>
-												<a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
-													<i class="zmdi zmdi-sign-in"></i> Logout
-												</a>
-												<% } else { %>
-													<a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
-														<i class="zmdi zmdi-account"></i> Login
-													</a>
-
-													<a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
-														<i class="zmdi zmdi-assignment"></i> Register
-													</a>
-													<% } %>
-					</div>
-				</div>
-			</div>
-
-			<div class="wrap-menu-desktop how-shadow1">
-				<nav class="limiter-menu-desktop container">
-
-					<!-- Logo desktop -->
-					<a href="#" class="logo">
-						<img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO">
-					</a>
-
-					<!-- Menu desktop -->
-					<div class="menu-desktop">
-						<ul class="main-menu">
-							<li>
-								<a href="/">Home</a>
-
-							</li>
-
-							<li class="active-menu">
-								<a href="/Shop">Shop</a>
-							</li>
-
-							<li>
-								<a href="/Blog">Blog</a>
-							</li>
-
-							<li>
-								<a href="/About">About</a>
-							</li>
-
-							<li>
-								<a href="/Contact">Contact</a>
-							</li>
-						</ul>
-					</div>
-
-					<!-- Icon header -->
-					<div class="wrap-icon-header flex-w flex-r-m">
-						<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div> -->
-
-
-						<% if (findUser) { %> <!-- Only check if user is logged in -->
-							<a href="/Cart"
-								class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-								data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
-								<i class="zmdi zmdi-shopping-cart"></i>
-
-							</a>
-
-							<a href="/Wishlist"
-								class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-								data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
-								<i class="zmdi zmdi-favorite-outline"></i>
-
-							</a>
-							<% } %>
-					</div>
-				</nav>
-			</div>
-		</div>
-
-		<!-- Header Mobile -->
-		<div class="wrap-header-mobile">
-			<!-- Logo moblie -->
-			<div class="logo-mobile">
-				<a href="index.html"><img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO"></a>
-			</div>
-
-			<!-- Icon header -->
-			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
-				</div> -->
-
-				<% if (findUser) { %> <!-- Use cartCount instead of locals.cartCount -->
-					<a href="/Cart"
-						class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-						data-notify="<%= cartCount > 0 ? cartCount : 0  %>">
-						<i class="zmdi zmdi-shopping-cart"></i>
-					</a>
-
-
-
-					<a href="/Wishlist"
-						class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-						data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
-						<i class="zmdi zmdi-favorite-outline"></i>
-					</a>
-					<% } %>
-			</div>
-
-			<!-- Button show menu -->
-			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-				<span class="hamburger-box">
-					<span class="hamburger-inner"></span>
-				</span>
-			</div>
-		</div>
-
-
-		<!-- Menu Mobile -->
-		<div class="menu-mobile">
-
-			<ul class="main-menu-m">
-				<li>
-					<a href="/" style="text-decoration: none;">Home</a>
-
-
-				</li>
-
-				<li class="active-menu">
-					<a href="/Shop" style="text-decoration: none;">Shop</a>
-				</li>
-
-
-
-				<li>
-					<a href="/Blog" style="text-decoration: none;">Blog</a>
-				</li>
-
-				<li>
-					<a href="/About" style="text-decoration: none;">About</a>
-				</li>
-
-				<li>
-					<a href="/Contact" style="text-decoration: none;">Contact</a>
-				</li>
-				<li>
-					<a href="/Account" style="text-decoration: none;">Account</a>
-
-				</li>
-
-
-				<% if (locals.findUser) { %>
-					<li>
-						<a href="/logout" style="text-decoration: none;">Logout</a>
-
-					</li>
-					<% } else { %>
-						<li>
-							<a href="/Login" style="text-decoration: none;">Login</a>
-
-						</li>
-						<li>
-							<a href="/Register" style="text-decoration: none;">Register</a>
-
-						</li>
-
-
-
-						<% } %>
-
-
-
-
-			</ul>
-		</div>
-		<!-- Modal Search -->
-
-	</header>
-
-	<!-- Cart -->
-
-
-	<!-- Product -->
-	<div class="bg0 m-t-23 p-b-140">
-		<div class="container">
-			<div class="flex-w flex-sb-m p-b-52">
-				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
-					<a href="/Shop" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1">
-						All Products
-					</a>
-
-
-				</div>
-
-				<div class="flex-w flex-c-m m-tb-10">
-					<div
-						class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
-						<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
-						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						Filter
-					</div>
-
-					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
-						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
-						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						Search
-					</div>
-
-				</div>
-
-				<!-- Search product -->
-
-				<div class="dis-none panel-search w-full p-t-10 p-b-15">
-					<div class="bor8 dis-flex p-l-15 p-r-15" style="align-items: center;">
-						<!-- Input for search -->
-						<input class="mtext-107 cl16 size-114 plh2 p-l-15 p-r-15" type="text" name="search-product"
-							placeholder="Search">
-
-
-						<a href="/Shop" class="size-113 flex-c-m fs-16 cl16 hov-cl1 trans-04"
-							style="border: none; background: none; margin-left: 10px; text-decoration: none;">
-							<i class="zmdi zmdi-close"></i> <!-- Clear icon (X) -->
-						</a>
-
-
-						<button class="size-113 flex-c-m fs-16 cl16 hov-cl1 trans-04" onclick="handleSearch(event)"
-							style="margin-left: 10px;">
-							<i class="zmdi zmdi-search"></i> <!-- Search icon -->
-						</button>
-					</div>
-				</div>
-
-
-
-
-				<!-- Filter -->
-				<div class="dis-none panel-filter w-full p-t-10">
-					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-						<div class="filter-col1 p-r-15 p-b-27">
-							<div class="mtext-102 cl16 p-b-15">
-								Sort By
-							</div>
-							<ul>
-								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>"
-										class="filter-link stext-106 trans-04 <%= !query.sort ? 'active' : '' %>">
-										Default
-									</a>
-								</li>
-								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=lowToHigh&category=<%= query.category %>"
-										class="filter-link stext-106 trans-04 <%= query.sort === 'lowToHigh' ? 'active' : '' %>">
-										Price: Low to High
-									</a>
-								</li>
-								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=HighToLow&category=<%= query.category %>"
-										class="filter-link stext-106 trans-04 <%= query.sort === 'HighToLow' ? 'active' : '' %>">
-										Price: High to Low
-									</a>
-								</li>
-								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=nameSortAToZ&category=<%= query.category %>"
-										class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortAToZ' ? 'active' : '' %>">
-										Sort: A to Z
-									</a>
-								</li>
-								<li class="p-b-6">
-									<a href="/Shop?page=<%= currentPage %>&sort=nameSortZToA&category=<%= query.category %>"
-										class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortZToA' ? 'active' : '' %>">
-										Sort: Z to A
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="filter-col2 p-r-15 p-b-27">
-							<div class="mtext-102 cl16 p-b-15">
-								Category
-							</div>
-							<% if (category && category.length> 0) { %>
-								<ul>
-									<li class="p-b-6">
-										<a href="/Shop?page=<%= currentPage %>"
-											class="filter-link stext-106 trans-04 <%= !query.category ? 'active' : '' %>">
-											All
-										</a>
-									</li>
-									<% for (let i=0; i < category.length; i++) { %>
-										<li class="p-b-6">
-											<a href="/Shop?page=<%= currentPage %>&category=<%= category[i]._id %>&sort=<%= query.sort %>"
-												class="filter-link stext-106 trans-04 <%= query.category === category[i]._id.toString() ? 'active' : '' %>">
-												<%= category[i].categoryName %>
-											</a>
-										</li>
-										<% } %>
-								</ul>
-								<% } %>
-						</div>
-
-					</div>
-				</div>
-
-
-
-			</div>
-
-			<!-- products showing -->
-
-
-
-
-			<div class="row isotope-grid">
-				<% if (locals.products) { %>
-					<% for (let i=0; i < products.length; i++) { %>
-						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-							<!-- Block2 -->
-							<div class="block2">
-								<div class="block2-pic hov-img0">
-									<a href="/productView?id=<%= products[i]._id %>">
-										<img src="../<%= products[i].images[0] %>" alt="IMG-PRODUCT">
-									</a>
-								</div>
-
-								<div class="block2-txt flex-w flex-t p-t-14">
-									<div class="block2-txt-child1 flex-col-l">
-										<a href="/productView?id=<%= products[i]._id %>"
-											class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
-											style="text-decoration: none;">
-											<%= products[i].productName %>
-										</a>
-
-
-										<span class="stext-105 cl3">
-											Price: <%= products[i].offerPrice ?
-												products[i].offerPrice:products[i].realPrice %>
-										</span>
-									</div>
-
-									<!-- Product Wishlist Button -->
-									<% if (locals.findUser) { %>
-										<div class="block2-txt-child2 flex-r p-t-3">
-											<!-- Toggle 'active' class based on whether the product is in the wishlist -->
-											<a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= wishlist.includes(products[i]._id.toString()) ? 'active' : '' %>"
-												data-product-id="<%= products[i]._id %>"
-												onclick="toggleWishList('<%= products[i]._id %>')">
-												<!-- Use Bootstrap heart icons -->
-												<% if (wishlist.includes(products[i]._id.toString())) { %>
-													<!-- Filled heart icon when the product is in the wishlist -->
-													<i class="bi bi-heart-fill"></i>
-													<% } else { %>
-														<!-- Outline heart icon when the product is not in the wishlist -->
-														<i class="bi bi-heart"></i>
-														<% } %>
-											</a>
-										</div>
-										<% } else { %>
-											<div class="block2-txt-child2 flex-r p-t-3">
-												<!-- Empty space when user is not logged in -->
-											</div>
-											<% } %>
-
-
-
-								</div>
-							</div>
-						</div>
-						<% } %>
-							<% } %>
-			</div>
-
-
-
-			<!-- Pagination -->
-
-
-			<div class="flex-c-m flex-w w-full p-t-38">
-				<nav aria-label="Page navigation">
-					<ul class="pagination">
-						<% if (currentPage> 1) { %>
-							<li class="page-item">
-								<a class="page-link"
-									href="?page=<%= currentPage - 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
-									aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-							<% } %>
-
-								<% for (let i=1; i <=totalPages; i++) { %>
-									<li class="page-item <%= i === currentPage ? 'active' : '' %>">
-										<a class="page-link"
-											href="?page=<%= i %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>">
-											<%= i %>
-										</a>
-									</li>
-									<% } %>
-
-										<% if (currentPage < totalPages) { %>
-											<li class="page-item">
-												<a class="page-link"
-													href="?page=<%= currentPage + 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>"
-													aria-label="Next">
-													<span aria-hidden="true">&raquo;</span>
-												</a>
-											</li>
-											<% } %>
-					</ul>
-				</nav>
-			</div>
-
-		</div>
-
-
-
-
-
-
-
-
-
-	</div>
-	</div>
-
-
-	<!-- Footer -->
-	<%- include('./partials/userFooter.ejs') %>
-
-		<!-- Back to top -->
-		<div class="btn-back-to-top" id="myBtn">
-			<span class="symbol-btn-back-to-top">
-				<i class="zmdi zmdi-chevron-up"></i>
-			</span>
-		</div>
-
-		<!-- Modal1 -->
-
-
-		<!--===============================================================================================-->
-		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/animsition/js/animsition.min.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/bootstrap/js/popper.js"></script>
-		<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/select2/select2.min.js"></script>
-		<script>
-			$(".js-select2").each(function () {
-				$(this).select2({
-					minimumResultsForSearch: 20,
-					dropdownParent: $(this).next('.dropDownSelect2')
-				});
-			})
-		</script>
-		<!--===============================================================================================-->
-		<script src="vendor/daterangepicker/moment.min.js"></script>
-		<script src="vendor/daterangepicker/daterangepicker.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/slick/slick.min.js"></script>
-		<script src="js/slick-custom.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/parallax100/parallax100.js"></script>
-		<script>
-			$('.parallax100').parallax100();
-		</script>
-		<!--===============================================================================================-->
-		<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-		<script>
-			$('.gallery-lb').each(function () { // the containers for all your galleries
-				$(this).magnificPopup({
-					delegate: 'a', // the selector for gallery item
-					type: 'image',
-					gallery: {
-						enabled: true
-					},
-					mainClass: 'mfp-fade'
-				});
-			});
-		</script>
-		<!--===============================================================================================-->
-		<script src="vendor/isotope/isotope.pkgd.min.js"></script>
-		<!--===============================================================================================-->
-		<script src="vendor/sweetalert/sweetalert.min.js"></script>
-
-		<!--===============================================================================================-->
-		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-		<script>
-			$('.js-pscroll').each(function () {
-				$(this).css('position', 'relative');
-				$(this).css('overflow', 'hidden');
-				var ps = new PerfectScrollbar(this, {
-					wheelSpeed: 1,
-					scrollingThreshold: 1000,
-					wheelPropagation: false,
-				});
-
-				$(window).on('resize', function () {
-					ps.update();
-				})
-			});
-		</script>
-		<!--===============================================================================================-->
-		<script src="js/main.js"></script>
-		<!--===============================================================================================-->
-
-
-		<script>
-			function handleSearch(event) {
-				event.preventDefault();
-
-				const searchInput = document.querySelector('input[name="search-product"]').value;
-				// console.log(searchInput, 'search input in handleSearch');
-
-				const urlParams = new URLSearchParams(window.location.search);
-				// console.log(urlParams, 'URL params in handleSearch');
-
-				const categoryId = urlParams.get('categoryId');
-				// console.log(categoryId, 'categoryId in handleSearch');
-
-				let url = '/Shop?';
-
-				if (categoryId) {
-					url += `categoryId=${categoryId}`;
-				}
-
-				if (searchInput) {
-					if (categoryId) {
-						url += '&';
-					}
-					url += `search=${encodeURIComponent(searchInput)}`;
-				}
-
-				window.location.href = url;
-				return false;
-			}
-		</script>
-		<script>
-			function toggleWishList(productId) {
-				// console.log("Toggling wishlist...");
-
-				fetch('/toggleWishlist', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ productId: productId })
-				})
-					.then(response => response.json())
-					.then(data => {
-						// console.log("Response Data:", data); 
-						const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
-						const icon = button.querySelector('i');
-
-						if (data.success) {
-
-							if (data.action === 'added') {
-								button.classList.add('active');
-								icon.classList.remove('bi-heart');
-								icon.classList.add('bi-heart-fill');
-								Swal.fire({
-									icon: 'success',
-									title: 'Success!',
-									text: data.message || 'Product added to wishlist successfully',
-									confirmButtonText: 'OK'
-								}).then(() => {
-
-									window.location.reload();
-								});
-							} else {
-								button.classList.remove('active');
-								icon.classList.remove('bi-heart-fill');
-								icon.classList.add('bi-heart');
-								Swal.fire({
-									icon: 'success',
-									title: 'Removed!',
-									text: data.message || 'Product removed from wishlist successfully',
-									confirmButtonText: 'OK'
-								}).then(() => {
-
-									window.location.reload();
-								});
-							}
-						} else {
-							Swal.fire({
-								icon: 'error',
-								title: 'Oops...',
-								text: data.message || 'Failed to update wishlist',
-								confirmButtonText: 'OK'
-							});
-						}
-					})
-					.catch(error => {
-						console.error('Error:', error);
-						Swal.fire({
-							icon: 'error',
-							title: 'Error',
-							text: 'An error occurred while updating the wishlist',
-							confirmButtonText: 'OK'
-						});
-					});
-			}
-		</script>
-
+    <!-- Header -->
+    <header class="header-v4">
+        <!-- Header desktop -->
+        <div class="container-menu-desktop">
+            <!-- Topbar -->
+            <div class="top-bar">
+                <div class="content-topbar flex-sb-m h-full container">
+                    <div class="left-top-bar">
+                        Free shipping for standard order over $100
+                    </div>
+
+                    <div class="right-top-bar flex-w h-full">
+                        <a href="#" class="flex-c-m trans-04 p-lr-25">Help & FAQs</a>
+
+                        <% if (locals.findUser) { %>
+                            <a href="/Account" class="flex-c-m trans-04 p-lr-25">
+                                <%= findUser.name %>
+                            </a>
+                            <a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-sign-in"></i> Logout
+                            </a>
+                        <% } else { %>
+                            <a href="#" class="flex-c-m p-lr-10 trans-04">Guest User</a>
+                            <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-account"></i> Login
+                            </a>
+                            <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-assignment"></i> Register
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrap-menu-desktop how-shadow1">
+                <nav class="limiter-menu-desktop container">
+                    <!-- Logo desktop -->
+                    <a href="/" class="logo">
+                        <img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO">
+                    </a>
+
+                    <!-- Menu desktop -->
+                    <div class="menu-desktop">
+                        <ul class="main-menu">
+                            <li><a href="/">Home</a></li>
+                            <li class="active-menu"><a href="/Shop">Shop</a></li>
+                            <li><a href="/Blog">Blog</a></li>
+                            <li><a href="/About">About</a></li>
+                            <li><a href="/Contact">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Icon header -->
+                    <div class="wrap-icon-header flex-w flex-r-m">
+                        <% if (findUser) { %>
+                            <a href="/Cart" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
+                                <i class="zmdi zmdi-shopping-cart"></i>
+                            </a>
+                            <a href="/Wishlist" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+                                <i class="zmdi zmdi-favorite-outline"></i>
+                            </a>
+                        <% } %>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Header Mobile -->
+        <div class="wrap-header-mobile">
+            <div class="logo-mobile">
+                <a href="/"><img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO"></a>
+            </div>
+
+            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
+                <% if (findUser) { %>
+                    <a href="/Cart" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
+                        <i class="zmdi zmdi-shopping-cart"></i>
+                    </a>
+                    <a href="/Wishlist" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+                        <i class="zmdi zmdi-favorite-outline"></i>
+                    </a>
+                <% } %>
+            </div>
+
+            <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="menu-mobile">
+            <ul class="main-menu-m">
+                <li><a href="/" style="text-decoration: none;">Home</a></li>
+                <li class="active-menu"><a href="/Shop" style="text-decoration: none;">Shop</a></li>
+                <li><a href="/Blog" style="text-decoration: none;">Blog</a></li>
+                <li><a href="/About" style="text-decoration: none;">About</a></li>
+                <li><a href="/Contact" style="text-decoration: none;">Contact</a></li>
+                <li><a href="/Account" style="text-decoration: none;">Account</a></li>
+                
+                <% if (locals.findUser) { %>
+                    <li><a href="/logout" style="text-decoration: none;">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/Login" style="text-decoration: none;">Login</a></li>
+                    <li><a href="/Register" style="text-decoration: none;">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Product Section -->
+    <div class="bg0 m-t-23 p-b-140">
+        <div class="container">
+            <div class="flex-w flex-sb-m p-b-52">
+                <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                    <a href="/Shop" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1">
+                        All Products
+                    </a>
+                </div>
+
+                <div class="flex-w flex-c-m m-tb-10">
+                    <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+                        <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+                        <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        Filter
+                    </div>
+
+                    <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+                        <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+                        <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        Search
+                    </div>
+                </div>
+
+                <!-- Enhanced Search Section -->
+                <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                    <form onsubmit="handleSearch(event)" class="bor8 dis-flex p-l-15 p-r-15 search-container">
+                        <input 
+                            class="mtext-107 cl16 size-114 plh2 p-l-15 p-r-15 search-input" 
+                            type="text" 
+                            name="search-product"
+                            id="searchInput"
+                            placeholder="Search products..."
+                            autocomplete="off">
+                        
+                        <div class="search-buttons">
+                            <a href="/Shop" class="search-btn flex-c-m fs-16 cl16 hov-cl1 trans-04" title="Clear search">
+                                <i class="zmdi zmdi-close"></i>
+                            </a>
+                            <button type="submit" class="search-btn flex-c-m fs-16 cl16 hov-cl1 trans-04" title="Search">
+                                <i class="zmdi zmdi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Filter Panel -->
+                <div class="dis-none panel-filter w-full p-t-10">
+                    <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+                        <div class="filter-col1 p-r-15 p-b-27">
+                            <div class="mtext-102 cl16 p-b-15">Sort By</div>
+                            <ul>
+                                <li class="p-b-6">
+                                    <a href="/Shop?page=<%= currentPage %>" class="filter-link stext-106 trans-04 <%= !query.sort ? 'active' : '' %>">
+                                        Default
+                                    </a>
+                                </li>
+                                <li class="p-b-6">
+                                    <a href="/Shop?page=<%= currentPage %>&sort=lowToHigh&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'lowToHigh' ? 'active' : '' %>">
+                                        Price: Low to High
+                                    </a>
+                                </li>
+                                <li class="p-b-6">
+                                    <a href="/Shop?page=<%= currentPage %>&sort=HighToLow&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'HighToLow' ? 'active' : '' %>">
+                                        Price: High to Low
+                                    </a>
+                                </li>
+                                <li class="p-b-6">
+                                    <a href="/Shop?page=<%= currentPage %>&sort=nameSortAToZ&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortAToZ' ? 'active' : '' %>">
+                                        Name: A to Z
+                                    </a>
+                                </li>
+                                <li class="p-b-6">
+                                    <a href="/Shop?page=<%= currentPage %>&sort=nameSortZToA&category=<%= query.category %>" class="filter-link stext-106 trans-04 <%= query.sort === 'nameSortZToA' ? 'active' : '' %>">
+                                        Name: Z to A
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="filter-col2 p-r-15 p-b-27">
+                            <div class="mtext-102 cl16 p-b-15">Category</div>
+                            <% if (category && category.length > 0) { %>
+                                <ul>
+                                    <li class="p-b-6">
+                                        <a href="/Shop?page=<%= currentPage %>" class="filter-link stext-106 trans-04 <%= !query.category ? 'active' : '' %>">
+                                            All
+                                        </a>
+                                    </li>
+                                    <% for (let i = 0; i < category.length; i++) { %>
+                                        <li class="p-b-6">
+                                            <a href="/Shop?page=<%= currentPage %>&category=<%= category[i]._id %>&sort=<%= query.sort %>" class="filter-link stext-106 trans-04 <%= query.category === category[i]._id.toString() ? 'active' : '' %>">
+                                                <%= category[i].categoryName %>
+                                            </a>
+                                        </li>
+                                    <% } %>
+                                </ul>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row isotope-grid">
+                <% if (locals.products && products.length > 0) { %>
+                    <% for (let i = 0; i < products.length; i++) { %>
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+                            <div class="block2">
+                                <div class="block2-pic hov-img0">
+                                    <a href="/productView?id=<%= products[i]._id %>">
+                                        <img src="../<%= products[i].images[0] %>" alt="<%= products[i].productName %>">
+                                    </a>
+                                </div>
+
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l">
+                                        <a href="/productView?id=<%= products[i]._id %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6" style="text-decoration: none;">
+                                            <%= products[i].productName %>
+                                        </a>
+                                        <span class="stext-105 cl3">
+                                            ₹<%= products[i].offerPrice || products[i].realPrice %>
+                                        </span>
+                                    </div>
+
+                                    <% if (locals.findUser) { %>
+                                        <div class="block2-txt-child2 flex-r p-t-3">
+                                            <a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= wishlist.includes(products[i]._id.toString()) ? 'active' : '' %>" 
+                                               data-product-id="<%= products[i]._id %>"
+                                               onclick="toggleWishList('<%= products[i]._id %>')">
+                                                <% if (wishlist.includes(products[i]._id.toString())) { %>
+                                                    <i class="bi bi-heart-fill"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-heart"></i>
+                                                <% } %>
+                                            </a>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <div class="col-12 text-center p-t-50">
+                        <p class="stext-106 cl6">No products found.</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+                <div class="flex-c-m flex-w w-full p-t-38">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <% if (currentPage > 1) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= currentPage - 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            <% } %>
+
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+
+                            <% if (currentPage < totalPages) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= currentPage + 1 %><%= (query.sort ? '&sort=' + query.sort : '') %><%= (query.category ? '&category=' + query.category : '') %>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('./partials/userFooter.ejs') %>
+
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+        <span class="symbol-btn-back-to-top">
+            <i class="zmdi zmdi-chevron-up"></i>
+        </span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="vendor/animsition/js/animsition.min.js"></script>
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/daterangepicker/moment.min.js"></script>
+    <script src="vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="vendor/slick/slick.min.js"></script>
+    <script src="js/slick-custom.js"></script>
+    <script src="vendor/parallax100/parallax100.js"></script>
+    <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+    <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+    <script src="vendor/sweetalert/sweetalert.min.js"></script>
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Enhanced Search Function
+        function handleSearch(event) {
+            event.preventDefault();
+            
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            let url = '/Shop?';
+            const params = [];
+            
+            // Preserve existing filters
+            const categoryId = urlParams.get('categoryId') || urlParams.get('category');
+            if (categoryId) {
+                params.push(`category=${categoryId}`);
+            }
+            
+            const sort = urlParams.get('sort');
+            if (sort) {
+                params.push(`sort=${sort}`);
+            }
+            
+            // Add search term
+            if (searchInput) {
+                params.push(`search=${encodeURIComponent(searchInput)}`);
+            }
+            
+            url += params.join('&');
+            window.location.href = url;
+        }
+
+        // Enhanced Wishlist Toggle
+        function toggleWishList(productId) {
+            fetch('/toggleWishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
+                const icon = button ? button.querySelector('i') : null;
+
+                if (data.success) {
+                    if (data.action === 'added') {
+                        if (button && icon) {
+                            button.classList.add('active');
+                            icon.classList.remove('bi-heart');
+                            icon.classList.add('bi-heart-fill');
+                        }
+                    } else {
+                        if (button && icon) {
+                            button.classList.remove('active');
+                            icon.classList.remove('bi-heart-fill');
+                            icon.classList.add('bi-heart');
+                        }
+                    }
+                    // Update wishlist count in header
+                    const wishlistIcons = document.querySelectorAll('.icon-header-noti[data-notify]');
+                    wishlistIcons.forEach(icon => {
+                        if (icon.getAttribute('href') === '/Wishlist') {
+                            const newCount = data.wishlistCount || 0;
+                            icon.setAttribute('data-notify', newCount);
+                        }
+                    });
+                } else {
+                    console.error('Failed to update wishlist:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Initialize components
+        $(document).ready(function() {
+            // Select2 initialization
+            $(".js-select2").each(function() {
+                $(this).select2({
+                    minimumResultsForSearch: 20,
+                    dropdownParent: $(this).next('.dropDownSelect2')
+                });
+            });
+
+            // Parallax initialization
+            $('.parallax100').parallax100();
+
+            // Gallery lightbox
+            $('.gallery-lb').each(function() {
+                $(this).magnificPopup({
+                    delegate: 'a',
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    },
+                    mainClass: 'mfp-fade'
+                });
+            });
+
+            // Perfect scrollbar
+            $('.js-pscroll').each(function() {
+                $(this).css('position', 'relative');
+                $(this).css('overflow', 'hidden');
+                var ps = new PerfectScrollbar(this, {
+                    wheelSpeed: 1,
+                    scrollingThreshold: 1000,
+                    wheelPropagation: false,
+                });
+
+                $(window).on('resize', function() {
+                    ps.update();
+                });
+            });
+        });
+    </script>
 </body>
-
 </html>

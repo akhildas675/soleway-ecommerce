@@ -3,7 +3,7 @@ const {createOrders} = require('../orderServices');
 const {clearCart} = require('../../../utils/userUtils/cartUtils');
 
 
-// Razorpay instance (you can move this to a separate config file)
+// Razorpay instance 
 const Razorpay = require("razorpay");
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -27,12 +27,16 @@ const handleOnlinePayment = async (data) => {
     initial 
   } = data;
 
+  
+
   // If initial request, create Razorpay order
   if (initial) {
     const onlineOrder = await instance.orders.create({
       amount: finalAmount * 100,
       currency: "INR",
     });
+
+    // console.log('order Amount of online pay ',onlineOrder.amount)
 
     return {
       success: true,

@@ -9,4 +9,4 @@ const clearCart = async(userId)=>{
 };
 
 
-module.export={clearCart}
+module.exports={clearCart}

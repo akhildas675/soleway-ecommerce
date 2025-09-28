@@ -34,6 +34,13 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: #333;
+            font-size: 16px; /* Ensure consistent size */
+        }
+
+        /* Ensure only one icon is visible */
+        .password-wrapper i.fa-eye,
+        .password-wrapper i.fa-eye-slash {
+            display: block; /* Ensure visibility */
         }
     </style>
 </head>
@@ -53,15 +60,15 @@
                 </div>
 
                 <div class="form-wrapper password-wrapper">
-                    <input type="password" placeholder="Password" class="form-control" name="password" id="user_password" >
-                    <i class="fas fa-eye-slash" id="togglePassword"></i> 
+                    <input type="password" placeholder="Password" class="form-control" name="password" id="user_password">
+                    <i class="fas fa-eye-slash" id="togglePassword"></i>
                 </div>
 
                 <button type="submit">Login
                     <i class="zmdi zmdi-arrow-right"></i>
                 </button>
 
-                <p style="text-align: center; font-size: larger;">OR</p> 
+                <p style="text-align: center; font-size: larger;">OR</p>
 
                 <div class="google-login" style="text-align: center;">
                     <a href="/login/google" class="btn-google" style="display: inline-flex; align-items: center; padding: 17px 15px; background-color: #333; text-decoration: none; border: 1px solid #333;">
@@ -75,7 +82,6 @@
                 <p style="text-align: center;">
                     Forgot your password? <a href="/emailVerify">Click here to reset it.</a>
                 </p>
-                
             </form>
         </div>
     </div>
@@ -107,7 +113,6 @@
                 const result = await response.json();
 
                 if (response.ok) {
-
                     Toastify({
                         text: result.message || "Login successful",
                         duration: 1000,
@@ -118,7 +123,6 @@
 
                     setTimeout(() => window.location.href = '/', 1000);
                 } else {
-
                     Toastify({
                         text: result.message || "Login error",
                         duration: 1000,
@@ -142,21 +146,21 @@
 
         document.getElementById("userLogin").addEventListener('submit', loginUser);
 
-      
+        // Password toggle functionality
         const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('user_password');
 
-        togglePassword.addEventListener('click', function () {
-          
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
+        if (togglePassword && passwordField) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
 
-          
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+                // Toggle between eye and eye-slash
+                this.classList.toggle('fa-eye-slash');
+                this.classList.toggle('fa-eye');
+            });
+        }
     </script>
-
 </body>
 
 </html>

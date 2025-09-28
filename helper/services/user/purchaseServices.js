@@ -1,7 +1,8 @@
+// Fixed purchaseServices.js
 const User = require("../../../Model/userModel");
 const Cart = require("../../../Model/cartModel");
 const Address = require("../../../Model/addressModel");
-const { applyCouponLogic } = require("../user/couponServices");
+const { previewCouponDiscount, redeemCoupon } = require("../user/couponServices");
 const { handleCODPayment } = require("../user/paymentHandlers/codPaymentHandler");
 const { handleWalletPayment } = require("../user/paymentHandlers/walletPaymentHandler");
 const { handleOnlinePayment } = require("../user/paymentHandlers/onlinePaymentHandler");
@@ -18,25 +19,25 @@ const processPurchase = async (purchaseData) => {
   } = purchaseData;
 
   try {
+    console.log('Processing purchase with data:', {
+      userId,
+      paymentMethod,
+      appliedCouponCode,
+      paymentStatus,
+      initial
+    });
+
     // 1. Validate and fetch required data
     const findUser = await User.findById(userId);
     const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
     const findAddress = await Address.findById(addressId);
 
     if (!findUser || !findCart || !findAddress) {
-      return {
-        success: false,
-        message: "Invalid user, cart, or address",
-        statusCode: 400
-      };
+      return { success: false, message: "Invalid user, cart, or address", statusCode: 400 };
     }
 
     if (!findCart.cartProducts || findCart.cartProducts.length === 0) {
-      return {
-        success: false,
-        message: "No products in the cart",
-        statusCode: 400
-      };
+      return { success: false, message: "No products in the cart", statusCode: 400 };
     }
 
     // 2. Calculate total amount
@@ -45,76 +46,80 @@ const processPurchase = async (purchaseData) => {
       return acc + productPrice * item.quantity;
     }, 0);
 
-    // 3. Handle coupon logic
+    console.log('Original total amount:', totalAmount);
+
+    // 3. Handle coupon logic (preview only - no redemption yet)
     let couponDetails = {};
     let discountAmount = 0;
-
+    
     if (appliedCouponCode) {
-      const couponResult = await applyCouponLogic(appliedCouponCode, totalAmount, userId);
+      console.log('Previewing coupon:', appliedCouponCode);
+      const couponResult = await previewCouponDiscount(appliedCouponCode, totalAmount, userId);
+      
       if (!couponResult.success) {
+        console.log('Coupon validation failed:', couponResult.message);
         return couponResult;
       }
+      
       couponDetails = couponResult.couponDetails;
       discountAmount = couponResult.discountAmount;
+      console.log('Coupon discount amount:', discountAmount);
     }
 
     const finalAmount = totalAmount - discountAmount;
+    console.log('Final amount after discount:', finalAmount);
 
     // 4. Handle different payment methods
+    let result;
+    const paymentData = {
+      findCart, 
+      findAddress, 
+      userId,
+      totalAmount, 
+      finalAmount, 
+      discountAmount,
+      couponDetails, 
+      paymentMethod,
+      paymentStatus, 
+      paymentId, 
+      initial
+    };
+
     switch (paymentMethod) {
-      case 'COD':
-        return await handleCODPayment({
-          findCart,
-          findAddress,
-          userId,
-          totalAmount,
-          discountAmount,
-          couponDetails,
-          paymentMethod
-        });
-
-      case 'Wallet':
-        return await handleWalletPayment({
-          findCart,
-          findAddress,
-          userId,
-          totalAmount,
-          finalAmount,
-          discountAmount,
-          couponDetails,
-          paymentMethod
-        });
-
-      case 'Online':
-        return await handleOnlinePayment({
-          findCart,
-          findAddress,
-          userId,
-          totalAmount,
-          finalAmount,
-          discountAmount,
-          couponDetails,
-          paymentMethod,
-          paymentStatus,
-          paymentId,
-          initial
-        });
-
+      case "COD":
+        result = await handleCODPayment(paymentData);
+        break;
+      case "Wallet":
+        result = await handleWalletPayment(paymentData);
+        break;
+      case "Online":
+        result = await handleOnlinePayment(paymentData);
+        break;
       default:
-        return {
-          success: false,
-          message: "Invalid payment method",
-          statusCode: 400
-        };
+        return { success: false, message: "Invalid payment method", statusCode: 400 };
     }
+
+    // 5. ✅ Redeem coupon only after successful payment/order creation
+    if (result.success && appliedCouponCode && !initial) {
+      console.log('Payment successful, redeeming coupon:', appliedCouponCode);
+      
+      // Only redeem if payment was successful (not for initial Razorpay order creation)
+      if (paymentMethod !== "Online" || paymentStatus === "Received") {
+        const redemptionResult = await redeemCoupon(appliedCouponCode, userId);
+        if (redemptionResult.success) {
+          console.log('Coupon redeemed successfully');
+        } else {
+          console.warn('Coupon redemption failed:', redemptionResult.message);
+          // Don't fail the entire process if coupon redemption fails
+        }
+      }
+    }
+
+    return result;
 
   } catch (error) {
     console.error("Error in processPurchase:", error);
-    return {
-      success: false,
-      message: "Internal Server Error",
-      statusCode: 500
-    };
+    return { success: false, message: "Internal Server Error", statusCode: 500 };
   }
 };
 

@@ -9,4 +9,4 @@ const updateProductStock= async(productId,size,quantity)=>{
     );
 };
 
-module.export={updateProductStock}
+module.exports={updateProductStock}

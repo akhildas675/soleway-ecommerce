@@ -1,0 +1,201 @@
+
+            .address-box {
+                display: block;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 15px;
+                margin-top: 10px;
+                cursor: pointer;
+                background-color: #f9f9f9;
+                transition: background-coloir 0.3s ease;
+                width: 70%;
+                /* Adjust this value to your desired width */
+                max-width: 400px;
+                /* Optional: Set a maximum width */
+            }
+
+            .address-box:hover {
+                background-color: #e9e9e9;
+            }
+
+            .form-check-input:checked+.address-box {
+                background-color: #d9d9d9;
+                border-color: #000000;
+            }
+
+            .form-check {
+                display: flex;
+                align-items: center;
+                /* margin-bottom: 15px; */
+            }
+
+            .form-check-input {
+                /* margin-right: 10px; Space between input and label */
+                margin-top: 0;
+                /* Aligns the radio button/checkbox vertically with the label */
+            }
+
+            .address-box {
+                /* width: 100%; Ensure the label box takes full width */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .form-check-label {
+                margin-bottom: 0;
+                /* Remove default margin to keep alignment intact */
+                display: block;
+            }
+
+            .btn-primary {
+                background-color: #000;
+                border-color: #000;
+                padding: 10px 20px;
+                font-size: 14px;
+                /* Reduce font size */
+                border-radius: 4px;
+                /* Adjust border radius for a smaller button */
+                color: #fff;
+                /* Set text color to white for better contrast */
+            }
+
+            .btn-primary:hover {
+                background-color: #333;
+                border-color: #333;
+            }
+
+            /* Order Table Styles */
+            #orderTable {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: "Arial", sans-serif;
+                background-color: #f9f9f9;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            #orderTable th {
+                padding: 12px;
+                text-align: left;
+                background-color: #333;
+                color: #fff;
+            }
+
+            #orderTable td {
+                padding: 12px;
+                vertical-align: top;
+            }
+
+            #orderTable .product-row {
+                border-bottom: 1px solid #ddd;
+            }
+
+            #orderTable .product-row td img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 5px;
+            }
+
+            #orderTable .product-row td {
+                padding: 15px;
+            }
+
+            #orderTable .product-row td:nth-child(2) {
+                padding-left: 20px;
+            }
+
+            #availableCoupons {
+                font-size: 16px;
+                color: #333;
+            }
+
+            #availableCoupons ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #availableCoupons li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background: linear-gradient(to right, #434343 0%, black 100%);
+                margin-bottom: 10px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            #availableCoupons button {
+                padding: 6px 12px;
+                background-color: #000000;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 20px;
+                transition: background-color 0.3s ease;
+            }
+
+            #availableCoupons button:hover {
+                background-color: #373737;
+            }
+
+            #orderTable .grand-total-row {
+                background-color: #f2f2f2;
+                font-weight: bold;
+                text-align: center;
+                padding: 20px;
+                border-top: 2px solid #ddd;
+            }
+
+            .order-container {
+                border: 1px solid #ddd;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+            .order-title {
+                margin-bottom: 20px;
+                font-size: 22px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            /* Coupon Text Colors */
+            .no-offer {
+                color: red;
+            }
+
+            .offer-available {
+                color: rgb(0, 0, 0);
+            }
+
+            .coupon-code {
+                font-size: 14px;
+                color: #ffffff;
+                background: linear-gradient(to right, #434343 0%, black 100%);
+                padding: 5px 0px;
+                border-radius: 5px;
+            }
+
+            .coupon-name {
+                color: #ffffff;
+                /* Example color, change to whatever you prefer */
+                font-weight: bold;
+                font-size: 16px;
+                /* Adjust size if needed */
+            }
+
+
+
+/* second changes */
+
+
+
