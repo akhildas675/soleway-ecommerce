@@ -34,13 +34,7 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: #333;
-            font-size: 16px; /* Ensure consistent size */
-        }
-
-        /* Ensure only one icon is visible */
-        .password-wrapper i.fa-eye,
-        .password-wrapper i.fa-eye-slash {
-            display: block; /* Ensure visibility */
+            font-size: 16px;
         }
     </style>
 </head>
@@ -61,7 +55,7 @@
 
                 <div class="form-wrapper password-wrapper">
                     <input type="password" placeholder="Password" class="form-control" name="password" id="user_password">
-                    <i class="fas fa-eye-slash" id="togglePassword"></i>
+                    
                 </div>
 
                 <button type="submit">Login
