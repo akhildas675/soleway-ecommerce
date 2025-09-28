@@ -355,7 +355,7 @@
                                                                 onclick="cropExistingImage('<%= i %>', '<%= image %>')">Crop</button>
                                                             <!-- View button -->
                                                             <button type="button" class="view-image"
-                                                                onclick="viewImage('<%= image %>')">View</button>
+                                                                <!-- onclick="viewImage('<%= image %>')">View</button> -->
                                                             <input type="hidden" name="existingImages[]"
                                                                 value="<%= image %>">
                                                         <% } %>
@@ -481,11 +481,15 @@
 
                         <script>
                         // Global variables for image handling
+// Fixed frontend JavaScript for edit product page
+
+// Global variables for image handling
 let currentCropper = null;
 let currentImageIndex = -1;
-let currentImageType = 'existing'; // 'existing' or 'new'
+let currentImageType = 'existing';
 let newImageFiles = [];
 let croppedImages = [];
+let removedImageIndices = new Set(); // Track removed images
 
 // Initialize toastr options
 toastr.options = {
@@ -506,56 +510,276 @@ toastr.options = {
     "hideMethod": "fadeOut"
 };
 
-// Existing image removal function
+// Fixed existing image removal function
 function removeExistingImage(imageIndex) {
     const productId = document.getElementById('productId').value;
+    
+    if (!productId) {
+        toastr.error('Product ID not found. Please refresh the page.');
+        return;
+    }
 
-    fetch('/admin/removeImage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            index: imageIndex,
-            productId: productId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Toastify({
-                text: data.message || "Image removed successfully",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#4CAF50",
-                close: true
-            }).showToast();
+    // Show confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will permanently delete the image.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading state
+            Swal.fire({
+                title: 'Deleting...',
+                text: 'Please wait while we remove the image.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-            document.querySelector(`[data-existing-index="${imageIndex}"]`).remove();
-        } else {
-            Toastify({
-                text: data.message || "Failed to remove image",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#f44336",
-                close: true
-            }).showToast();
+            // Make the deletion request
+            fetch('/admin/removeImage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    index: parseInt(imageIndex),
+                    productId: productId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.close(); // Close loading dialog
+                
+                if (data.success) {
+                    // Remove the image container from DOM
+                    const imageContainer = document.querySelector(`[data-existing-index="${imageIndex}"]`);
+                    if (imageContainer) {
+                        imageContainer.remove();
+                        removedImageIndices.add(parseInt(imageIndex));
+                    }
+                    
+                    // Update indices of remaining images
+                    updateImageIndices();
+                    
+                    // Show success message
+                    toastr.success(data.message || "Image removed successfully");
+                    
+                    // Check if we still have enough images
+                    const remainingImages = document.querySelectorAll('[data-existing-index]').length;
+                    const newImages = document.querySelectorAll('[data-new-index]').length;
+                    const totalImages = remainingImages + newImages;
+                    
+                    if (totalImages < 5) {
+                        toastr.warning(`You now have ${totalImages} images. Please add more images to meet the minimum requirement of 5 images.`);
+                    }
+                } else {
+                    toastr.error(data.message || "Failed to remove image");
+                }
+            })
+            .catch(error => {
+                Swal.close(); // Close loading dialog
+                console.error('Error removing image:', error);
+                toastr.error("An error occurred while removing the image. Please try again.");
+            });
         }
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-        Toastify({
-            text: "An error occurred while removing the image",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            backgroundColor: "#f44336",
-            close: true
-        }).showToast();
     });
 }
+
+// Update image indices after removal
+function updateImageIndices() {
+    const existingImages = document.querySelectorAll('[data-existing-index]');
+    existingImages.forEach((container, newIndex) => {
+        // Update data attribute
+        container.setAttribute('data-existing-index', newIndex);
+        
+        // Update remove button onclick
+        const removeBtn = container.querySelector('.remove-image');
+        if (removeBtn) {
+            removeBtn.setAttribute('data-index', newIndex);
+            removeBtn.setAttribute('onclick', `removeExistingImage('${newIndex}')`);
+        }
+        
+        // Update crop button onclick
+        const cropBtn = container.querySelector('.crop-image');
+        if (cropBtn && container.querySelector('img')) {
+            const imageSrc = container.querySelector('img').src;
+            cropBtn.setAttribute('onclick', `cropExistingImage('${newIndex}', '${imageSrc}')`);
+        }
+    });
+}
+
+// Handle new image selection with better validation
+function handleImageSelection(event) {
+    const files = Array.from(event.target.files);
+    
+    // Get current image counts
+    const existingImageCount = document.querySelectorAll('[data-existing-index]').length;
+    const currentNewImageCount = document.querySelectorAll('[data-new-index]').length;
+    const totalCurrentImages = existingImageCount + currentNewImageCount;
+    
+    // Check if adding these files would exceed limits
+    if (totalCurrentImages + files.length > 10) {
+        toastr.error(`Cannot add ${files.length} images. Maximum total images allowed is 10. You currently have ${totalCurrentImages} images.`);
+        event.target.value = '';
+        return;
+    }
+    
+    // Validate file types and sizes
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
+    
+    for (let file of files) {
+        if (!allowedTypes.includes(file.type)) {
+            toastr.error(`Invalid file type for "${file.name}". Only JPEG, JPG, PNG, and WebP are allowed.`);
+            event.target.value = '';
+            return;
+        }
+        
+        if (file.size > maxFileSize) {
+            toastr.error(`File "${file.name}" is too large. Maximum file size is 5MB.`);
+            event.target.value = '';
+            return;
+        }
+    }
+
+    // Add new files to existing array
+    newImageFiles = [...newImageFiles, ...files];
+    displayNewImagePreviews(newImageFiles);
+    
+    toastr.success(`Added ${files.length} new image(s) successfully.`);
+}
+
+// Display new image previews
+function displayNewImagePreviews(files) {
+    const container = document.getElementById('newImagePreview');
+    container.innerHTML = '';
+
+    files.forEach((file, index) => {
+        const previewDiv = createNewImagePreview(file, index);
+        container.appendChild(previewDiv);
+    });
+}
+
+// Create new image preview with better error handling
+function createNewImagePreview(file, index) {
+    const previewDiv = document.createElement('div');
+    previewDiv.className = 'image-preview';
+    previewDiv.setAttribute('data-new-index', index);
+
+    const img = document.createElement('img');
+    img.className = 'img-thumbnail';
+    img.alt = file.name;
+    
+    // Create object URL with error handling
+    try {
+        img.src = URL.createObjectURL(file);
+    } catch (error) {
+        console.error('Error creating object URL:', error);
+        img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjBGMEYwIi8+Cjx0ZXh0IHg9IjMwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OTk5OSIgZm9udC1zaXplPSIxMiI+RXJyb3I8L3RleHQ+Cjwvc3ZnPg==';
+    }
+
+    const fileName = document.createElement('div');
+    fileName.className = 'file-name';
+    fileName.textContent = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.innerHTML = '×';
+    removeBtn.className = 'remove-image';
+    removeBtn.type = 'button';
+    removeBtn.onclick = () => removeNewImage(index);
+
+    const cropBtn = document.createElement('button');
+    cropBtn.textContent = 'Crop';
+    cropBtn.className = 'crop-image';
+    cropBtn.type = 'button';
+    cropBtn.onclick = () => cropNewImage(index, file);
+
+    const viewBtn = document.createElement('button');
+    viewBtn.textContent = 'View';
+    viewBtn.className = 'view-image';
+    viewBtn.type = 'button';
+    viewBtn.onclick = () => {
+        try {
+            viewImage(URL.createObjectURL(file));
+        } catch (error) {
+            toastr.error('Cannot view this image');
+        }
+    };
+
+    previewDiv.appendChild(removeBtn);
+    previewDiv.appendChild(img);
+    previewDiv.appendChild(fileName);
+    previewDiv.appendChild(cropBtn);
+    previewDiv.appendChild(viewBtn);
+
+    return previewDiv;
+}
+
+// Remove new image
+function removeNewImage(index) {
+    // Remove from files array
+    newImageFiles.splice(index, 1);
+    
+    // Remove from cropped images if exists
+    if (croppedImages[index]) {
+        croppedImages.splice(index, 1);
+    }
+    
+    // Update file input
+    const dt = new DataTransfer();
+    newImageFiles.forEach(file => dt.items.add(file));
+    document.getElementById('imageInput').files = dt.files;
+    
+    // Refresh display
+    displayNewImagePreviews(newImageFiles);
+    toastr.info('New image removed successfully.');
+}
+
+// Enhanced form validation before submission
+function validateFormBeforeSubmit() {
+    const existingImageCount = document.querySelectorAll('[data-existing-index]').length;
+    const newImageCount = document.querySelectorAll('[data-new-index]').length;
+    const totalImageCount = existingImageCount + newImageCount;
+    
+    if (totalImageCount < 5) {
+        toastr.error(`Product must have at least 5 images. You currently have ${totalImageCount} images.`);
+        return false;
+    }
+    
+    return validatePage(); // Your existing validation function
+}
+
+// Enhanced form submission handling
+document.getElementById('productAdd').addEventListener('submit', function (event) {
+    event.preventDefault(); // Always prevent default first
+    
+    if (!validateFormBeforeSubmit()) {
+        return false;
+    }
+    
+    // Show loading state
+    Swal.fire({
+        title: 'Updating Product...',
+        text: 'Please wait while we update your product.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Submit the form
+    this.submit();
+});
 
 // Crop existing image function
 function cropExistingImage(index, imageSrc) {
@@ -577,107 +801,18 @@ function closeViewModal() {
     document.getElementById('viewModal').style.display = 'none';
 }
 
-// Handle new image selection
-function handleImageSelection(event) {
-    const files = Array.from(event.target.files);
-    
-    if (files.length > 5) {
-        toastr.error('You can only select up to 5 images.');
-        event.target.value = '';
-        return;
-    }
-
-    // Validate file types
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    for (let file of files) {
-        if (!allowedTypes.includes(file.type)) {
-            toastr.error('Invalid file type. Only JPEG, JPG, PNG, and WebP are allowed.');
-            event.target.value = '';
-            return;
-        }
-    }
-
-    newImageFiles = files;
-    displayNewImagePreviews(files);
-}
-
-// Display new image previews
-function displayNewImagePreviews(files) {
-    const container = document.getElementById('newImagePreview');
-    container.innerHTML = '';
-
-    files.forEach((file, index) => {
-        const previewDiv = createNewImagePreview(file, index);
-        container.appendChild(previewDiv);
-    });
-}
-
-// Create new image preview
-function createNewImagePreview(file, index) {
-    const previewDiv = document.createElement('div');
-    previewDiv.className = 'image-preview';
-    previewDiv.setAttribute('data-new-index', index);
-
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    img.alt = file.name;
-    img.className = 'img-thumbnail';
-
-    const fileName = document.createElement('div');
-    fileName.className = 'file-name';
-    fileName.textContent = file.name;
-
-    const removeBtn = document.createElement('button');
-    removeBtn.innerHTML = '×';
-    removeBtn.className = 'remove-image';
-    removeBtn.type = 'button';
-    removeBtn.onclick = () => removeNewImage(index);
-
-    const cropBtn = document.createElement('button');
-    cropBtn.textContent = 'Crop';
-    cropBtn.className = 'crop-image';
-    cropBtn.type = 'button';
-    cropBtn.onclick = () => cropNewImage(index, file);
-
-    const viewBtn = document.createElement('button');
-    viewBtn.textContent = 'View';
-    viewBtn.className = 'view-image';
-    viewBtn.type = 'button';
-    viewBtn.onclick = () => viewImage(URL.createObjectURL(file));
-
-    previewDiv.appendChild(removeBtn);
-    previewDiv.appendChild(img);
-    previewDiv.appendChild(fileName);
-    previewDiv.appendChild(cropBtn);
-    previewDiv.appendChild(viewBtn);
-
-    return previewDiv;
-}
-
-// Remove new image
-function removeNewImage(index) {
-    newImageFiles.splice(index, 1);
-    
-    if (croppedImages[index]) {
-        croppedImages.splice(index, 1);
-    }
-
-    const dt = new DataTransfer();
-    newImageFiles.forEach(file => dt.items.add(file));
-    document.getElementById('imageInput').files = dt.files;
-
-    displayNewImagePreviews(newImageFiles);
-    toastr.info('Image removed successfully.');
-}
-
 // Crop new image
 function cropNewImage(index, file) {
     currentImageIndex = index;
     currentImageType = 'new';
-    openCropModal(URL.createObjectURL(file));
+    try {
+        openCropModal(URL.createObjectURL(file));
+    } catch (error) {
+        toastr.error('Cannot crop this image');
+    }
 }
 
-// Open crop modal
+// Open crop modal (keep existing function)
 function openCropModal(imageSrc) {
     const modal = document.getElementById('cropModal');
     const image = document.getElementById('cropImage');
@@ -720,24 +855,7 @@ function closeCropModal() {
     currentImageType = 'existing';
 }
 
-// File validation function
-function validateFiles(files) {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    for (let i = 0; i < files.length; i++) {
-        if (!allowedTypes.includes(files[i].type)) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Invalid File Type',
-                text: `File "${files[i].name}" is not an allowed image type. Only JPEG, JPG, PNG, and WEBP files are allowed.`,
-                confirmButtonText: 'Ok'
-            });
-            document.getElementById('imageInput').value = '';
-            return;
-        }
-    }
-}
-
-// Success message on page load
+// Initialize page
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -964,15 +1082,7 @@ function validatePage() {
     }, 3000);
 
     return isValid;
-}
-
-// Form submission handling
-document.getElementById('productAdd').addEventListener('submit', function (event) {
-    if (!validatePage()) {
-        event.preventDefault();
-    }
-});
-                            
+}                 
                         </script>
                 
 <!-- Toastify JS -->

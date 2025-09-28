@@ -26,47 +26,44 @@
 
 			/* Default state for the wishlist button */
 			.btn-addwish-b2 {
-  border: 1px solid transparent;
-  background-color: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+				border: 1px solid transparent;
+				background-color: transparent;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
 
-/* Default heart icon color (not active) */
-.btn-addwish-b2 .bi-heart {
-  color: grey; /* Default color for outline heart */
-}
+			/* Default heart icon color (not active) */
+			.btn-addwish-b2 .bi-heart {
+				color: grey; /* Default color for outline heart */
+			}
 
-/* Active state: When the product is in the wishlist */
-.btn-addwish-b2.active {
-  background-color: rgb(255, 255, 255); /* Change the button background to red when active */
-  border-color: rgb(255, 255, 255);
-}
+			/* Active state: When the product is in the wishlist */
+			.btn-addwish-b2.active {
+				background-color: rgb(255, 255, 255); /* Change the button background to white when active */
+				border-color: rgb(255, 255, 255);
+			}
 
-/* Active heart icon (filled heart) */
-.btn-addwish-b2.active .bi-heart-fill {
-  color: rgb(253, 0, 0); /* Change the heart icon to white when active */
-}
+			/* Active heart icon (filled heart) */
+			.btn-addwish-b2.active .bi-heart-fill {
+				color: rgb(253, 0, 0); /* Change the heart icon to red when active */
+			}
 
-/* Active state hover effect (optional) */
-.btn-addwish-b2.active:hover {
-  transform: scale(1.1); /* Enlarge button slightly on hover */
-}
+			/* Active state hover effect (optional) */
+			.btn-addwish-b2.active:hover {
+				transform: scale(1.1); /* Enlarge button slightly on hover */
+			}
 
-/* Heart icon inside the button (when not active) */
-.btn-addwish-b2 .bi-heart {
-  transition: color 0.3s ease;
-}
+			/* Heart icon inside the button (when not active) */
+			.btn-addwish-b2 .bi-heart {
+				transition: color 0.3s ease;
+			}
 
-/* Heart icon inside the button (when active) */
-.btn-addwish-b2.active .bi-heart,
-.btn-addwish-b2.active .bi-heart-fill {
-  transition: color 0.3s ease;
-}
-
+			/* Heart icon inside the button (when active) */
+			.btn-addwish-b2.active .bi-heart,
+			.btn-addwish-b2.active .bi-heart-fill {
+				transition: color 0.3s ease;
+			}
 		</style>
-		
-		
 </head>
 
 <body class="animsition">
@@ -77,8 +74,6 @@
 		<div class="container-menu-desktop">
 			<!-- Topbar -->
 			<%- include('./partials/solewayTopBar.ejs') %>
-
-
 
 				<!-- Top bar end -->
 
@@ -95,16 +90,12 @@
 							<ul class="main-menu">
 								<li class="active-menu">
 									<a href="/" style="text-decoration: none;">Home</a>
-
-
 								</li>
-								
 
 								<li>
 									<a href="/Shop" style="text-decoration: none;">Shop</a>
 								</li>
 
-								
 								<li>
 									<a href="/Blog" style="text-decoration: none;">Blog</a>
 								</li>
@@ -121,30 +112,19 @@
 
 						<!-- Icon header -->
 						<div class="wrap-icon-header flex-w flex-r-m">
-							<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-								<i class="zmdi zmdi-search"></i>
-							</div> -->
+							<% if (findUser) { %>
+								<a href="/Cart" 
+								   class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" 
+								   data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
+									<i class="zmdi zmdi-shopping-cart"></i>
+								</a>
 
-					
-                        </div>
-
-						
-						<% if (findUser) { %> <!-- Only check if user is logged in -->
-							<a href="/Cart" 
-							   class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" 
-							   data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
-								<i class="zmdi zmdi-shopping-cart"></i>
-								
-							</a>
-						
-							<a href="/Wishlist" 
-							   class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" 
-							   data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
-								<i class="zmdi zmdi-favorite-outline"></i>
-								
-							</a>
-						<% } %>
-						
+								<a href="/Wishlist" 
+								   class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" 
+								   data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+									<i class="zmdi zmdi-favorite-outline"></i>
+								</a>
+							<% } %>
 						</div>
 					</nav>
 				</div>
@@ -159,29 +139,19 @@
 
 			<!-- Icon header -->
 			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
-				</div> -->
-
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
-                    <i class="zmdi zmdi-shopping-cart"></i>
-                </div> -->
-
-				<% if (cartCount > 0 && findUser && wishlistCount) { %> <!-- Use cartCount instead of locals.cartCount -->
+				<% if (cartCount > 0 && findUser && wishlistCount) { %>
 					<a href="/Cart"
 					  class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-					  data-notify="<%= cartCount > 0 ? cartCount : 0  %>">
+					  data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
 					  <i class="zmdi zmdi-shopping-cart"></i>
 					</a>
-				  
-				  
 
 					<a href="/Wishlist"
 						class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 						data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
 						<i class="zmdi zmdi-favorite-outline"></i>
 					</a>
-					<% } %>
+				<% } %>
 			</div>
 
 			<!-- Button show menu -->
@@ -194,22 +164,17 @@
 
 		<!-- Menu Mobile -->
 		<div class="menu-mobile">
-			
-			<ul class="main-menu-m" >
+			<ul class="main-menu-m">
 				<li class="active-menu">
 					<a href="/" style="text-decoration: none;">Home</a>
-					
-					
 				</li>
 
 				<li>
 					<a href="/Shop" style="text-decoration: none;">Shop</a>
 				</li>
 
-				
-
 				<li>
-					<a href="/Blog"  style="text-decoration: none;">Blog</a>
+					<a href="/Blog" style="text-decoration: none;">Blog</a>
 				</li>
 
 				<li>
@@ -221,39 +186,25 @@
 				</li>
 				<li>
 					<a href="/Account" style="text-decoration: none;">Account</a>
-
 				</li>
 
-				
 				<% if (locals.findUser) { %>
 					<li>
 						<a href="/logout" style="text-decoration: none;">Logout</a>
-	
 					</li>
-					<% } else { %>
-						<li>
-							<a href="/Login" style="text-decoration: none;">Login</a>
-		
-						</li>
-						<li>
-							<a href="/Register" style="text-decoration: none;">Register</a>
-		
-						</li>
-
-						
-						<% } %>
-
-
-
-
+				<% } else { %>
+					<li>
+						<a href="/Login" style="text-decoration: none;">Login</a>
+					</li>
+					<li>
+						<a href="/Register" style="text-decoration: none;">Register</a>
+					</li>
+				<% } %>
 			</ul>
 		</div>
 
 		<!-- Modal Search -->
-
 		<% if (locals.products) { %>
-
-
 			<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
 				<div class="container-search-header">
 					<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
@@ -268,12 +219,8 @@
 					</form>
 				</div>
 			</div>
-			<% } %>
+		<% } %>
 	</header>
-
-	<!-- Cart -->
-
-
 
 	<!-- Slider -->
 	<section class="section-slide">
@@ -303,8 +250,6 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- <div class="item-slick1" style="background-image: url(/images/Designer\ \(1\).jpeg);"> -->
 
 				<div class="item-slick1" style="background-image: url(images/Designer.jpeg);">
 					<div class="container h-full">
@@ -362,7 +307,6 @@
 		</div>
 	</section>
 
-
 	<!-- Banner -->
 	<div class="sec-banner bg0 p-t-80 p-b-50">
 		<div class="container">
@@ -372,7 +316,6 @@
 			<div class="row">
 				<% if (locals.newArrival) { %>
 					<% for( let i=0; i < newArrival.length; i++ ) { %>
-	
 						<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
 							<!-- Bootstrap Carousel for each product -->
 							<div id="carousel<%= i %>" class="carousel slide" data-bs-ride="carousel">
@@ -383,7 +326,7 @@
 										</div>
 									<% } %>
 								</div>
-	
+
 								<!-- Optional: Add Previous/Next controls -->
 								<a class="carousel-control-prev" href="#carousel<%= i %>" role="button" data-bs-slide="prev">
 									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -394,17 +337,15 @@
 									<span class="visually-hidden">Next</span>
 								</a>
 							</div>
-	
+
 							<!-- Product Details -->
 							<a href="/productView?id=<%= newArrival[i]._id %>" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3" style="text-decoration: none;">
 								<div class="block1-txt-child1 flex-col-l">
 									<span class="block1-name ltext-102 trans-04 p-b-8" style="text-decoration: none; color: rgb(68, 68, 68);">
 										<%= newArrival[i].productName %>
 									</span>
-							
-									
 								</div>
-							
+
 								<div class="block1-txt-child2 p-b-4 trans-05">
 									<div class="block1-link stext-101 cl0 trans-09">
 										Shop Now
@@ -412,13 +353,11 @@
 								</div>
 							</a>
 						</div>
-						
 					<% } %>
 				<% } %>
 			</div>
 		</div>
 	</div>
-	
 
 	<!-- Product -->
 	<section class="bg0 p-t-23 p-b-140">
@@ -429,15 +368,7 @@
 				</h3>
 			</div>
 
-			<div class="flex-w flex-sb-m p-b-52">
-				
-
-					
-			</div>
-
-
-
-
+			<div class="flex-w flex-sb-m p-b-52"></div>
 
 			<div class="row isotope-grid">
 				<% if (locals.products) { %>
@@ -450,7 +381,7 @@
 										<img src="../<%= products[i].images[0] %>" alt="IMG-PRODUCT">
 									</a>
 								</div>
-			
+
 								<div class="block2-txt flex-w flex-t p-t-14">
 									<div class="block2-txt-child1 flex-col-l">
 										<a href="/productView?id=<%= products[i]._id %>"
@@ -458,34 +389,28 @@
 											style="text-decoration: none;">
 											<%= products[i].productName %>
 										</a>
-			
+
 										<span class="stext-105 cl3">
 											Price: ₹ 
 											<%= (products[i].offerPrice && products[i].offerPrice > 0) ? products[i].offerPrice : products[i].realPrice %>
 										</span>
 									</div>
-			
+
 									<!-- Product Wishlist Button -->
 									<% if (locals.findUser) { %>
 										<div class="block2-txt-child2 flex-r p-t-3">
-											
 											<a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= wishlist.includes(products[i]._id.toString()) ? 'active' : '' %>" 
 												data-product-id="<%= products[i]._id %>" 
 												onclick="toggleWishList('<%= products[i]._id %>')">
-												
 												<% if (wishlist.includes(products[i]._id.toString())) { %>
-												
 													<i class="bi bi-heart-fill"></i>
 												<% } else { %>
-												
 													<i class="bi bi-heart"></i>
 												<% } %>
 											</a>
 										</div>
 									<% } else { %>
-										<div class="block2-txt-child2 flex-r p-t-3">
-											
-										</div>
+										<div class="block2-txt-child2 flex-r p-t-3"></div>
 									<% } %>
 								</div>
 							</div>
@@ -493,22 +418,12 @@
 					<% } %>
 				<% } %>
 			</div>
-			
-
-			<!-- Load more -->
-			<!-- <div class="flex-c-m flex-w w-full p-t-45">
-				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-					Load More
-				</a>
-			</div> -->
 		</div>
 	</section>
-
 
 	<!-- Footer -->
 	<%- include('./partials/userFooter.ejs') %>
 		<!-- Footer End -->
-
 
 		<!-- Back to top -->
 		<div class="btn-back-to-top" id="myBtn">
@@ -517,8 +432,6 @@
 			</span>
 		</div>
 
-		<!-- Modal1 -->
-		
 		<!--===============================================================================================-->
 		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 		<!--===============================================================================================-->
@@ -550,9 +463,9 @@
 		<!--===============================================================================================-->
 		<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
 		<script>
-			$('.gallery-lb').each(function () { // the containers for all your galleries
+			$('.gallery-lb').each(function () {
 				$(this).magnificPopup({
-					delegate: 'a', // the selector for gallery item
+					delegate: 'a',
 					type: 'image',
 					gallery: {
 						enabled: true
@@ -565,42 +478,6 @@
 		<script src="vendor/isotope/isotope.pkgd.min.js"></script>
 		<!--===============================================================================================-->
 		<script src="vendor/sweetalert/sweetalert.min.js"></script>
-		<script>
-			// $('.js-addwish-b2').on('click', function(e){
-			// 	e.preventDefault();
-			// });
-
-			// $('.js-addwish-b2').each(function(){
-			// 	var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-			// 	$(this).on('click', function(){
-			// 		swal(nameProduct, "is added to wishlist !", "success");
-
-			// 		$(this).addClass('js-addedwish-b2');
-			// 		$(this).off('click');
-			// 	});
-			// });
-
-			// $('.js-addwish-detail').each(function(){
-			// 	var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-
-			// 	$(this).on('click', function(){
-			// 		swal(nameProduct, "is added to wishlist !", "success");
-
-			// 		$(this).addClass('js-addedwish-detail');
-			// 		$(this).off('click');
-			// 	});
-			// });
-
-			/*---------------------------------------------*/
-
-			// $('.js-addcart-detail').each(function(){
-			// 	var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-			// 	$(this).on('click', function(){
-			// 		swal(nameProduct, "is added to cart !", "success");
-			// 	});
-			// });
-
-		</script>
 		<!--===============================================================================================-->
 		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 		<script>
@@ -622,75 +499,46 @@
 		<script src="js/main.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function toggleWishList(productId) {
-        // console.log("Toggling wishlist...");
+		<script>
+			function toggleWishList(productId) {
+				fetch('/toggleWishlist', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ productId: productId })
+				})
+				.then(response => response.json())
+				.then(data => {
+					const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
+					const icon = button.querySelector('i');
 
-        fetch('/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId: productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // console.log("Response Data:", data); 
-            const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
-            const icon = button.querySelector('i');
-
-            if (data.success) {
-             
-                if (data.action === 'added') {
-                    button.classList.add('active');
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: data.message || 'Product added to wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                      
-                        window.location.reload();
-                    });
-                } else {
-                    button.classList.remove('active');
-                    icon.classList.remove('bi-heart-fill'); 
-                    icon.classList.add('bi-heart'); 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Removed!',
-                        text: data.message || 'Product removed from wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        
-                        window.location.reload();
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: data.message || 'Failed to update wishlist',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating the wishlist',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-</script>
-
-
-
+					if (data.success) {
+						if (data.action === 'added') {
+							button.classList.add('active');
+							icon.classList.remove('bi-heart');
+							icon.classList.add('bi-heart-fill');
+						} else {
+							button.classList.remove('active');
+							icon.classList.remove('bi-heart-fill');
+							icon.classList.add('bi-heart');
+						}
+						// Update wishlist count in header
+						const wishlistIcons = document.querySelectorAll('.icon-header-noti[data-notify]');
+						wishlistIcons.forEach(icon => {
+							if (icon.getAttribute('href') === '/Wishlist') {
+								const newCount = data.wishlistCount || 0;
+								icon.setAttribute('data-notify', newCount);
+							}
+						});
+					} else {
+						console.error('Failed to update wishlist:', data.message);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+			}
+		</script>
 </body>
-
 </html>

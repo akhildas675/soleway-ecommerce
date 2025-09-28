@@ -10,8 +10,9 @@ const puppeteer = require("puppeteer");
 // Import services
 const { processPurchase } = require('../../helper/services/user/purchaseServices');
 const { updateProductStock } = require("../../helper/utils/userUtils/productUtils");
+const { previewCouponDiscount, redeemCoupon } = require("../../helper/services/user/couponServices");
 
-// Razorpay configuration (you can move this to config file)
+// Razorpay configuration
 const Razorpay = require("razorpay");
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 const instance = new Razorpay({
@@ -19,8 +20,7 @@ const instance = new Razorpay({
   key_secret: RAZORPAY_SECRET_KEY,
 });
 
-// ===================== CONTROLLER FUNCTIONS =====================
-
+// Load Checkout Page
 const loadCheckout = async (req, res) => {
   try {
     const userId = req.session.userData;
@@ -96,56 +96,43 @@ const loadCheckout = async (req, res) => {
       adjustments,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in loadCheckout:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// Apply Coupon Function (for frontend validation)
+// Apply Coupon Function (preview only - no redemption)
 const applyCoupon = async (req, res) => {
   try {
     const { couponCode, totalAmount } = req.body;
     const userId = req.session.userData;
 
-    const coupon = await Coupon.findOne({
-      couponCode: couponCode,
-      isActive: true,
-      expiryDate: { $gte: Date.now() },
-    });
+    console.log('Applying coupon preview:', { couponCode, totalAmount, userId });
 
-    if (!coupon) {
+    const couponResult = await previewCouponDiscount(couponCode, totalAmount, userId);
+
+    if (!couponResult.success) {
       return res.json({
         success: false,
-        message: "Coupon not found or expired",
+        message: couponResult.message,
       });
     }
 
-    const userRedeemed = coupon.redeemedUsers.some(
-      (user) => user.userId == userId
-    );
-    if (userRedeemed) {
-      return res.json({
-        success: false,
-        message: "Coupon already redeemed.",
-      });
-    }
-
-    if (totalAmount < coupon.minimumPurchase) {
-      return res.json({
-        success: false,
-        message: `Coupon requires a minimum purchase of ₹${coupon.minimumPurchase}`,
-      });
-    }
-
-    const discountAmount = (totalAmount * coupon.discountInPercentage) / 100;
+    const discountAmount = couponResult.discountAmount;
     const finalAmount = totalAmount - discountAmount;
+
+    console.log('Coupon preview result:', {
+      original: totalAmount,
+      discount: discountAmount,
+      final: finalAmount
+    });
 
     return res.json({
       success: true,
-      couponName: coupon.couponName,
+      couponName: couponResult.couponDetails.couponName || couponCode,
       discountAmount: discountAmount.toFixed(2),
       finalAmount: finalAmount.toFixed(2),
-      couponCode: coupon.couponCode,
+      couponCode: couponCode,
     });
   } catch (error) {
     console.error("Error applying coupon:", error);
@@ -156,6 +143,7 @@ const applyCoupon = async (req, res) => {
   }
 };
 
+// Remove Coupon Function
 const removeCoupon = (req, res) => {
   try {
     return res.json({
@@ -171,12 +159,18 @@ const removeCoupon = (req, res) => {
   }
 };
 
-// ===================== PAYMENT CONTROLLER FUNCTIONS =====================
-
+// COD Place Order
 const codPlaceOrder = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { addressId, paymentMethod, appliedCouponCode } = req.body;
+
+    console.log('COD Order request:', {
+      userId,
+      addressId,
+      paymentMethod,
+      appliedCouponCode
+    });
 
     const result = await processPurchase({
       userId,
@@ -195,15 +189,23 @@ const codPlaceOrder = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error in placing order:", error);
+    console.error("Error in COD placing order:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+// Wallet Payment
 const walletPay = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { addressId, paymentMethod, appliedCouponCode } = req.body;
+
+    console.log('Wallet payment request:', {
+      userId,
+      addressId,
+      paymentMethod,
+      appliedCouponCode
+    });
 
     const result = await processPurchase({
       userId,
@@ -234,55 +236,104 @@ const walletPay = async (req, res) => {
   }
 };
 
+// Online Payment
 const onlinepay = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const {
-      addressId,
-      paymentMethod,
-      paymentStatus,
-      paymentId,
-      appliedCouponCode,
-      initial,
-    } = req.body;
+    let { addressId, appliedCouponCode, amount, initial } = req.body;
 
-    const result = await processPurchase({
-      userId,
-      addressId,
-      paymentMethod: 'Online',
-      appliedCouponCode,
-      paymentStatus,
-      paymentId,
-      initial
-    });
+    console.log('Online payment request:', { addressId, appliedCouponCode, amount, initial });
 
-    if (!result.success) {
-      return res.status(result.statusCode || 400).json({ message: result.message });
-    }
-
-    if (result.orderId && result.amount) {
-      return res.json({
-        message: result.message,
-        orderId: result.orderId,
-        amount: result.amount,
+    // Get cart to calculate actual total
+    const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
+    if (!findCart || !findCart.cartProducts || findCart.cartProducts.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "No items in cart" 
       });
     }
 
-    return res.json({
-      message: result.message,
-      orderIds: result.orderIds,
-    });
+    // Calculate total from cart
+    let totalAmount = findCart.cartProducts.reduce((acc, item) => {
+      const productPrice = item.productId.offerPrice || item.productId.realPrice;
+      return acc + productPrice * item.quantity;
+    }, 0);
 
+    // Apply coupon discount if provided
+    let finalAmount = totalAmount;
+    if (appliedCouponCode) {
+      const couponResult = await previewCouponDiscount(appliedCouponCode, totalAmount, userId);
+      
+      if (couponResult.success) {
+        finalAmount = totalAmount - couponResult.discountAmount;
+        console.log('Coupon applied - Original:', totalAmount, 'Final:', finalAmount);
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: couponResult.message
+        });
+      }
+    }
+
+    // If this is initial request, create Razorpay order
+    if (initial) {
+      const razorpayOrder = await instance.orders.create({
+        amount: Math.round(finalAmount * 100), // Convert to paise and use discounted amount
+        currency: "INR",
+        receipt: "order_" + Date.now(),
+      });
+
+      console.log('Razorpay order created:', {
+        id: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+        finalAmount
+      });
+
+      return res.json({
+        success: true,
+        orderId: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+        finalAmount: finalAmount,
+        appliedCouponCode,
+      });
+    } else {
+      // This is for processing after payment - use processPurchase service
+      const result = await processPurchase({
+        userId,
+        addressId,
+        paymentMethod: 'Online',
+        appliedCouponCode,
+        paymentStatus: req.body.paymentStatus || 'Received',
+        paymentId: req.body.paymentId,
+        initial: false
+      });
+
+      if (!result.success) {
+        return res.status(result.statusCode || 400).json({ 
+          success: false,
+          message: result.message 
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: result.message,
+        orderIds: result.orderIds
+      });
+    }
   } catch (error) {
-    console.error("Error in online payment processing:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error in online payment:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
+// Re-payment for failed orders
 const rePayment = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { orderId, paymentId } = req.body;
+
+    console.log('Re-payment request:', { userId, orderId, paymentId });
 
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -295,6 +346,7 @@ const rePayment = async (req, res) => {
     const totalAmount = findOrder.totalAmount;
 
     if (!paymentId) {
+      // Create new Razorpay order for retry
       const razorpayOrder = await instance.orders.create({
         amount: totalAmount * 100,
         currency: "INR",
@@ -309,10 +361,12 @@ const rePayment = async (req, res) => {
         amount: razorpayOrder.amount,
       });
     } else {
+      // Payment successful - update order
       findOrder.paymentId = paymentId;
       findOrder.orderStatus = "Order Placed";
       findOrder.paymentStatus = "Received";
 
+      // Update stock
       for (const item of findOrder.products) {
         await updateProductStock(item.productId, item.size, item.quantity);
       }
@@ -330,15 +384,36 @@ const rePayment = async (req, res) => {
   }
 };
 
+// Update Order Status
 const updateOrderStatus = async (req, res) => {
   try {
-    const { paymentId, orderId, paymentStatus } = req.body;
+    const { paymentId, orderId, paymentStatus, couponCode } = req.body;
+    const userId = req.session.userData;
 
+    console.log('Updating order status:', {
+      paymentId,
+      orderId, 
+      paymentStatus,
+      couponCode
+    });
+
+    // Update order status
     await Order.findByIdAndUpdate(orderId, {
       paymentStatus,
       paymentId,
       orderStatus: "Order Placed",
     });
+
+    // If payment is successful and there's a coupon, redeem it now
+    if (paymentStatus === "Received" && couponCode) {
+      const redemptionResult = await redeemCoupon(couponCode, userId);
+      
+      if (redemptionResult.success) {
+        console.log('Coupon redeemed after successful payment');
+      } else {
+        console.warn('Failed to redeem coupon after payment:', redemptionResult.message);
+      }
+    }
 
     res.json({
       message: "Order status updated successfully",
@@ -350,20 +425,25 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// Order Success Page
 const successOrder = async (req, res) => {
   try {
     const userId = req.session.userData;
     const findUser = await User.findById(userId);
     res.render("orderSuccess", { findUser });
   } catch (error) {
-    console.log(error);
+    console.error("Error in successOrder:", error);
+    res.status(500).send("Server Error");
   }
 };
 
+// Cancel Order
 const cancelation = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { orderId, actionType } = req.body;
+
+    console.log('Order cancellation request:', { userId, orderId, actionType });
 
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -462,10 +542,13 @@ const cancelation = async (req, res) => {
   }
 };
 
+// Return Order
 const returnOrder = async (req, res) => {
   try {
     const { returnReason, orderId } = req.body;
     const userId = req.session.userData;
+
+    console.log('Order return request:', { returnReason, orderId, userId });
 
     if (!returnReason) {
       return res.status(400).json({
@@ -579,6 +662,7 @@ const returnOrder = async (req, res) => {
   }
 };
 
+// Get Invoice
 const getInvoice = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -595,11 +679,12 @@ const getInvoice = async (req, res) => {
 
     res.render("invoice", { order });
   } catch (error) {
-    console.log(error);
+    console.error("Error in getInvoice:", error);
     res.status(500).send("Server error");
   }
 };
 
+// Download Invoice
 const invoiceDownload = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -642,7 +727,7 @@ const invoiceDownload = async (req, res) => {
     // Send the PDF file as a response
     res.send(pdf);
   } catch (error) {
-    console.log(error);
+    console.error("Error in invoiceDownload:", error);
     res.status(500).send("Server error");
   }
 };

@@ -95,7 +95,7 @@ const createOrders = async (orderData)=>{
             paymentStatus
         });
 
-        orderId.push(orderId);
+        orderIds.push(orderId);
 
 
         //update Stock

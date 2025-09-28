@@ -5,17 +5,15 @@
     <meta charset="utf-8">
     <title>Registration Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <!-- Favicon -->
-   <link rel="icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/x-icon">
 
-    <!-- MATERIAL DESIGN ICONIC FONT -->
-    <!-- <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css"> -->
-      <!-- Include Font Awesome CDN for eye icons -->
+    <!-- Favicon -->
+    <link rel="icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/x-icon">
+
+    <!-- Include Font Awesome CDN for eye icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- MATERIAL DESIGN ICONIC FONT -->
     <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
-
 
     <!-- STYLE CSS -->
     <link rel="stylesheet" href="/logn_signup_assets/css/style.css">
@@ -36,143 +34,159 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: #333;
+            font-size: 16px; /* Ensure consistent size */
+        }
+
+        /* Ensure only one icon is visible */
+        .password-wrapper i.fa-eye,
+        .password-wrapper i.fa-eye-slash {
+            display: block; /* Ensure visibility */
         }
     </style>
 </head>
 
 <body>
-  <div class="wrapper" style="background-image: url('/logn_signup_assets/images/loginRegistraionbg.jpeg');">
-    <div class="inner">
-      <div class="image-holder">
-        <img src="/logn_signup_assets/images/Soleway Register Image.png" alt="">
-      </div>
-      <form id="userRegister">
-        <h3>Registration Form</h3>
+    <div class="wrapper" style="background-image: url('/logn_signup_assets/images/loginRegistraionbg.jpeg');">
+        <div class="inner">
+            <div class="image-holder">
+                <img src="/logn_signup_assets/images/Soleway Register Image.png" alt="">
+            </div>
+            <form id="userRegister">
+                <h3>Registration Form</h3>
 
-        <div class="form-wrapper">
-          <input type="text" placeholder="Name" class="form-control" name="name" id="user_name">
-          <i class="zmdi zmdi-account"></i>
-        </div>
-        <div class="form-wrapper">
-          <input type="email" placeholder="Email Address" class="form-control" name="email" id="user_email">
-          <i class="zmdi zmdi-email"></i>
-        </div>
-        <div class="form-wrapper">
-          <input type="text" placeholder="Mobile" class="form-control" name="mobile" id="user_mobile">
-          <i class="zmdi zmdi-phone"></i>
-        </div>
+                <div class="form-wrapper">
+                    <input type="text" placeholder="Name" class="form-control" name="name" id="user_name">
+                    <i class="zmdi zmdi-account"></i>
+                </div>
+                <div class="form-wrapper">
+                    <input type="email" placeholder="Email Address" class="form-control" name="email" id="user_email">
+                    <i class="zmdi zmdi-email"></i>
+                </div>
+                <div class="form-wrapper">
+                    <input type="text" placeholder="Mobile" class="form-control" name="mobile" id="user_mobile">
+                    <i class="zmdi zmdi-phone"></i>
+                </div>
 
-        <!-- Password field with eye icon -->
-        <div class="form-wrapper password-wrapper">
-          <input type="password" placeholder="Password" class="form-control" name="password" id="user_password">
-          <i class="fas fa-eye-slash togglePassword" id="togglePassword1"></i>
+                <!-- Password field with eye icon -->
+                <div class="form-wrapper password-wrapper">
+                    <input type="password" placeholder="Password" class="form-control" name="password" id="user_password">
+                    <i class="fas fa-eye-slash" id="togglePassword1"></i>
+                </div>
+
+                <!-- Confirm Password field with eye icon -->
+                <div class="form-wrapper password-wrapper">
+                    <input type="password" placeholder="Confirm Password" class="form-control" name="cpassword" id="user_cpassword">
+                    <i class="fas fa-eye-slash" id="togglePassword2"></i>
+                </div>
+
+                <button type="submit">Register
+                    <i class="zmdi zmdi-arrow-right"></i>
+                </button>
+                <br>
+
+                <p style="text-align: center;">You have an account? Please <a href="/Login">Login</a></p>
+            </form>
         </div>
-
-        <!-- Confirm Password field with eye icon -->
-        <div class="form-wrapper password-wrapper">
-          <input type="password" placeholder="Confirm Password" class="form-control" name="cpassword" id="user_cpassword">
-          <i class="fas fa-eye-slash togglePassword" id="togglePassword2"></i>
-        </div>
-
-        <button type="submit">Register
-          <i class="zmdi zmdi-arrow-right"></i>
-        </button>
-        <br>
-
-        <p style="text-align: center;">You have an account? Please <a href="/Login">Login</a></p>
-      </form>
     </div>
-  </div>
 
-  <!-- Toastify JS -->
-  <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
 
-  <script>
-    async function addUser(event) {
-      event.preventDefault();
-      const userName = document.getElementById("user_name").value;
-      const userEmail = document.getElementById("user_email").value;
-      const userMobile = document.getElementById("user_mobile").value;
-      const userPassword = document.getElementById("user_password").value;
-      const userCpassword = document.getElementById("user_cpassword").value;
+    <script>
+        async function addUser(event) {
+            event.preventDefault();
+            const userName = document.getElementById("user_name").value;
+            const userEmail = document.getElementById("user_email").value;
+            const userMobile = document.getElementById("user_mobile").value;
+            const userPassword = document.getElementById("user_password").value;
+            const userCpassword = document.getElementById("user_cpassword").value;
 
-      const data = {
-        name: userName,
-        email: userEmail,
-        mobile: userMobile,
-        password: userPassword,
-        cPassword: userCpassword
-      };
+            const data = {
+                name: userName,
+                email: userEmail,
+                mobile: userMobile,
+                password: userPassword,
+                cPassword: userCpassword
+            };
 
-      try {
-        const response = await fetch('/verifyRegister', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+            try {
+                const response = await fetch('/verifyRegister', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-        const result = await response.json();
+                const result = await response.json();
 
-        if (response.ok) {
-          Toastify({
-            text: result.message || "Registration successful!",
-            duration: 3000,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-          }).showToast();
-          
-          setTimeout(() => { window.location.href = result.redirect; }, 2000);
-        } else {
-          if (result.errors && Array.isArray(result.errors)) {
-            result.errors.forEach(error => {
-              Toastify({
-                text: error,
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-              }).showToast();
-            });
-          } else {
-            Toastify({
-              text: result.message || "Error during registration",
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-              backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-            }).showToast();
-          }
+                if (response.ok) {
+                    Toastify({
+                        text: result.message || "Registration successful!",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }).showToast();
+                    
+                    setTimeout(() => { window.location.href = result.redirect; }, 2000);
+                } else {
+                    if (result.errors && Array.isArray(result.errors)) {
+                        result.errors.forEach(error => {
+                            Toastify({
+                                text: error,
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            }).showToast();
+                        });
+                    } else {
+                        Toastify({
+                            text: result.message || "Error during registration",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        }).showToast();
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Toastify({
+                    text: "Failed to register. Please try again.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                }).showToast();
+            }
         }
-      } catch (error) {
-        console.error("Error:", error);
-        Toastify({
-          text: "Failed to register. Please try again.",
-          duration: 3000,
-          gravity: "top",
-          position: "right",
-          backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-        }).showToast();
-      }
-    }
 
-    document.getElementById("userRegister").addEventListener('submit', addUser);
+        document.getElementById("userRegister").addEventListener('submit', addUser);
 
-    // Password visibility toggles
-    const togglePasswordIcons = document.querySelectorAll('.togglePassword');
-    togglePasswordIcons.forEach(toggleIcon => {
-      toggleIcon.addEventListener('click', function () {
-        const passwordField = this.previousElementSibling;
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
-        
-        // Toggle icon
-        this.classList.toggle('fa-eye');
-        this.classList.toggle('fa-eye-slash');
-      });
-    });
-  </script>
+        // Password visibility toggles
+        const togglePassword1 = document.getElementById('togglePassword1');
+        const togglePassword2 = document.getElementById('togglePassword2');
+        const passwordField1 = document.getElementById('user_password');
+        const passwordField2 = document.getElementById('user_cpassword');
+
+        if (togglePassword1 && passwordField1) {
+            togglePassword1.addEventListener('click', function () {
+                const type = passwordField1.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField1.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+                this.classList.toggle('fa-eye');
+            });
+        }
+
+        if (togglePassword2 && passwordField2) {
+            togglePassword2.addEventListener('click', function () {
+                const type = passwordField2.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField2.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+                this.classList.toggle('fa-eye');
+            });
+        }
+    </script>
 </body>
-
 
 </html>

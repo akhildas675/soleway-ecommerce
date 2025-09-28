@@ -6,78 +6,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
     <%- include('./partials/solewayCss.ejs') %>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-		<link rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
-			<style>
-				a {
-					text-decoration: none; /* Removes underline from all links */
-				}
-			
-				a:hover {
-					text-decoration: underline; /* Optionally add underline on hover */
-				}
-			</style>
-			
-		<style>
-			.btn-small {
-				padding: 5px 10px;
-				font-size: 12px;
-				line-height: 1.5;
-				border-radius: 3px;
-				display: inline-flex;
-				align-items: center;
-			}
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+    <style>
+        a {
+            text-decoration: none; /* Removes underline from all links */
+        }
 
-			.btn-small i {
-				margin-right: 5px;
-			}
+        a:hover {
+            text-decoration: underline; /* Optionally add underline on hover */
+        }
+    </style>
 
-			/* Default state for the wishlist button */
-			.btn-addwish-b2 {
-  border: 1px solid transparent;
-  background-color: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+    <style>
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+        }
 
-/* Default heart icon color (not active) */
-.btn-addwish-b2 .bi-heart {
-  color: grey; /* Default color for outline heart */
-}
+        .btn-small i {
+            margin-right: 5px;
+        }
 
-/* Active state: When the product is in the wishlist */
-.btn-addwish-b2.active {
-  background-color: rgb(255, 255, 255); /* Change the button background to red when active */
-  border-color: rgb(255, 255, 255);
-}
+        /* Default state for the wishlist button */
+        .btn-addwish-b2 {
+            border: 1px solid transparent;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-/* Active heart icon (filled heart) */
-.btn-addwish-b2.active .bi-heart-fill {
-  color: rgb(253, 0, 0); /* Change the heart icon to white when active */
-}
+        /* Default heart icon color (not active) */
+        .btn-addwish-b2 .bi-heart {
+            color: grey; /* Default color for outline heart */
+        }
 
-/* Active state hover effect (optional) */
-.btn-addwish-b2.active:hover {
-  transform: scale(1.1); /* Enlarge button slightly on hover */
-}
+        /* Active state: When the product is in the wishlist */
+        .btn-addwish-b2.active {
+            background-color: rgb(255, 255, 255); /* Change the button background to white when active */
+            border-color: rgb(255, 255, 255);
+        }
 
-/* Heart icon inside the button (when not active) */
-.btn-addwish-b2 .bi-heart {
-  transition: color 0.3s ease;
-}
+        /* Active heart icon (filled heart) */
+        .btn-addwish-b2.active .bi-heart-fill {
+            color: rgb(253, 0, 0); /* Change the heart icon to red when active */
+        }
 
-/* Heart icon inside the button (when active) */
-.btn-addwish-b2.active .bi-heart,
-.btn-addwish-b2.active .bi-heart-fill {
-  transition: color 0.3s ease;
-}
+        /* Active state hover effect (optional) */
+        .btn-addwish-b2.active:hover {
+            transform: scale(1.1); /* Enlarge button slightly on hover */
+        }
 
-		</style>
-		
+        /* Heart icon inside the button (when not active) */
+        .btn-addwish-b2 .bi-heart {
+            transition: color 0.3s ease;
+        }
+
+        /* Heart icon inside the button (when active) */
+        .btn-addwish-b2.active .bi-heart,
+        .btn-addwish-b2.active .bi-heart-fill {
+            transition: color 0.3s ease;
+        }
+    </style>
 </head>
 
 <body class="animsition">
@@ -100,37 +97,34 @@
 
                         <% if (locals.findUser) { %>
                             <a href="/Account" class="flex-c-m trans-04 p-lr-25">
-                                <%= findUser.name%>
-                                    <% } else { %>
-                                        <a href="#" class="flex-c-m p-lr-10 trans-04">
-                                            Guest User
-                                        </a>
-                                        <%}%>
+                                <%= findUser.name %>
+                            </a>
+                        <% } else { %>
+                            <a href="#" class="flex-c-m p-lr-10 trans-04">
+                                Guest User
+                            </a>
+                        <% } %>
 
-                                            <% if (locals.findUser) { %>
-                                                <a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                    <i class="zmdi zmdi-sign-in"></i> Logout
-                                                </a>
-                                                <% } else { %>
-                                                    <a href="/Login"
-                                                        class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                        <i class="zmdi zmdi-account"></i> Login
-                                                    </a>
-
-                                                    <a href="/Register"
-                                                        class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                        <i class="zmdi zmdi-assignment"></i> Register
-                                                    </a>
-                                                    <% } %>
+                        <% if (locals.findUser) { %>
+                            <a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-sign-in"></i> Logout
+                            </a>
+                        <% } else { %>
+                            <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-account"></i> Login
+                            </a>
+                            <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-assignment"></i> Register
+                            </a>
+                        <% } %>
                     </div>
                 </div>
             </div>
 
             <div class="wrap-menu-desktop how-shadow1">
                 <nav class="limiter-menu-desktop container">
-
                     <!-- Logo desktop -->
-                    <a href="#" class="logo">
+                    <a href="/" class="logo">
                         <img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO">
                     </a>
 
@@ -139,25 +133,19 @@
                         <ul class="main-menu">
                             <li>
                                 <a href="/">Home</a>
-
                             </li>
-
                             <li>
                                 <a href="/Shop">Shop</a>
                             </li>
-
                             <li class="label1" data-label1="hot">
                                 <a href="shoping-cart.html">Features</a>
                             </li>
-
                             <li>
                                 <a href="/Blog">Blog</a>
                             </li>
-
                             <li>
                                 <a href="/About">About</a>
                             </li>
-
                             <li>
                                 <a href="/Contact">Contact</a>
                             </li>
@@ -166,16 +154,16 @@
 
                     <!-- Icon header -->
                     <div class="wrap-icon-header flex-w flex-r-m">
-
-                        </a>
-
                         <a href="/Cart"
                             class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-                            data-notify="0">
+                            data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
                             <i class="zmdi zmdi-shopping-cart"></i>
                         </a>
-
-
+                        <a href="/Wishlist"
+                            class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+                            data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
+                            <i class="zmdi zmdi-favorite-outline"></i>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -183,27 +171,24 @@
 
         <!-- Header Mobile -->
         <div class="wrap-header-mobile">
-            <!-- Logo moblie -->
+            <!-- Logo mobile -->
             <div class="logo-mobile">
                 <a href="/"><img src="/images/icons/SOLEWAY WHITE LOGO.png" alt="IMG-LOGO"></a>
             </div>
 
             <!-- Icon header -->
-            <!-- <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-                    <i class="zmdi zmdi-search"></i>
-                </div>
-
-                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-                    data-notify="2">
+            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
+                <a href="/Cart"
+                    class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+                    data-notify="<%= cartCount > 0 ? cartCount : 0 %>">
                     <i class="zmdi zmdi-shopping-cart"></i>
-                </div>
-
-                <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
-                    data-notify="0">
+                </a>
+                <a href="/Wishlist"
+                    class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+                    data-notify="<%= wishlistCount > 0 ? wishlistCount : 0 %>">
                     <i class="zmdi zmdi-favorite-outline"></i>
                 </a>
-            </div> -->
+            </div>
 
             <!-- Button show menu -->
             <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
@@ -213,7 +198,6 @@
             </div>
         </div>
 
-
         <!-- Menu Mobile -->
         <div class="menu-mobile">
             <ul class="topbar-mobile">
@@ -222,37 +206,32 @@
                         Free shipping for standard order over $100
                     </div>
                 </li>
-
                 <li>
                     <div class="right-top-bar flex-w h-full">
                         <a href="#" class="flex-c-m p-lr-10 trans-04">
                             Help & FAQs
                         </a>
-
                         <% if (locals.findUser) { %>
-                            <a href="#" class="flex-c-m trans-04 p-lr-25">
-                                <%= findUser.name%>
-                                    <% } else { %>
-                                        <a href="#" class="flex-c-m p-lr-10 trans-04">
-                                            Guest User
-                                        </a>
-                                        <%}%>
-
-                                            <% if (locals.findUser) { %>
-                                                <a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                    <i class="zmdi zmdi-sign-in"></i> Logout
-                                                </a>
-                                                <% } else { %>
-                                                    <a href="/Login"
-                                                        class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                        <i class="zmdi zmdi-account"></i> Login
-                                                    </a>
-
-                                                    <a href="/Register"
-                                                        class="btn btn-small flex-c-m trans-04 p-lr-10">
-                                                        <i class="zmdi zmdi-assignment"></i> Register
-                                                    </a>
-                                                    <% } %>
+                            <a href="/Account" class="flex-c-m trans-04 p-lr-25">
+                                <%= findUser.name %>
+                            </a>
+                        <% } else { %>
+                            <a href="#" class="flex-c-m p-lr-10 trans-04">
+                                Guest User
+                            </a>
+                        <% } %>
+                        <% if (locals.findUser) { %>
+                            <a href="/logOut" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-sign-in"></i> Logout
+                            </a>
+                        <% } else { %>
+                            <a href="/Login" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-account"></i> Login
+                            </a>
+                            <a href="/Register" class="btn btn-small flex-c-m trans-04 p-lr-10">
+                                <i class="zmdi zmdi-assignment"></i> Register
+                            </a>
+                        <% } %>
                     </div>
                 </li>
             </ul>
@@ -260,484 +239,355 @@
             <ul class="main-menu-m">
                 <li>
                     <a href="/">Home</a>
-                    <!-- <ul class="sub-menu-m">
-						<li><a href="index.html">Homepage 1</a></li>
-						<li><a href="home-02.html">Homepage 2</a></li>
-						<li><a href="home-03.html">Homepage 3</a></li>
-					</ul> -->
                     <span class="arrow-main-menu-m">
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </li>
-
                 <li>
                     <a href="/Shop">Shop</a>
                 </li>
-
                 <li>
                     <a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
                 </li>
-
                 <li>
                     <a href="/Blog">Blog</a>
                 </li>
-
                 <li>
                     <a href="/About">About</a>
                 </li>
-
                 <li>
                     <a href="/Contact">Contact</a>
                 </li>
             </ul>
         </div>
+    </header>
 
-        <!-- Modal Search -->
-        <!-- <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
-			<div class="container-search-header">
-				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-					<img src="images/icons/icon-close2.png" alt="CLOSE">
-				</button>
+    <!-- Product -->
+    <div class="bg0 m-t-23 p-b-140">
+        <div class="container">
+            <h1
+                style="font-size: 32px; color: #000000; font-family: Arial, sans-serif; font-weight: bold; text-align: center;">
+                Wishlist
+            </h1>
 
-				<form class="wrap-search-header flex-w p-l-15">
-					<button class="flex-c-m trans-04">
-						<i class="zmdi zmdi-search"></i>
-					</button>
-					<input class="plh3" type="text" name="search" placeholder="Search...">
-				</form>
-			</div>
-		</div>
-	</header> -->
+            <br>
+            <br><br>
 
-        <!-- Cart -->
-       
+            <!-- products showing -->
+            <div class="row isotope-grid">
+                <% if (wishlistData && wishlistData.wishlistProducts.length > 0) { %>
+                    <% for (let i = 0; i < wishlistData.wishlistProducts.length; i++) { %>
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women" data-product-id="<%= wishlistData.wishlistProducts[i].productId._id %>">
+                            <div class="block2">
+                                <div class="block2-pic hov-img0">
+                                    <a href="/productView?id=<%= wishlistData.wishlistProducts[i].productId._id %>">
+                                        <img src="../<%= wishlistData.wishlistProducts[i].productId.images[0] %>" alt="IMG-PRODUCT">
+                                    </a>
+                                </div>
 
-        <!-- Product -->
-        <div class="bg0 m-t-23 p-b-140">
-            <div class="container">
-                <h1
-                    style="font-size: 32px; color: #000000; font-family: Arial, sans-serif; font-weight: bold; text-align: center;">
-                    Wishlist
-                </h1>
-
-                <br>
-                <br><br>
-
-                <!-- products showing -->
-
-
-
-
-
-                <div class="row isotope-grid">
-                    <% if (wishlistData && wishlistData.wishlistProducts.length > 0) { %>
-                        <% for (let i = 0; i < wishlistData.wishlistProducts.length; i++) { %>
-                
-                            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                                <div class="block2">
-                                    <div class="block2-pic hov-img0">
-                                        <a href="/productView?id=<%= wishlistData.wishlistProducts[i].productId._id %>">
-                                            <img src="../<%= wishlistData.wishlistProducts[i].productId.images[0] %>" alt="IMG-PRODUCT">
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l">
+                                        <a style="text-decoration: none;" href="/productView?id=<%= wishlistData.wishlistProducts[i].productId._id %>"
+                                            class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            <%= wishlistData.wishlistProducts[i].productId.productName %>
                                         </a>
+                                        <span class="stext-105 cl3">
+                                            Price: ₹<%= wishlistData.wishlistProducts[i].productId.realPrice %>
+                                        </span>
+                                        <span class="stext-105 cl3">
+                                            <%= wishlistData.wishlistProducts[i].productId.categoryId.categoryName %>
+                                        </span>
                                     </div>
-                
-                                    <div class="block2-txt flex-w flex-t p-t-14">
-                                        <div class="block2-txt-child1 flex-col-l">
-                                            <a style="text-decoration: none;" href="/productView?id=<%= wishlistData.wishlistProducts[i].productId._id %> "
-                                                class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                                <%= wishlistData.wishlistProducts[i].productId.productName %>
+
+                                    <% if (findUser) { %>
+                                        <div class="block2-txt-child2 flex-r p-t-3">
+                                            <a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 <%= userWishlist.includes(wishlistData.wishlistProducts[i].productId._id.toString()) ? 'active' : '' %>"
+                                                data-product-id="<%= wishlistData.wishlistProducts[i].productId._id %>"
+                                                onclick="toggleWishList('<%= wishlistData.wishlistProducts[i].productId._id %>')">
+                                                <% if (userWishlist.includes(wishlistData.wishlistProducts[i].productId._id.toString())) { %>
+                                                    <i class="bi bi-heart-fill"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-heart"></i>
+                                                <% } %>
                                             </a>
-                
-                                            <span class="stext-105 cl3">
-                                                Price: <%= wishlistData.wishlistProducts[i].productId.realPrice %>
-                                            </span>
-                                            <span class="stext-105 cl3">
-                                                <%= wishlistData.wishlistProducts[i].productId.categoryId.categoryName %>
-                                            </span>
                                         </div>
-                
-                                        <% if (findUser) { %> <!-- Check if user is logged in -->
-                                            <div class="block2-txt-child2 flex-r p-t-3">
-                                                <a class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 
-                                                    <%= userWishlist.includes(wishlistData.wishlistProducts[i].productId._id.toString()) ? 'active' : '' %>" 
-                                                    data-product-id="<%= wishlistData.wishlistProducts[i].productId._id %>" 
-                                                    onclick="toggleWishList('<%= wishlistData.wishlistProducts[i].productId._id %>')">
-                                                    <!-- Use Bootstrap heart icons -->
-                                                    <% if (userWishlist.includes(wishlistData.wishlistProducts[i].productId._id.toString())) { %>
-                                                        <i class="bi bi-heart-fill"></i> <!-- Filled heart if in wishlist -->
-                                                    <% } else { %>
-                                                        <i class="bi bi-heart"></i> <!-- Outline heart if not in wishlist -->
-                                                    <% } %>
-                                                </a>
-                                            </div>
-                                        <% } else { %>
-                                            <div class="block2-txt-child2 flex-r p-t-3">
-                                                <!-- Empty space when user is not logged in -->
-                                            </div>
-                                        <% } %>
-                                    </div>
+                                    <% } else { %>
+                                        <div class="block2-txt-child2 flex-r p-t-3"></div>
+                                    <% } %>
                                 </div>
                             </div>
-                
-                        <% } %>
-                    <% } else { %>
-                        <div class="col-12">
-                            <p>Your wishlist is empty.</p>
                         </div>
                     <% } %>
-                </div>
-                
-                
-
-
-
-
-
-
-
-                <!-- Load more -->
-                <!-- <div class="flex-c-m flex-w w-full p-t-45">
-				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-					Load More
-				</a>
-			</div> -->
+                <% } else { %>
+                    <div class="col-12">
+                        <p>Your wishlist is empty.</p>
+                    </div>
+                <% } %>
             </div>
         </div>
+    </div>
 
+    <!-- Footer -->
+    <%- include('./partials/userFooter.ejs') %>
 
-        <!-- Footer -->
-        <%- include('./partials/userFooter.ejs') %>
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+        <span class="symbol-btn-back-to-top">
+            <i class="zmdi zmdi-chevron-up"></i>
+        </span>
+    </div>
 
-            <!-- Back to top -->
-            <div class="btn-back-to-top" id="myBtn">
-                <span class="symbol-btn-back-to-top">
-                    <i class="zmdi zmdi-chevron-up"></i>
-                </span>
-            </div>
-
-            <!-- Modal1 -->
-            <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
-                <div class="overlay-modal1 js-hide-modal1"></div>
-
-                <div class="container">
-                    <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
-                        <button class="how-pos3 hov3 trans-04 js-hide-modal1">
-                            <img src="images/icons/icon-close.png" alt="CLOSE">
-                        </button>
-
-                        <div class="row">
-                            <div class="col-md-6 col-lg-7 p-b-30">
-                                <div class="p-l-25 p-r-30 p-lr-0-lg">
-                                    <div class="wrap-slick3 flex-sb flex-w">
-                                        <div class="wrap-slick3-dots"></div>
-                                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
-
-                                        <div class="slick3 gallery-lb">
-                                            <div class="item-slick3" data-thumb="images/product-detail-01.jpg">
-                                                <div class="wrap-pic-w pos-relative">
-                                                    <img src="images/product-detail-01.jpg" alt="IMG-PRODUCT">
-
-                                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                        href="images/product-detail-01.jpg">
-                                                        <i class="fa fa-expand"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-
-                                            <div class="item-slick3" data-thumb="images/product-detail-02.jpg">
-                                                <div class="wrap-pic-w pos-relative">
-                                                    <img src="images/product-detail-02.jpg" alt="IMG-PRODUCT">
-
-                                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                        href="images/product-detail-02.jpg">
-                                                        <i class="fa fa-expand"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-
-                                            <div class="item-slick3" data-thumb="images/product-detail-03.jpg">
-                                                <div class="wrap-pic-w pos-relative">
-                                                    <img src="images/product-detail-03.jpg" alt="IMG-PRODUCT">
-
-                                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                                        href="images/product-detail-03.jpg">
-                                                        <i class="fa fa-expand"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 col-lg-5 p-b-30">
-                                <div class="p-r-50 p-t-5 p-lr-0-lg">
-                                    <h4 class="mtext-105 cl2 js-name-detail p-b-14">
-                                        Lightweight Jacket
-                                    </h4>
-
-                                    <span class="mtext-106 cl2">
-                                        $58.79
-                                    </span>
-
-                                    <p class="stext-102 cl3 p-t-23">
-                                        Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris
-                                        consequat ornare feugiat.
-                                    </p>
-
-                                
-                                    <div class="p-t-33">
-                                        <div class="flex-w flex-r-m p-b-10">
-                                            <div class="size-203 flex-c-m respon6">
-                                                Size
-                                            </div>
-
-                                            <div class="size-204 respon6-next">
-                                                <div class="rs1-select2 bor8 bg0">
-                                                    <select class="js-select2" name="time">
-                                                        <option>Choose an option</option>
-                                                        <option>Size S</option>
-                                                        <option>Size M</option>
-                                                        <option>Size L</option>
-                                                        <option>Size XL</option>
-                                                    </select>
-                                                    <div class="dropDownSelect2"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex-w flex-r-m p-b-10">
-                                            <div class="size-203 flex-c-m respon6">
-                                                Color
-                                            </div>
-
-                                            <div class="size-204 respon6-next">
-                                                <div class="rs1-select2 bor8 bg0">
-                                                    <select class="js-select2" name="time">
-                                                        <option>Choose an option</option>
-                                                        <option>Red</option>
-                                                        <option>Blue</option>
-                                                        <option>White</option>
-                                                        <option>Grey</option>
-                                                    </select>
-                                                    <div class="dropDownSelect2"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex-w flex-r-m p-b-10">
-                                            <div class="size-204 flex-w flex-m respon6-next">
-                                                <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                                        <i class="fs-16 zmdi zmdi-minus"></i>
-                                                    </div>
-
-                                                    <input class="mtext-104 cl3 txt-center num-product" type="number"
-                                                        name="num-product" value="1">
-
-                                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                                        <i class="fs-16 zmdi zmdi-plus"></i>
-                                                    </div>
-                                                </div>
-
-                                                <button
-                                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-                                                    Add to cart
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!--  -->
-                                    <div class="flex-w flex-m p-l-100 p-t-40 respon7">
-                                        <div class="flex-m bor9 p-r-10 m-r-11">
-                                            <a href="#"
-                                                class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
-                                                data-tooltip="Add to Wishlist">
-                                                <i class="zmdi zmdi-favorite"></i>
+    <!-- Modal1 -->
+    <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+        <div class="overlay-modal1 js-hide-modal1"></div>
+        <div class="container">
+            <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+                <button class="how-pos3 hov3 trans-04 js-hide-modal1">
+                    <img src="images/icons/icon-close.png" alt="CLOSE">
+                </button>
+                <div class="row">
+                    <div class="col-md-6 col-lg-7 p-b-30">
+                        <div class="p-l-25 p-r-30 p-lr-0-lg">
+                            <div class="wrap-slick3 flex-sb flex-w">
+                                <div class="wrap-slick3-dots"></div>
+                                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                                <div class="slick3 gallery-lb">
+                                    <div class="item-slick3" data-thumb="images/product-detail-01.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-01.jpg" alt="IMG-PRODUCT">
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                href="images/product-detail-01.jpg">
+                                                <i class="fa fa-expand"></i>
                                             </a>
                                         </div>
-
-                                        <a href="#"
-                                            class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
-                                            data-tooltip="Facebook">
-                                            <i class="fa fa-facebook"></i>
-                                        </a>
-
-                                        <a href="#"
-                                            class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
-                                            data-tooltip="Twitter">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-
-                                        <a href="#"
-                                            class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
-                                            data-tooltip="Google Plus">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
+                                    </div>
+                                    <div class="item-slick3" data-thumb="images/product-detail-02.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-02.jpg" alt="IMG-PRODUCT">
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                href="images/product-detail-02.jpg">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="item-slick3" data-thumb="images/product-detail-03.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-03.jpg" alt="IMG-PRODUCT">
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                href="images/product-detail-03.jpg">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6 col-lg-5 p-b-30">
+                        <div class="p-r-50 p-t-5 p-lr-0-lg">
+                            <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                                Lightweight Jacket
+                            </h4>
+                            <span class="mtext-106 cl2">
+                                $58.79
+                            </span>
+                            <p class="stext-102 cl3 p-t-23">
+                                Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris
+                                consequat ornare feugiat.
+                            </p>
+                            <div class="p-t-33">
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Size
+                                    </div>
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Choose an option</option>
+                                                <option>Size S</option>
+                                                <option>Size M</option>
+                                                <option>Size L</option>
+                                                <option>Size XL</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Color
+                                    </div>
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Choose an option</option>
+                                                <option>Red</option>
+                                                <option>Blue</option>
+                                                <option>White</option>
+                                                <option>Grey</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-204 flex-w flex-m respon6-next">
+                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                            </div>
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                name="num-product" value="1">
+                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                            Add to cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                                <div class="flex-m bor9 p-r-10 m-r-11">
+                                    <a href="#"
+                                        class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
+                                        data-tooltip="Add to Wishlist">
+                                        <i class="zmdi zmdi-favorite"></i>
+                                    </a>
+                                </div>
+                                <a href="#"
+                                    class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                    data-tooltip="Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="#"
+                                    class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                    data-tooltip="Twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                                <a href="#"
+                                    class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                    data-tooltip="Google Plus">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!--===============================================================================================-->
-            <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/animsition/js/animsition.min.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/bootstrap/js/popper.js"></script>
-            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/select2/select2.min.js"></script>
-            <script>
-                $(".js-select2").each(function () {
-                    $(this).select2({
-                        minimumResultsForSearch: 20,
-                        dropdownParent: $(this).next('.dropDownSelect2')
-                    });
+        <!-- Scripts -->
+        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+        <script src="vendor/animsition/js/animsition.min.js"></script>
+        <script src="vendor/bootstrap/js/popper.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendor/select2/select2.min.js"></script>
+        <script>
+            $(".js-select2").each(function () {
+                $(this).select2({
+                    minimumResultsForSearch: 20,
+                    dropdownParent: $(this).next('.dropDownSelect2')
+                });
+            });
+        </script>
+        <script src="vendor/daterangepicker/moment.min.js"></script>
+        <script src="vendor/daterangepicker/daterangepicker.js"></script>
+        <script src="vendor/slick/slick.min.js"></script>
+        <script src="js/slick-custom.js"></script>
+        <script src="vendor/parallax100/parallax100.js"></script>
+        <script>
+            $('.parallax100').parallax100();
+        </script>
+        <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+        <script>
+            $('.gallery-lb').each(function () {
+                $(this).magnificPopup({
+                    delegate: 'a',
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    },
+                    mainClass: 'mfp-fade'
+                });
+            });
+        </script>
+        <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+        <script src="vendor/sweetalert/sweetalert.min.js"></script>
+        <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <script>
+            $('.js-pscroll').each(function () {
+                $(this).css('position', 'relative');
+                $(this).css('overflow', 'hidden');
+                var ps = new PerfectScrollbar(this, {
+                    wheelSpeed: 1,
+                    scrollingThreshold: 1000,
+                    wheelPropagation: false,
+                });
+                $(window).on('resize', function () {
+                    ps.update();
+                });
+            });
+        </script>
+        <script src="js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function toggleWishList(productId) {
+                fetch('/toggleWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId: productId })
                 })
-            </script>
-            <!--===============================================================================================-->
-            <script src="vendor/daterangepicker/moment.min.js"></script>
-            <script src="vendor/daterangepicker/daterangepicker.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/slick/slick.min.js"></script>
-            <script src="js/slick-custom.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/parallax100/parallax100.js"></script>
-            <script>
-                $('.parallax100').parallax100();
-            </script>
-            <!--===============================================================================================-->
-            <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-            <script>
-                $('.gallery-lb').each(function () { // the containers for all your galleries
-                    $(this).magnificPopup({
-                        delegate: 'a', // the selector for gallery item
-                        type: 'image',
-                        gallery: {
-                            enabled: true
-                        },
-                        mainClass: 'mfp-fade'
-                    });
-                });
-            </script>
-            <!--===============================================================================================-->
-            <script src="vendor/isotope/isotope.pkgd.min.js"></script>
-            <!--===============================================================================================-->
-            <script src="vendor/sweetalert/sweetalert.min.js"></script>
-            <script>
-               
+                .then(response => response.json())
+                .then(data => {
+                    const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
+                    const icon = button ? button.querySelector('i') : null;
+                    const productElement = document.querySelector(`.isotope-item[data-product-id="${productId}"]`);
 
-                /*---------------------------------------------*/
-
-          
-
-            </script>
-            <!--===============================================================================================-->
-            <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-            <script>
-                $('.js-pscroll').each(function () {
-                    $(this).css('position', 'relative');
-                    $(this).css('overflow', 'hidden');
-                    var ps = new PerfectScrollbar(this, {
-                        wheelSpeed: 1,
-                        scrollingThreshold: 1000,
-                        wheelPropagation: false,
-                    });
-
-                    $(window).on('resize', function () {
-                        ps.update();
-                    })
-                });
-            </script>
-            <!--===============================================================================================-->
-            <script src="js/main.js"></script>
-            <!--===============================================================================================-->
-
-
-            <script>
-                function removeFromWishList(productId){
-                //    console.log("ProductId",productId)
-                }
-            </script>
-
-<script>
-    function toggleWishList(productId) {
-        console.log("Toggling wishlist...");
-
-        fetch('/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId: productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // console.log("Response Data:", data);  
-            const button = document.querySelector(`.js-addwish-b2[data-product-id="${productId}"]`);
-            const icon = button.querySelector('i');
-
-            if (data.success) {
-           
-                if (data.action === 'added') {
-                    button.classList.add('active');
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: data.message || 'Product added to wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                           
-                            window.location.reload();
+                    if (data.success) {
+                        if (data.action === 'added') {
+                            if (button && icon) {
+                                button.classList.add('active');
+                                icon.classList.remove('bi-heart');
+                                icon.classList.add('bi-heart-fill');
+                            }
+                        } else {
+                            if (button && icon) {
+                                button.classList.remove('active');
+                                icon.classList.remove('bi-heart-fill');
+                                icon.classList.add('bi-heart');
+                            }
+                            // Remove the product from the DOM since it's no longer in the wishlist
+                            if (productElement) {
+                                productElement.remove();
+                            }
+                            // Check if wishlist is empty and show empty message
+                            const wishlistItems = document.querySelectorAll('.isotope-item');
+                            if (wishlistItems.length === 0) {
+                                const container = document.querySelector('.isotope-grid');
+                                container.innerHTML = '<div class="col-12"><p>Your wishlist is empty.</p></div>';
+                            }
                         }
-                    });
-                } else {
-                    button.classList.remove('active');
-                    icon.classList.remove('bi-heart-fill'); 
-                    icon.classList.add('bi-heart'); 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Removed!',
-                        text: data.message || 'Product removed from wishlist successfully',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Refresh the page after closing the alert
-                            window.location.reload();
-                        }
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: data.message || 'Failed to update wishlist',
-                    confirmButtonText: 'OK'
+                        // Update wishlist count in header
+                        const wishlistIcons = document.querySelectorAll('.icon-header-noti[data-notify]');
+                        wishlistIcons.forEach(icon => {
+                            if (icon.getAttribute('href') === '/Wishlist') {
+                                const newCount = data.wishlistCount || 0;
+                                icon.setAttribute('data-notify', newCount);
+                            }
+                        });
+                    } else {
+                        console.error('Failed to update wishlist:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating the wishlist',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-</script>
-
-
-
+        </script>
 </body>
-
 </html>

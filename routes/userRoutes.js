@@ -116,6 +116,11 @@ userRoute.get("/addressEditView", Auth.isLogin, userController.editAddressPage);
 userRoute.post("/editAddress", Auth.isLogin, userController.editAddress);
 userRoute.post("/deleteAddress", Auth.isLogin, userController.deleteAddress);
 userRoute.get("/orderDetails", Auth.isLogin, userController.orderInfos);
+// Add these lines after your existing user management routes (around line 90-95)
+
+// Separate Orders and Wallet pages
+userRoute.get("/orders", Auth.isLogin, userController.loadOrders);
+userRoute.get("/wallet", Auth.isLogin, userController.loadWallet);
 
 //Wallet
 

@@ -2,7 +2,7 @@ const {createOrders}=require('../orderServices');
 const {clearCart}=require('../../../utils/userUtils/cartUtils');
 
 
-const handleCodPayments = async (data)=>{
+const handleCODPayment = async (data)=>{
      const {findCart,findAddress,userId,totalAmount,discountAmount, couponDetails, paymentMethod}=data;
 
      const orderIds = await createOrders({
@@ -28,4 +28,4 @@ const handleCodPayments = async (data)=>{
 };
 
 
-module.exports={handleCodPayments}
+module.exports={handleCODPayment}

@@ -1,5 +1,5 @@
 const Wallet = require('../../../../Model/walletModel');
-const createSingleOrder = require('../../../services/user/orderServices');
+const {createSingleOrder} = require('../../../services/user/orderServices');
 const {updateProductStock}= require('../../../utils/userUtils/productUtils');
 const {clearCart} = require('../../../utils/userUtils/cartUtils')
 

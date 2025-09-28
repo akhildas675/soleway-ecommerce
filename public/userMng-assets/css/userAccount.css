@@ -1,0 +1,790 @@
+/* ==========================================================================
+   Root Variables
+   ========================================================================== */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --light-gray: #ecf0f1;
+    --medium-gray: #bdc3c7;
+    --dark-gray: #34495e;
+    --white: #ffffff;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Account Dashboard Container
+   ========================================================================== */
+.account-dashboard {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+/* ==========================================================================
+   Dashboard Tab Button Styling
+   ========================================================================== */
+.dashboard_tab_button {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.dashboard-list {
+    gap: 0.5rem;
+}
+
+.dashboard-list .nav-link {
+    background: transparent;
+    border: 2px solid transparent;
+    color: var(--dark-gray);
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    text-align: left;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-list .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.dashboard-list .nav-link:hover::before {
+    left: 100%;
+}
+
+.dashboard-list .nav-link:hover {
+    background: var(--accent-color);
+    color: var(--white);
+    transform: translateX(5px);
+    border-color: var(--accent-color);
+}
+
+.dashboard-list .nav-link.active {
+    background: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+/* ==========================================================================
+   Dashboard Content Area
+   ========================================================================== */
+.dashboard_content {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    min-height: 500px;
+}
+
+.dashboard_content h4 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.dashboard_content h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   Address Container Styling
+   ========================================================================== */
+.address-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.address-item {
+    background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    position: relative;
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.address-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-color), var(--primary-color));
+}
+
+.address-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.address-item p {
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.address-item .btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+/* ==========================================================================
+   Order List Container Styling
+   ========================================================================== */
+.order-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.order-box {
+    background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.order-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--success-color), var(--accent-color));
+}
+
+.order-box:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.order-box-header {
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.order-box-header p {
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.product-image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.centered-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.product-info:hover .centered-product-image {
+    transform: scale(1.1);
+}
+
+.product-details {
+    flex: 1;
+    color: var(--dark-gray);
+}
+
+.product-details p {
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Order Status Styling
+   ========================================================================== */
+.status-cancelled {
+    color: var(--danger-color);
+    font-weight: 600;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.status-placed {
+    color: var(--success-color);
+    font-weight: 600;
+    background: rgba(39, 174, 96, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   Wallet Section Styling
+   ========================================================================== */
+.wallet-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.wallet-box {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.wallet-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: walletShine 3s ease-in-out infinite;
+}
+
+@keyframes walletShine {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+}
+
+.wallet-box h5 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.wallet-box p {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.money-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: var(--dark-gray) !important;
+    pointer-events: auto !important;
+    z-index: 10 !important;
+}
+
+.money-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.money-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: var(--white);
+    outline: none;
+}
+
+.money-input:disabled {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+}
+
+.add-money-btn {
+    background: var(--white);
+    color: var(--primary-color);
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-money-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: var(--accent-color);
+    border-radius: 50%;
+    transition: all 0.6s ease;
+    transform: translate(-50%, -50%);
+}
+
+.add-money-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.add-money-btn:hover {
+    color: var(--white);
+}
+
+.add-money-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   Table Styling for Transaction Details
+   ========================================================================== */
+.table_page {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+.table_page table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table_page th {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-gray) 100%);
+    color: var(--white);
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.table_page td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--light-gray);
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.table_page tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, var(--light-gray) 100%);
+    transform: scale(1.01);
+    transition: var(--transition);
+}
+
+/* ==========================================================================
+   Coupon Container Styling
+   ========================================================================== */
+.coupon-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.coupon-box {
+    background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
+    border: 2px dashed var(--accent-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    position: relative;
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.coupon-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--accent-color), var(--primary-color), var(--success-color), var(--warning-color));
+    border-radius: var(--border-radius);
+    z-index: -1;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.coupon-box:hover::before {
+    opacity: 0.1;
+}
+
+.coupon-box:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.coupon-details h5 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.coupon-details p {
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.btn-copy {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    color: var(--white);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-copy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s;
+}
+
+.btn-copy:hover::before {
+    left: 100%;
+}
+
+.btn-copy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   Form Styling for Address Input
+   ========================================================================== */
+.default-form-box {
+    margin-bottom: 1.5rem;
+}
+
+.default-form-box label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.default-form-box input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    background: var(--white);
+}
+
+.default-form-box input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* ==========================================================================
+   Button Styling for Primary and Danger Buttons
+   ========================================================================== */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    color: var(--white);
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.6s ease;
+    transform: translate(-50%, -50%);
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    color: var(--white);
+    text-decoration: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, var(--danger-color) 100%);
+}
+
+/* ==========================================================================
+   Pagination Styling
+   ========================================================================== */
+.pagination {
+    margin: 2rem 0;
+    gap: 0.5rem;
+}
+
+.page-item .page-link {
+    background: var(--white);
+    border: 2px solid var(--light-gray);
+    color: var(--dark-gray);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-item .page-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.page-item .page-link:hover::before {
+    left: 100%;
+}
+
+.page-item .page-link:hover {
+    background: var(--accent-color);
+    color: var(--white);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+/* ==========================================================================
+   Empty State Styling for No Orders/Addresses
+   ========================================================================== */
+.no-orders {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, var(--light-gray) 100%);
+    border-radius: var(--border-radius);
+    margin: 2rem 0;
+}
+
+.no-orders i {
+    font-size: 4rem;
+    color: var(--medium-gray);
+    margin-bottom: 1rem;
+}
+
+.no-orders h5 {
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+.no-orders p {
+    color: var(--medium-gray);
+    margin-bottom: 2rem;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+    .account-dashboard {
+        padding: 1rem 0;
+    }
+
+    .dashboard_tab_button {
+        position: static;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-list {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .dashboard-list .nav-link {
+        white-space: nowrap;
+        min-width: auto;
+    }
+
+    .address-container,
+    .order-list-container,
+    .coupon-container {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-box {
+        max-width: 100%;
+    }
+
+    .product-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .product-image-container {
+        margin: 0 auto 1rem auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard_content {
+        padding: 1rem;
+    }
+
+    .wallet-box {
+        padding: 1.5rem 1rem;
+    }
+
+    .wallet-box p {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard_content .tab-pane {
+    animation: fadeInUp 0.5s ease;
+}
+
+/* ==========================================================================
+   Loading State Styling
+   ========================================================================== */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent-color);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.pagination .page-link {
+    color: var(--primary-color);
+    border-radius: 4px;
+    margin: 0 2px;
+}
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+.pagination .page-item.disabled .page-link {
+    color: var(--medium-gray);
+}

@@ -15,7 +15,7 @@ const { getActiveProducts, getNewArrivals, getProductWithDetails, getRelatedProd
 const { createUser, authenticateUser, updateUserPassword } = require("../../helper/services/user/authService");
 const { createRazorpayOrder, processWalletPayment } = require("../../helper/services/user/walletService");
 
-// page loading controllers
+// Page loading controllers
 
 const loadHome = async (req, res) => {
   try {
@@ -39,7 +39,7 @@ const loadHome = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -58,7 +58,8 @@ const loadAbout = async (req, res) => {
       wishlistCount
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -83,7 +84,8 @@ const loadBlog = async (req, res) => {
       products
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -102,18 +104,141 @@ const loadContact = async (req, res) => {
       wishlistCount,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
-// auth controller
+
+// Add these new controller functions to your existing userController.js
+
+const loadOrders = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    
+    if (!userId) {
+      return res.redirect('/Login');
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 4; // 4 orders per page
+    const skip = (page - 1) * limit;
+
+    const [findUser, orderedData, totalOrders] = await Promise.all([
+      User.findById(userId),
+      Order.find({ userId })
+        .populate("products.productId")
+        .sort({ orderDate: -1 })
+        .skip(skip)
+        .limit(limit),
+      Order.countDocuments({ userId })
+    ]);
+
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    res.render("orders", {
+      findUser,
+      orderedData,
+      currentPage: page,
+      totalPages,
+      totalOrders
+    });
+  } catch (error) {
+    console.error('Error loading orders page:', error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+const loadWallet = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    
+    if (!userId) {
+      return res.redirect('/Login');
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8; // 8 transactions per page
+    const skip = (page - 1) * limit;
+
+    const [findUser, wallet] = await Promise.all([
+      User.findById(userId),
+      Wallet.findOne({ userId })
+    ]);
+
+    let transactions = [];
+    let totalPages = 0;
+    let totalTransactions = 0;
+
+    if (wallet && wallet.history && wallet.history.length > 0) {
+      // Sort transactions by date (newest first)
+      const sortedHistory = wallet.history.sort((a, b) => 
+        new Date(b.transactionDate) - new Date(a.transactionDate)
+      );
+      
+      totalTransactions = sortedHistory.length;
+      totalPages = Math.ceil(totalTransactions / limit);
+      
+      // Get paginated transactions
+      transactions = sortedHistory.slice(skip, skip + limit);
+    }
+
+    res.render("wallet", {
+      findUser,
+      wallet,
+      transactions,
+      currentPage: page,
+      totalPages,
+      totalTransactions
+    });
+  } catch (error) {
+    console.error('Error loading wallet page:', error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+// Error page controllers
+
+const render404 = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    const { findUser, cartCount, wishlistCount } = await getCommonPageData(userId);
+    
+    res.status(404).render("user/404", {
+      findUser,
+      cartCount,
+      wishlistCount
+    });
+  } catch (error) {
+    console.error("Error rendering 404:", error.message);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+const render500 = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    const { findUser, cartCount, wishlistCount } = await getCommonPageData(userId);
+    
+    res.status(500).render("user/500", {
+      findUser,
+      cartCount,
+      wishlistCount
+    });
+  } catch (error) {
+    console.error("Error rendering 500:", error.message);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+// Auth controllers
 
 const loadRegister = async (req, res) => {
   try {
     res.status(200).render("userRegister");
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -154,7 +279,7 @@ const otpGet = async (req, res) => {
     res.status(200).render("userOtp", { message: "" });
   } catch (error) {
     console.error("Error sending email: ", error);
-    res.status(500).send("Error sending email");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -179,7 +304,7 @@ const verifyOtp = async (req, res) => {
     }
   } catch (error) {
     console.error("Error verifying OTP: ", error);
-    res.status(500).render("userOtp", { message: "Server Error. Please try again." });
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -188,7 +313,7 @@ const loadLogin = async (req, res) => {
     res.status(200).render("userLogin");
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -232,7 +357,7 @@ const googleAuth = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log("Error during Google Authentication:", error.message);
-    res.status(500).send("An error occurred during authentication. Please try again.");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -241,24 +366,24 @@ const userLogOut = async (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.log(err.message);
-        return res.status(500).send("Unable to log out");
+        return res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
       }
       res.status(200).redirect("/");
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
-// password reset
+// Password reset controllers
 
 const verifyEmail = async (req, res) => {
   try {
     res.status(200).render("emailVerify");
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -275,7 +400,7 @@ const resetPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -289,7 +414,7 @@ const resetPasswordOtp = async (req, res) => {
     res.status(200).render("passwordOtp");
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -303,7 +428,7 @@ const verifyResetOtp = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -317,11 +442,11 @@ const savePassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
-// product controllers
+// Product controllers
 
 const productDetailedView = async (req, res) => {
   try {
@@ -350,7 +475,7 @@ const productDetailedView = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -400,7 +525,7 @@ const productShop = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).send("Server error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -437,61 +562,30 @@ const addReview = async (req, res) => {
   }
 };
 
-// user account controllers
+// User account controllers
 
 const userDetails = async (req, res) => {
   try {
     const userId = req.session.userData;
-    
-    // Pagination setup
-    const orderPage = parseInt(req.query.page) || 1;
-    const orderLimit = 6;
-    const orderSkip = (orderPage - 1) * orderLimit;
-    
-    const walletPage = parseInt(req.query.walletPage) || 1;
-    const walletLimit = 8;
-    const walletSkip = (walletPage - 1) * walletLimit;
 
-    const [findUser, addresses, orderedData, totalOrders, wallet, coupon] = await Promise.all([
+    const [findUser, addresses, coupon, wallet] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
-      Order.find({ userId })
-        .populate("products.productId")
-        .sort({ orderDate: -1 })
-        .skip(orderSkip)
-        .limit(orderLimit),
-      Order.countDocuments({ userId }),
-      Wallet.findOne({ userId }),
-      Coupon.find()
+      Coupon.find(),
+      Wallet.findOne({ userId })
     ]);
-
-    const totalOrderPages = Math.ceil(totalOrders / orderLimit);
-
-    let walletHistory = [];
-    let totalWalletPages = 0;
-
-    if (wallet) {
-      wallet.history.sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
-      walletHistory = wallet.history.slice(walletSkip, walletSkip + walletLimit);
-      totalWalletPages = Math.ceil(wallet.history.length / walletLimit);
-    }
 
     res.render("userAccount", {
       findUser,
       addresses,
-      orderedData,
       wallet,
-      coupon,
-      currentPage: orderPage,
-      totalOrderPages,
-      currentWalletPage: walletPage,
-      totalWalletPages,
+      coupon
     });
   } catch (error) {
     console.error("Error in userDetails:", error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
 const addUserAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
@@ -526,7 +620,7 @@ const editAddressPage = async (req, res) => {
 
     res.render("editAddress", { address, findUser });
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -550,7 +644,7 @@ const editAddress = async (req, res) => {
 
     res.redirect("/userInfo");
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -566,7 +660,7 @@ const deleteAddress = async (req, res) => {
 
     res.status(200).send("Address deleted successfully");
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -590,11 +684,11 @@ const orderInfos = async (req, res) => {
     res.render("orderDetails", { findUser, addresses, orderedData });
   } catch (error) {
     console.error("Error order details shows :", error);
-    res.send("Internal Server Error");
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
-//addWallet
+// Wallet controllers
 
 const addWallet = async (req, res) => {
   try {
@@ -625,7 +719,7 @@ const walletPaymentSuccess = async (req, res) => {
   }
 };
 
-// feedback
+// Feedback controller
 
 const addFeedback = async (req, res) => {
   try {
@@ -656,7 +750,7 @@ const addFeedback = async (req, res) => {
   }
 };
 
-// search
+// Search controller
 
 const searchProducts = async (req, res) => {
   try {
@@ -674,16 +768,16 @@ const searchProducts = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
-  // page loading controllers
+  // Page loading controllers
   loadHome,
   loadAbout,
   loadBlog,
   loadContact,
+  render404,
+  render500,
   
-  // auth controllers
+  // Auth controllers
   loadRegister,
   insertUser,
   otpGet,
@@ -692,20 +786,22 @@ module.exports = {
   verifyLogin,
   googleAuth,
   userLogOut,
+  loadOrders,
+  loadWallet,
   
-  // password reset controllers
+  // Password reset controllers
   verifyEmail,
   resetPassword,
   resetPasswordOtp,
   verifyResetOtp,
   savePassword,
   
-  // product controllers
+  // Product controllers
   productDetailedView,
   productShop,
   addReview,
   
-  // user account controllers
+  // User account controllers
   userDetails,
   addUserAddress,
   editAddressPage,
@@ -713,13 +809,13 @@ module.exports = {
   deleteAddress,
   orderInfos,
   
-  // wallet controllers
+  // Wallet controllers
   addWallet,
   walletPaymentSuccess,
   
-  // feedback controller
+  // Feedback controller
   addFeedback,
   
-  // search controller
+  // Search controller
   searchProducts,
 };

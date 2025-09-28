@@ -1,0 +1,293 @@
+/* Remove horizontal scrollbar and make table truly responsive */
+.table-responsive-wrap {
+    width: 100%;
+    overflow: visible; /* Remove horizontal scroll */
+}
+
+/* Base table styling */
+.table-shopping-cart {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+    background: white;
+}
+
+/* Table header styling */
+.table_head th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 15px 10px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Table row styling - Remove green hover effect */
+.table_row {
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s ease;
+    background-color: white !important; /* Force white background */
+}
+
+.table_row:hover {
+    background-color: #f8f9fa !important; /* Force light gray on hover */
+}
+
+/* Remove any existing green backgrounds */
+.table_row.table-success,
+.table_row.success,
+.table_row.bg-success,
+.table-success {
+    background-color: white !important;
+}
+
+/* Override any Bootstrap or framework green classes */
+.table_row.table-success:hover,
+.table_row.success:hover,
+.table_row.bg-success:hover {
+    background-color: #f8f9fa !important;
+}
+
+/* Additional override for any green background classes */
+tr[class*="success"],
+tr[class*="green"] {
+    background-color: white !important;
+}
+
+tr[class*="success"]:hover,
+tr[class*="green"]:hover {
+    background-color: #f8f9fa !important;
+}
+
+.table_row td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* Product info styling */
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+}
+
+.how-itemcart1 {
+    flex-shrink: 0;
+}
+
+.how-itemcart1 img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.product-name {
+    flex: 1;
+    min-width: 0;
+}
+
+.product-name span {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    display: block;
+    word-wrap: break-word;
+}
+
+/* Quantity controls - Single layer design */
+.wrap-num-product {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+    max-width: 120px;
+    margin: 0 auto;
+}
+
+.btn-num-product-down,
+.btn-num-product-up {
+    width: 35px;
+    height: 35px;
+    border: none !important;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    color: #6c757d;
+}
+
+.btn-num-product-down:hover,
+.btn-num-product-up:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.btn-num-product-down:active,
+.btn-num-product-up:active {
+    background: #e9ecef;
+}
+
+.num-product {
+    width: 50px;
+    height: 35px;
+    text-align: center;
+    border: none !important;
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    background: white;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.num-product:focus {
+    background: #fff;
+    border-color: #80bdff !important;
+}
+
+/* Action button styling */
+.btn-danger {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+/* Total amount section */
+.flex-w.flex-sb-m {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+    /* Hide table headers and restructure table as cards */
+    .table_head {
+        display: none;
+    }
+
+    .table-shopping-cart,
+    .table-shopping-cart tbody,
+    .table_row {
+        display: block;
+        width: 100%;
+    }
+
+    .table_row {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .table_row td {
+        display: block;
+        padding: 8px 0;
+        text-align: left;
+        border: none;
+        position: relative;
+    }
+
+    /* Add labels for mobile */
+    .table_row td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #495057;
+        display: inline-block;
+        width: 80px;
+        margin-right: 10px;
+    }
+
+    .column-1:before { content: "Product: "; }
+    .column-2:before { content: "Size: "; }
+    .column-3:before { content: "Price: "; }
+    .column-4:before { content: "Qty: "; }
+    .column-5:before { content: "Total: "; }
+    .column-6:before { content: "Action: "; }
+
+    /* Product info adjustments for mobile */
+    .product-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .how-itemcart1 img {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Quantity controls for mobile */
+    .wrap-num-product {
+        max-width: none;
+        justify-content: flex-start;
+        margin: 0;
+    }
+
+    /* Total section mobile */
+    .flex-w.flex-sb-m {
+        text-align: center;
+    }
+
+    .flex-w.flex-sb-m .total-amount,
+    .flex-w.flex-sb-m a {
+        display: block;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .how-itemcart1 img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .product-name span {
+        font-size: 13px;
+    }
+
+    .btn-num-product-down,
+    .btn-num-product-up {
+        width: 32px;
+        height: 32px;
+    }
+
+    .num-product {
+        width: 45px;
+        height: 32px;
+        font-size: 13px;
+    }
+}
+
+/* Success feedback animation */
+.table-success {
+    background-color: #d1edff !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}

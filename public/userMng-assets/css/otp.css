@@ -1,0 +1,312 @@
+      * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .otp-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .otp-field {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .otp-field input {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 500;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #fafafa;
+        }
+
+        .otp-field input:focus {
+            border-color: #000;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .otp-field input:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+
+        .center-label {
+            text-align: center;
+            display: block;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        button[type="submit"], button#resendButton {
+            width: 100%;
+            max-width: 200px;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px auto;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"] {
+            background-color: #000;
+            color: #fff;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #333;
+        }
+
+        button#resendButton {
+            background-color: #787878;
+            color: #fff;
+        }
+
+        button#resendButton:hover:not(:disabled) {
+            background-color: #616161;
+        }
+
+        button#resendButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #timerDisplay {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin: 15px 0;
+        }
+
+        .text-success {
+            text-align: center;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        /* Navbar Styling */
+        .header-section {
+            background-color: #000;
+        }
+
+        .header-wrapper {
+            width: 100%;
+        }
+
+        .header-bottom {
+            padding: 15px 0;
+        }
+
+        .container-fluid {
+            max-width: 1400px; /* Wider navbar */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-logo img {
+            max-height: 40px;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            background-color: #000;
+            padding: 10px 0;
+        }
+
+        .mobile-header .container {
+            max-width: 1400px; /* Wider mobile navbar */
+            padding: 0 15px;
+            display: flex;
+            justify-content: flex-start; /* Ensure logo stays left-aligned */
+        }
+
+        .mobile-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Footer Styling */
+        .footer-section {
+            background-color: #000;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            margin-bottom: 20px;
+        }
+
+        .footer-logo img {
+            max-width: 120px;
+        }
+
+        .footer-contact p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        .footer-social {
+            margin: 20px 0;
+        }
+
+        .footer-social a {
+            color: #fff;
+            font-size: 18px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: #ccc;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            font-size: 14px;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .otp-card {
+                padding: 20px;
+            }
+
+            .otp-field input {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .center-label {
+                font-size: 14px;
+            }
+
+            button[type="submit"], button#resendButton {
+                max-width: 180px;
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .container-fluid {
+                max-width: 100%;
+                padding: 0 15px;
+            }
+
+            .mobile-header .container {
+                max-width: 100%;
+                padding: 0 10px;
+                justify-content: flex-start; /* Reinforce left alignment */
+            }
+
+            .header-logo img {
+                max-height: 35px; /* Reduced logo size for tablet/mobile */
+            }
+
+            .footer-logo img {
+                max-width: 100px;
+            }
+
+            .footer-social a {
+                font-size: 16px;
+                margin: 0 8px;
+            }
+
+            .footer-links a {
+                font-size: 12px;
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .otp-field input {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            button[type="submit"], button#resendButton {
+                max-width: 100%;
+            }
+
+            .footer-contact p {
+                font-size: 12px;
+            }
+
+            .header-logo img {
+                max-height: 30px; /* Further reduced logo size for small screens */
+            }
+        }
+ 
