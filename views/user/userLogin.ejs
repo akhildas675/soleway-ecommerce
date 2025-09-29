@@ -1,44 +1,15 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <title>Login Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Favicon -->
     <link rel="icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/x-icon">
-
-    <!-- Include Font Awesome CDN for eye icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- MATERIAL DESIGN ICONIC FONT -->
     <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
-
-    <!-- STYLE CSS -->
     <link rel="stylesheet" href="/logn_signup_assets/css/style.css">
-
-    <!-- Toastify CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
-
-    <style>
-        /* Positioning the eye icon */
-        .password-wrapper {
-            position: relative;
-        }
-
-        .password-wrapper i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #333;
-            font-size: 16px;
-        }
-    </style>
 </head>
-
 <body>
     <div class="wrapper" style="background-image: url('/logn_signup_assets/images/loginRegistraionbg.jpeg');">
         <div class="inner">
@@ -47,23 +18,18 @@
             </div>
             <form id="userLogin">
                 <h3>Login Form</h3>
-
                 <div class="form-wrapper">
                     <input type="email" placeholder="Email Address" class="form-control" name="email" id="user_email">
                     <i class="zmdi zmdi-email"></i>
                 </div>
-
                 <div class="form-wrapper password-wrapper">
-                    <input type="password" placeholder="Password" class="form-control" name="password" id="user_password">
-                    
+                    <input  placeholder="Password" class="form-control" name="password" id="user_password">
+                    <i class="fas fa-eye-slash togglePassword" id="togglePassword"></i>
                 </div>
-
                 <button type="submit">Login
                     <i class="zmdi zmdi-arrow-right"></i>
                 </button>
-
                 <p style="text-align: center; font-size: larger;">OR</p>
-
                 <div class="google-login" style="text-align: center;">
                     <a href="/login/google" class="btn-google" style="display: inline-flex; align-items: center; padding: 17px 15px; background-color: #333; text-decoration: none; border: 1px solid #333;">
                         <i class="fab fa-google" style="color: #ffffff; font-size: 18px; margin-right: 10px;"></i>
@@ -79,22 +45,16 @@
             </form>
         </div>
     </div>
-
-    <!-- Toastify JS -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
-
     <script>
         async function loginUser(event) {
             event.preventDefault();
-
             const userEmail = document.getElementById('user_email').value;
             const userPassword = document.getElementById('user_password').value;
-
             let data = {
                 email: userEmail,
                 password: userPassword,
             };
-
             try {
                 const response = await fetch('/verifylog', {
                     method: "POST",
@@ -103,9 +63,7 @@
                     },
                     body: JSON.stringify(data)
                 });
-
                 const result = await response.json();
-
                 if (response.ok) {
                     Toastify({
                         text: result.message || "Login successful",
@@ -114,7 +72,6 @@
                         position: "right",
                         backgroundColor: "green",
                     }).showToast();
-
                     setTimeout(() => window.location.href = '/', 1000);
                 } else {
                     Toastify({
@@ -127,7 +84,6 @@
                 }
             } catch (error) {
                 console.log(error);
-
                 Toastify({
                     text: "An error occurred. Please try again.",
                     duration: 1000,
@@ -137,24 +93,17 @@
                 }).showToast();
             }
         }
-
         document.getElementById("userLogin").addEventListener('submit', loginUser);
-
-        // Password toggle functionality
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordField = document.getElementById('user_password');
-
-        if (togglePassword && passwordField) {
-            togglePassword.addEventListener('click', function () {
+        const togglePasswordIcons = document.querySelectorAll('.togglePassword');
+        togglePasswordIcons.forEach(toggleIcon => {
+            toggleIcon.addEventListener('click', function () {
+                const passwordField = this.previousElementSibling;
                 const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordField.setAttribute('type', type);
-
-                // Toggle between eye and eye-slash
-                this.classList.toggle('fa-eye-slash');
                 this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
             });
-        }
+        });
     </script>
 </body>
-
 </html>
