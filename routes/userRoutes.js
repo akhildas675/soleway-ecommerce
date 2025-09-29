@@ -111,7 +111,7 @@ userRoute.get(
 
 //User management
 userRoute.get("/Account", Auth.isLogin, userController.userDetails);
-userRoute.post("/Addaddress", Auth.isLogin, userController.addUserAddress);
+userRoute.post("/addaddress", Auth.isLogin, userController.addUserAddress);
 userRoute.get("/addressEditView", Auth.isLogin, userController.editAddressPage);
 userRoute.post("/editAddress", Auth.isLogin, userController.editAddress);
 userRoute.post("/deleteAddress", Auth.isLogin, userController.deleteAddress);
@@ -121,6 +121,10 @@ userRoute.get("/orderDetails", Auth.isLogin, userController.orderInfos);
 // Separate Orders and Wallet pages
 userRoute.get("/orders", Auth.isLogin, userController.loadOrders);
 userRoute.get("/wallet", Auth.isLogin, userController.loadWallet);
+// Separate pages for account management
+userRoute.get("/coupons", Auth.isLogin, userController.loadCoupons);
+userRoute.get("/addresses", Auth.isLogin, userController.loadAddresses);
+userRoute.get("/add-address", Auth.isLogin, userController.loadAddAddress);
 
 //Wallet
 

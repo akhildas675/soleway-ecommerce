@@ -1,174 +1,230 @@
 <!DOCTYPE html>
 <html lang="zxx">
-
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>My Account Soleway</title>
-
-    <!-- ::::::::::::::Favicon icon::::::::::::::-->
+    <title>My Account - Soleway</title>
     <link rel="shortcut icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/png">
-
-    <!-- Use the minified version files listed below for better performance and remove the files listed above -->
     <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css">
     <link rel="stylesheet" href="/userMng-assets/css/style.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-    <!-- soleway css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <%- include('./partials/solewayCss.ejs') %>
 
     <style>
-        .address-container,
-        .billing-address,
-        .tab-pane p {
-            color: rgb(57, 57, 57);
+        body { background-color: #f5f7fa; }
+        .dashboard-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .page-header {
+            background: linear-gradient(135deg, #000000 0%, #2563eb 100%);
+            padding: 40px 30px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        .page-header h2 { margin: 0; font-size: 32px; font-weight: 700; }
+        .page-header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
+
+        .account-nav {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;
+            background: white; border-radius: 12px; padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .account-nav a {
+            padding: 10px 20px; border-radius: 8px; text-decoration: none;
+            color: #64748b; font-weight: 500; transition: all 0.3s ease;
+        }
+        .account-nav a:hover { background-color: #f1f5f9; color: #334155; }
+        .account-nav a.active {
+            background: linear-gradient(135deg, #090909 0%, #0f0f10 100%);
+            color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .address-container {
+        /* Quick Stats Cards */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .address-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%);
-            background-blend-mode: lighten;
-            border-radius: 10px;
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3b82f6;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
 
-        .coupon-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
+        .stat-card.orders { border-left-color: #8b5cf6; }
+        .stat-card.wallet { border-left-color: #10b981; }
+        .stat-card.coupons { border-left-color: #f59e0b; }
 
-        .coupon-box {
-            background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%);
-            background-blend-mode: lighten;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 60%;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
+        .stat-card .stat-icon { background: #dbeafe; color: #3b82f6; }
+        .stat-card.orders .stat-icon { background: #ede9fe; color: #8b5cf6; }
+        .stat-card.wallet .stat-icon { background: #d1fae5; color: #10b981; }
+        .stat-card.coupons .stat-icon { background: #fef3c7; color: #f59e0b; }
 
-        .coupon-details h5 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #5f5f5f;
-        }
-
-        .coupon-details p {
-            font-size: 12px;
-            color: #323232;
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
             margin-bottom: 5px;
         }
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+        .stat-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s ease;
+        }
+        .stat-link:hover { gap: 10px; }
 
-        .coupon-action {
-            text-align: right;
+        /* Quick Actions */
+        .quick-actions-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .quick-actions-section h3 {
+            margin: 0 0 25px 0;
+            font-size: 22px;
+            color: #1e293b;
         }
 
-        .btn-copy {
-            background-color: #000000;
-            color: white;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
-        .btn-copy:hover {
-            background-color: #3f3f3f;
+        .action-btn {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .action-icon {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #3b82f6;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .profile-section h3 {
+            margin: 0 0 25px 0;
+            font-size: 22px;
+            color: #1e293b;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 3px solid #3b82f6;
+        }
+        .profile-item label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .profile-item .value {
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
-            .coupon-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Dashboard navigation styles */
-        .dashboard-nav-link {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #f8f9fa;
-            color: #000000;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            border: 1px solid #dee2e6;
-        }
-
-        .dashboard-nav-link:hover {
-            background-color: #000000;
-            color: white;
-            text-decoration: none;
-        }
-
-        .dashboard-quick-links {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            .page-header h2 { font-size: 24px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .actions-grid { grid-template-columns: 1fr; }
         }
     </style>
-
 </head>
-
 <body>
-    <!-- Start Header Area -->
+    <!-- Header -->
     <header class="header-section d-none d-xl-block">
         <div class="header-wrapper">
             <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12 d-flex align-items-center justify-content-between color--Black blackbg">
-                            <!-- Start Header Logo -->
                             <div class="header-logo">
                                 <div class="logo">
                                     <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
                                 </div>
                             </div>
-                            <!-- End Header Logo -->
-
-                            <!-- Start Header Main Menu -->
                             <div class="main-menu menu-color--black menu-hover-color--Black">
                                 <nav>
                                     <ul>
-                                        <li class="has-dropdown">
-                                            <a href="/">Home <i class="fa"></i></a>
-                                        </li>
-                                        <li class="has-dropdown has-megaitem">
-                                            <a href="/Shop">Shop <i class="fa "></i></a>
-                                        </li>
-                                        <li class="has-dropdown">
-                                            <a href="/Blog">Blog<i class="fa"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="/About">About Us</a>
-                                        </li>
-                                        <li>
-                                            <a href="/Contact">Contact Us</a>
-                                        </li>
+                                        <li><a href="/">Home</a></li>
+                                        <li><a href="/Shop">Shop</a></li>
+                                        <li><a href="/Blog">Blog</a></li>
+                                        <li><a href="/About">About Us</a></li>
+                                        <li><a href="/Contact">Contact Us</a></li>
                                     </ul>
                                 </nav>
                             </div>
-                            <!-- End Header Main Menu Start -->
-
-                            <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--black action-hover-color--white">
                                 <li>
                                     <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
@@ -176,7 +232,6 @@
                                     </a>
                                 </li>
                             </ul>
-                            <!-- End Header Action Link -->
                         </div>
                     </div>
                 </div>
@@ -184,12 +239,11 @@
         </div>
     </header>
 
-    <!-- Start Mobile Header -->
+    <!-- Mobile Header -->
     <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
         <div class="container">
             <div class="row">
                 <div class="col-12 d-flex align-items-center justify-content-between">
-                    <!-- Start Mobile Left Side -->
                     <div class="mobile-header-left">
                         <ul class="mobile-menu-logo">
                             <li>
@@ -201,9 +255,6 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- End Mobile Left Side -->
-
-                    <!-- Start Mobile Right Side -->
                     <div class="mobile-right-side">
                         <ul class="header-action-link action-color--black action-hover-color--white">
                             <li>
@@ -213,406 +264,146 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- End Mobile Right Side -->
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Mobile Header -->
 
-    <!-- Mobile Menu Offcanvas -->
-    <div id="mobile-menu-offcanvas" class="offcanvas offcanvas-rightside offcanvas-mobile-menu-section">
-        <div class="offcanvas-header text-right">
-            <button class="offcanvas-close"><i class="ion-android-close"></i></button>
-        </div>
-        <div class="offcanvas-mobile-menu-wrapper">
-            <div class="mobile-menu-bottom">
-                <div class="offcanvas-menu">
-                    <ul>
-                        <li><a href="/"><span>Home</span></a></li>
-                        <li><a href="/Shop"><span>Shop</span></a></li>
-                        <li><a href="/Blog"><span>Blogs</span></a></li>
-                        <li><a href="/About">About</a></li>
-                        <li><a href="/Contact">Contact Us</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mobile-contact-info">
-                <div class="logo">
-                    <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
-                </div>
-                <ul class="user-link">
-                    <li><a href="/Wishlist">Wishlist</a></li>
-                    <li><a href="/Cart">Cart</a></li>
-                    <li><a href="/Account">Account</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- About Offcanvas -->
-    <div id="offcanvas-about" class="offcanvas offcanvas-rightside offcanvas-mobile-about-section">
-        <div class="offcanvas-header text-right">
-            <button class="offcanvas-close"><i class="ion-android-close"></i></button>
-        </div>
-        <div class="mobile-contact-info">
-            <div class="logo">
-                <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
-            </div>
-            <address class="address">
-                <span>Address: Your address goes here.</span>
-                <span>Call Us: 6238381782</span>
-                <span>Email: akhildasdas191@gmail.com</span>
-            </address>
-            <ul class="social-link">
-                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-            </ul>
-            <ul class="user-link">
-                <li><a href="/Wishlist">Wishlist</a></li>
-                <li><a href="/Cart">Cart</a></li>
-                <li><a href="/Account">Account</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Search Modal -->
-    <div id="search" class="search-modal">
-        <button type="button" class="close">×</button>
-        <form>
-            <input type="search" placeholder="type keyword(s) here" />
-            <button type="submit" class="btn btn-lg btn-white">Search</button>
-        </form>
-    </div>
-
-    <!-- Offcanvas Overlay -->
-    <div class="offcanvas-overlay"></div>
-
-    <!-- Breadcrumb Section -->
+    <!-- Breadcrumb -->
     <% if (locals.findUser) { %>
-        <div class="breadcrumb-section breadcrumb-bg-color--white">
-            <div class="breadcrumb-wrapper">
-                <div class="container">
-                    <div class="col-12">
-                        <h4>Hey</h4>
-                        <h3 class="breadcrumb-title"><%= findUser.name %></h3>
-                        <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
-                            <nav aria-label="breadcrumb">
-                                <ul>
-                                    <li><a href="/">Home</a></li>
-                                    <li><a href="/Shop">Shop</a></li>
-                                    <li class="active" aria-current="page">My Account</li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Account Dashboard Section -->
-        <div class="account-dashboard">
+    <div class="breadcrumb-section breadcrumb-bg-color--white">
+        <div class="breadcrumb-wrapper">
             <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 col-md-3 col-lg-3">
-                        <!-- Navigation Menu -->
-                        <div class="dashboard_tab_button" data-aos="fade-up" data-aos-delay="0">
-                            <ul role="tablist" class="nav flex-column dashboard-list">
-                                <li><a href="#dashboard" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover active">Dashboard</a></li>
-                                <li><a href="/orders" class="nav-link btn btn-block btn-md btn-black-default-hover">Orders</a></li>
-                                <li><a href="/wallet" class="nav-link btn btn-block btn-md btn-black-default-hover">Wallet</a></li>
-                                <li><a href="#coupon" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Coupon</a></li>
-                                <li><a href="#address" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Manage Address</a></li>
-                                <li><a href="#account-details" data-bs-toggle="tab" class="nav-link btn btn-block btn-md btn-black-default-hover">Add Address</a></li>
-                                <li><a href="#" id="logoutButton" class="nav-link btn btn-block btn-md btn-black-default-hover">Logout</a></li>
+                <div class="col-12">
+                    <h4>Welcome back,</h4>
+                    <h3 class="breadcrumb-title"><%= findUser.name %></h3>
+                    <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
+                        <nav aria-label="breadcrumb">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/Shop">Shop</a></li>
+                                <li class="active" aria-current="page">My Account</li>
                             </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="col-sm-12 col-md-9 col-lg-9">
-                        <!-- Tab Content -->
-                        <div class="tab-content dashboard_content" data-aos="fade-up" data-aos-delay="200">
-                            
-                            <!-- Dashboard Tab -->
-                            <div class="tab-pane fade show active" id="dashboard">
-                                <h4>Dashboard</h4>
-                                <p>From your account dashboard, you can easily check &amp; view your <a href="/orders">recent orders</a>, manage your <a href="#address">shipping and billing addresses</a> and <a href="#account-details">edit your password and account details</a>.</p>
-                                
-                                <!-- Quick Links -->
-                                <div class="dashboard-quick-links">
-                                    <h5>Quick Actions</h5>
-                                    <a href="/orders" class="dashboard-nav-link">View My Orders</a>
-                                    <a href="/wallet" class="dashboard-nav-link">Manage Wallet</a>
-                                    <a href="#address" data-bs-toggle="tab" class="dashboard-nav-link">View Addresses</a>
-                                    <a href="#coupon" data-bs-toggle="tab" class="dashboard-nav-link">My Coupons</a>
-                                </div>
-                            </div>
-
-                            <!-- Coupon Tab -->
-                            <div class="tab-pane fade" id="coupon">
-                                <h4>Coupon</h4>
-                                <% if (coupon && coupon.length > 0) { %>
-                                    <div class="coupon-container">
-                                        <% for (let i = 0; i < coupon.length; i++) { %>
-                                            <div class="coupon-box">
-                                                <div class="coupon-details">
-                                                    <h5><%= coupon[i].couponName %></h5>
-                                                    <p><strong>Expires:</strong> <span>
-                                                        <%= new Date(coupon[i].expiryDate).toLocaleDateString('en-GB', {
-                                                            day: 'numeric', month: 'short', year: 'numeric'
-                                                        }) %>
-                                                    </span></p>
-                                                    <p><strong>Coupon Code:</strong> <span id="couponCode<%= i %>">
-                                                        <%= coupon[i].couponCode %>
-                                                    </span></p>
-                                                    <p><strong>Times Used:</strong> <span class="black">
-                                                        <%= coupon[i].timesUsed %>
-                                                    </span></p>
-                                                </div>
-                                                <div class="coupon-action">
-                                                    <button class="btn-copy" onclick="copyToClipboard('couponCode<%= i %>')">
-                                                        Copy Coupon
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        <% } %>
-                                    </div>
-                                <% } else { %>
-                                    <div class="text-center">
-                                        <p>No coupons available at the moment.</p>
-                                        <a href="/Shop" class="btn btn-primary">Continue Shopping</a>
-                                    </div>
-                                <% } %>
-                            </div>
-
-                            <!-- Address Management Tab -->
-                            <div class="tab-pane" id="address">
-                                <p style="color: black;">The following addresses will be used on the checkout page by default.</p>
-                                <h5 class="billing-address" style="color: black;">Billing address</h5>
-
-                                <% if (locals.addresses && locals.findUser) { %>
-                                    <div class="address-container">
-                                        <% for (let i = 0; i < locals.addresses.length; i++) { %>
-                                            <div class="address-item mb-3" style="color: black;">
-                                                <div class="mb-2">
-                                                    <a href="/addressEditView?id=<%= addresses[i]._id %>" class="btn btn-sm btn-primary">Edit</a>
-                                                    <button onclick="deleteUserAddress('<%= addresses[i]._id %>')" class="btn btn-sm btn-danger">Delete</button>
-                                                </div>
-                                                <p><strong>Name:</strong> <%= addresses[i].name %></p>
-                                                <p><strong>Home Address:</strong> <%= addresses[i].homeAddress %></p>
-                                                <p><strong>City:</strong> <%= addresses[i].city %></p>
-                                                <p><strong>District:</strong> <%= addresses[i].district %></p>
-                                                <p><strong>State:</strong> <%= addresses[i].state %></p>
-                                                <p><strong>Pincode:</strong> <%= addresses[i].pincode %></p>
-                                                <p><strong>Mobile:</strong> <%= addresses[i].mobile %></p>
-                                            </div>
-                                        <% } %>
-                                    </div>
-                                <% } else { %>
-                                    <p style="color: black;">No addresses found.</p>
-                                <% } %>
-                            </div>
-
-                            <!-- Add Address Tab -->
-                            <div class="tab-pane fade" id="account-details">
-                                <h3>Add Address</h3>
-                                <div class="login">
-                                    <div class="login_form_container">
-                                        <div class="account_login_form">
-                                            <form id="add-address-form">
-                                                <div class="default-form-box mb-20">
-                                                    <label>Name</label>
-                                                    <input type="text" name="name" id="name">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>Mobile</label>
-                                                    <input type="text" name="mobile" id="mobile">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>Home address</label>
-                                                    <input type="text" name="homeAddress" id="homeAddress">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>City</label>
-                                                    <input type="text" name="city" id="city">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>District</label>
-                                                    <input type="text" name="district" id="district">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>State</label>
-                                                    <input type="text" name="state" id="state">
-                                                </div>
-                                                <div class="default-form-box mb-20">
-                                                    <label>Pincode</label>
-                                                    <input type="text" name="pincode" id="pincode">
-                                                </div>
-                                                <div class="save_button mt-3">
-                                                    <button class="btn btn-md btn-black-default-hover" type="button" onclick="submitAddressForm()">Save</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
-        <br><br><br>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-wrapper">
+        <div class="page-header">
+            <h2><i class="fas fa-user-circle"></i> Account Dashboard</h2>
+            <p>Manage your account, orders, and preferences from one place</p>
+        </div>
+
+        <div class="account-nav">
+            <a href="/Account" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/orders"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <a href="/wallet"><i class="fas fa-wallet"></i> Wallet</a>
+            <a href="/coupons"><i class="fas fa-ticket-alt"></i> Coupons</a>
+            <a href="/addresses"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card orders">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-value">--</div>
+                <div class="stat-label">Total Orders</div>
+                <a href="/orders" class="stat-link">
+                    View Orders <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="stat-card wallet">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-value">₹<%= wallet ? wallet.balance.toFixed(2) : '0.00' %></div>
+                <div class="stat-label">Wallet Balance</div>
+                <a href="/wallet" class="stat-link">
+                    Manage Wallet <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="stat-card coupons">
+                <div class="stat-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-value"><%= coupon ? coupon.length : 0 %></div>
+                <div class="stat-label">Available Coupons</div>
+                <a href="/coupons" class="stat-link">
+                    View Coupons <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-section">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="actions-grid">
+                <a href="/orders" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <span>Track Orders</span>
+                </a>
+                <a href="/wallet" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span>Add Money</span>
+                </a>
+                <a href="/addresses" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <span>Manage Addresses</span>
+                </a>
+                <a href="/Shop" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <span>Continue Shopping</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="profile-section">
+            <h3><i class="fas fa-user"></i> Profile Information</h3>
+            <div class="profile-info">
+                <div class="profile-item">
+                    <label>Full Name</label>
+                    <div class="value"><%= findUser.name %></div>
+                </div>
+                <div class="profile-item">
+                    <label>Email Address</label>
+                    <div class="value"><%= findUser.email %></div>
+                </div>
+                <div class="profile-item">
+                    <label>Mobile Number</label>
+                    <div class="value"><%= findUser.mobile || 'Not provided' %></div>
+                </div>
+                <div class="profile-item">
+                    <label>Member Since</label>
+                    <div class="value"><%= new Date(findUser.createdAt).toLocaleDateString('en-GB', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    }) %></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <% } %>
 
-    <!-- Footer -->
     <%- include('./partials/userFooter.ejs') %>
 
-    <!-- Scroll to top button -->
-    <button class="material-scrolltop" type="button"></button>
-
-    <!-- Scripts -->
     <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
     <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
     <script src="/userMng-assets/js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-    <script>
-        // Logout functionality
-        document.getElementById('logoutButton').addEventListener('click', function (event) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You will be logged out of your account.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, logout!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/logOut';
-                }
-            });
-        });
-
-        // Delete address functionality
-        function deleteUserAddress(addressId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to delete this address?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('/deleteAddress', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ addressId: addressId })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            Swal.fire('Deleted!', 'The address has been deleted.', 'success')
-                            .then(() => window.location.reload());
-                        } else {
-                            Swal.fire('Failed!', 'Failed to delete the address.', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire('Error!', 'An error occurred. Please try again.', 'error');
-                    });
-                }
-            });
-        }
-
-        // Copy coupon functionality
-        function copyToClipboard(elementId) {
-            const couponCode = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(couponCode).then(() => {
-                Toastify({
-                    text: "Coupon code copied: " + couponCode,
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "#4CAF50",
-                    stopOnFocus: true,
-                }).showToast();
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                Toastify({
-                    text: "Failed to copy the coupon code.",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "#f44336",
-                    stopOnFocus: true,
-                }).showToast();
-            });
-        }
-
-        // Add address functionality
-        async function submitAddressForm() {
-            const formData = {
-                name: document.getElementById('name').value,
-                mobile: document.getElementById('mobile').value,
-                homeAddress: document.getElementById('homeAddress').value,
-                city: document.getElementById('city').value,
-                district: document.getElementById('district').value,
-                state: document.getElementById('state').value,
-                pincode: document.getElementById('pincode').value,
-            };
-
-            try {
-                const response = await fetch('/Addaddress', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    Toastify({
-                        text: "Address added successfully!",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "#28a745",
-                    }).showToast();
-                    setTimeout(() => window.location.href = "/Account", 1000);
-                } else {
-                    Toastify({
-                        text: data.message.join(', '),
-                        duration: 5000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "#dc3545",
-                    }).showToast();
-                }
-            } catch (error) {
-                Toastify({
-                    text: "An error occurred. Please try again.",
-                    duration: 5000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "#dc3545",
-                }).showToast();
-            }
-        }
-    </script>
-
 </body>
 </html>

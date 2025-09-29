@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Coupons - Soleway</title>
+    <link rel="shortcut icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/png">
+    <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css">
+    <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css">
+    <link rel="stylesheet" href="/userMng-assets/css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <%- include('./partials/solewayCss.ejs') %>
+
+    <style>
+        body { background-color: #f5f7fa; }
+        .coupons-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .page-header {
+            background: linear-gradient(135deg, #000000 0%, #3b2206 100%);
+            padding: 40px 30px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+        .page-header h2 { margin: 0; font-size: 32px; font-weight: 700; }
+        .page-header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
+
+        .account-nav {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;
+            background: white; border-radius: 12px; padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .account-nav a {
+            padding: 10px 20px; border-radius: 8px; text-decoration: none;
+            color: #64748b; font-weight: 500; transition: all 0.3s ease;
+        }
+        .account-nav a:hover { background-color: #f1f5f9; color: #334155; }
+        .account-nav a.active {
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .coupons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .coupon-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .coupon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #362d1d;
+        }
+
+        .coupon-header {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .coupon-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        }
+
+        .coupon-discount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        .coupon-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #78350f;
+            position: relative;
+            z-index: 1;
+        }
+
+        .coupon-body {
+            padding: 25px;
+        }
+
+        .coupon-code-section {
+            background: #f8fafc;
+            border: 2px dashed #3a342a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .coupon-code {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 2px;
+        }
+        .copy-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #493e2a 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .coupon-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .coupon-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .coupon-detail-item i {
+            width: 20px;
+            color: #362f24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .empty-state-icon {
+            width: 120px; height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #27221a 0%, #4f3518 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+        }
+        .empty-state h3 {
+            font-size: 24px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .btn-shop {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #5f461b 0%, #4c361d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        .btn-shop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .coupons-grid { grid-template-columns: 1fr; }
+            .page-header h2 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-section d-none d-xl-block">
+        <div class="header-wrapper">
+            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 d-flex align-items-center justify-content-between color--Black blackbg">
+                            <div class="header-logo">
+                                <div class="logo">
+                                    <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="main-menu menu-color--black menu-hover-color--Black">
+                                <nav>
+                                    <ul>
+                                        <li><a href="/">Home</a></li>
+                                        <li><a href="/Shop">Shop</a></li>
+                                        <li><a href="/Blog">Blog</a></li>
+                                        <li><a href="/About">About Us</a></li>
+                                        <li><a href="/Contact">Contact Us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <ul class="header-action-link action-color--black action-hover-color--white">
+                                <li>
+                                    <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
+                                        <i class="icon-menu"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 d-flex align-items-center justify-content-between">
+                    <div class="mobile-header-left">
+                        <ul class="mobile-menu-logo">
+                            <li>
+                                <a href="/">
+                                    <div class="logo">
+                                        <img src="/userMng-assets/images/logo/1.png" alt="">
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mobile-right-side">
+                        <ul class="header-action-link action-color--black action-hover-color--white">
+                            <li>
+                                <a href="#mobile-menu-offcanvas" class="offcanvas-toggle offside-menu">
+                                    <i class="icon-menu"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section breadcrumb-bg-color--white">
+        <div class="breadcrumb-wrapper">
+            <div class="container">
+                <div class="col-12">
+                    <h3 class="breadcrumb-title">My Coupons</h3>
+                    <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
+                        <nav aria-label="breadcrumb">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/Account">My Account</a></li>
+                                <li class="active" aria-current="page">Coupons</li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="coupons-wrapper">
+        <div class="page-header">
+            <h2><i class="fas fa-ticket-alt"></i> My Coupons</h2>
+            <p>Save money on your purchases with exclusive discount codes</p>
+        </div>
+
+        <div class="account-nav">
+            <a href="/Account"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/orders"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <a href="/wallet"><i class="fas fa-wallet"></i> Wallet</a>
+            <a href="/coupons" class="active"><i class="fas fa-ticket-alt"></i> Coupons</a>
+            <a href="/addresses"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+        </div>
+
+        <% if (coupons && coupons.length > 0) { %>
+            <div class="coupons-grid">
+                <% for (let i = 0; i < coupons.length; i++) { %>
+                    <div class="coupon-card">
+                        <div class="coupon-header">
+                            <div class="coupon-discount"><%= coupons[i].discountPercentage || coupons[i].discountAmount %>% OFF</div>
+                            <div class="coupon-name"><%= coupons[i].couponName %></div>
+                        </div>
+                        <div class="coupon-body">
+                            <div class="coupon-code-section">
+                                <span class="coupon-code" id="code-<%= i %>"><%= coupons[i].couponCode %></span>
+                                <button class="copy-btn" onclick="copyCouponCode('code-<%= i %>', '<%= coupons[i].couponCode %>')">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <div class="coupon-details">
+                                <div class="coupon-detail-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span>Expires: <%= new Date(coupons[i].expiryDate).toLocaleDateString('en-GB', {
+                                        day: 'numeric', month: 'short', year: 'numeric'
+                                    }) %></span>
+                                </div>
+                                <div class="coupon-detail-item">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span>Min. Purchase: ₹<%= coupons[i].minimumPurchase || 0 %></span>
+                                </div>
+                                <div class="coupon-detail-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Used <%= coupons[i].timesUsed || 0 %> times</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <h3>No Coupons Available</h3>
+                <p>Check back later for exclusive discount codes and special offers!</p>
+                <a href="/Shop" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Continue Shopping
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('./partials/userFooter.ejs') %>
+
+    <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
+    <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
+    <script src="/userMng-assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function copyCouponCode(elementId, code) {
+            navigator.clipboard.writeText(code).then(() => {
+                Toastify({
+                    text: "Coupon code copied: " + code,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#f59e0b",
+                    stopOnFocus: true,
+                }).showToast();
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>
