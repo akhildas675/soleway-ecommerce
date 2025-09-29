@@ -197,6 +197,68 @@ const loadWallet = async (req, res) => {
   }
 };
 
+const loadCoupons = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    if (!userId) {
+      return res.redirect('/Login');
+    }
+
+    const [findUser, coupons] = await Promise.all([
+      User.findById(userId),
+      Coupon.find({ isActive: true })
+    ]);
+
+    res.render("coupons", {
+      findUser,
+      coupons
+    });
+  } catch (error) {
+    console.error('Error loading coupons page:', error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+const loadAddresses = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    if (!userId) {
+      return res.redirect('/Login');
+    }
+
+    const [findUser, addresses] = await Promise.all([
+      User.findById(userId),
+      Address.find({ userId })
+    ]);
+
+    res.render("myAddresses", {
+      findUser,
+      addresses
+    });
+  } catch (error) {
+    console.error('Error loading addresses page:', error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
+const loadAddAddress = async (req, res) => {
+  try {
+    const userId = req.session.userData;
+    if (!userId) {
+      return res.redirect('/Login');
+    }
+
+    const findUser = await User.findById(userId);
+
+    res.render("addAddresses", {
+      findUser
+    });
+  } catch (error) {
+    console.error('Error loading add address page:', error);
+    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+  }
+};
+
 // Error page controllers
 
 const render404 = async (req, res) => {
@@ -571,7 +633,7 @@ const userDetails = async (req, res) => {
     const [findUser, addresses, coupon, wallet] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
-      Coupon.find(),
+      Coupon.find({ isActive: true }),
       Wallet.findOne({ userId })
     ]);
 
@@ -589,22 +651,31 @@ const userDetails = async (req, res) => {
 const addUserAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const errors = validateAddress(req.body);
+    const { name, mobile, homeAddress, city, district, state, pincode } = req.body;
 
+    // Validate address
+    const errors = validateAddress(req.body);
     if (errors.length > 0) {
       return res.status(400).json({ message: errors });
     }
 
+    // Create new address
     const address = new Address({
-      userId: userId,
-      ...req.body
+      userId,
+      name,
+      mobile,
+      homeAddress,
+      city,
+      district,
+      state,
+      pincode,
     });
 
     await address.save();
     return res.status(200).json({ message: "Address added successfully" });
   } catch (error) {
     console.error("Error adding user address:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "An error occurred while adding the address. Please try again." });
   }
 };
 
@@ -626,25 +697,38 @@ const editAddressPage = async (req, res) => {
 
 const editAddress = async (req, res) => {
   try {
-    const addressId = req.body.addressId;
     const userId = req.session.userData;
+    const { addressId, name, mobile, homeAddress, city, district, state, pincode } = req.body;
 
-    await Address.findOneAndUpdate(
+    // Validate address
+    const errors = validateAddress({ name, mobile, homeAddress, city, district, state, pincode });
+    if (errors.length > 0) {
+      return res.status(400).json({ message: errors });
+    }
+
+    // Update address
+    const updatedAddress = await Address.findOneAndUpdate(
       { _id: addressId, userId },
       {
-        name: req.body.name,
-        mobile: req.body.mobile,
-        homeAddress: req.body.homeAddress,
-        city: req.body.city,
-        district: req.body.district,
-        state: req.body.state,
-        pincode: req.body.pincode,
-      }
+        name,
+        mobile,
+        homeAddress,
+        city,
+        district,
+        state,
+        pincode,
+      },
+      { new: true }
     );
 
-    res.redirect("/userInfo");
+    if (!updatedAddress) {
+      return res.status(404).json({ message: "Address not found or user not authorized" });
+    }
+
+    res.status(200).json({ message: "Address updated successfully" });
   } catch (error) {
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error updating address:", error);
+    res.status(500).json({ message: "An error occurred while updating the address. Please try again." });
   }
 };
 
@@ -699,9 +783,11 @@ const addWallet = async (req, res) => {
     }
 
     const order = await createRazorpayOrder(amount);
-    res.json({ order });
+    
+    // Return the order directly, not wrapped in another object
+    res.json(order);
   } catch (error) {
-    console.log(error);
+    console.log('Error in addWallet:', error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -788,6 +874,9 @@ module.exports = {
   userLogOut,
   loadOrders,
   loadWallet,
+  loadCoupons,      // Add this
+  loadAddresses,    // Add this
+  loadAddAddress,   // Add this
   
   // Password reset controllers
   verifyEmail,

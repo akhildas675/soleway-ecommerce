@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Address - Soleway</title>
+    <title>Add Address - Soleway</title>
     <link rel="shortcut icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/png">
     <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css">
     <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css">
@@ -13,8 +13,9 @@
     <%- include('./partials/solewayCss.ejs') %>
 
     <style>
+        /* Existing styles remain unchanged */
         body { background-color: #f5f7fa; }
-        .edit-address-wrapper { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .add-address-wrapper { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
         
         .page-header {
             background: linear-gradient(135deg, #000000 0%, #496c68 100%);
@@ -183,7 +184,7 @@
     </style>
 </head>
 <body>
-    <!-- Start Header Area -->
+    <!-- Header -->
     <header class="header-section d-none d-xl-block">
         <div class="header-wrapper">
             <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
@@ -219,9 +220,8 @@
             </div>
         </div>
     </header>
-    <!-- End Header Area -->
 
-    <!-- Start Mobile Header -->
+    <!-- Mobile Header -->
     <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
         <div class="container">
             <div class="row">
@@ -250,37 +250,33 @@
             </div>
         </div>
     </div>
-    <!-- End Mobile Header -->
 
-    <!-- Start Breadcrumb Section -->
+    <!-- Breadcrumb -->
     <div class="breadcrumb-section breadcrumb-bg-color--white">
         <div class="breadcrumb-wrapper">
             <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h3 class="breadcrumb-title">Edit Address</h3>
-                        <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
-                            <nav aria-label="breadcrumb">
-                                <ul>
-                                    <li><a href="/">Home</a></li>
-                                    <li><a href="/Account">My Account</a></li>
-                                    <li><a href="/addresses">Addresses</a></li>
-                                    <li class="active" aria-current="page">Edit Address</li>
-                                </ul>
-                            </nav>
-                        </div>
+                <div class="col-12">
+                    <h3 class="breadcrumb-title">Add New Address</h3>
+                    <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
+                        <nav aria-label="breadcrumb">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/Account">My Account</a></li>
+                                <li><a href="/addresses">Addresses</a></li>
+                                <li class="active" aria-current="page">Add Address</li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Breadcrumb Section -->
 
     <!-- Main Content -->
-    <div class="edit-address-wrapper">
+    <div class="add-address-wrapper">
         <div class="page-header">
-            <h2><i class="fas fa-edit"></i> Edit Address</h2>
-            <p>Update the details below to modify your delivery address</p>
+            <h2><i class="fas fa-plus-circle"></i> Add New Address</h2>
+            <p>Fill in the details below to add a new delivery address</p>
         </div>
 
         <div class="account-nav">
@@ -301,16 +297,14 @@
                 <p><i class="fas fa-info-circle"></i> Please provide accurate address details to ensure smooth delivery of your orders.</p>
             </div>
 
-            <% if (address && findUser) { %>
-            <form id="edit-address-form" onsubmit="submitEditAddressForm(event)">
-                <input type="hidden" name="addressId" value="<%= address._id %>">
+            <form id="add-address-form">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">
                             <i class="fas fa-user"></i>
                             Full Name
                         </label>
-                        <input type="text" class="form-input" id="name" name="name" value="<%= address.name %>" placeholder="Enter full name" required>
+                        <input type="text" class="form-input" id="name" name="name" placeholder="Enter full name" required>
                     </div>
 
                     <div class="form-group">
@@ -318,7 +312,7 @@
                             <i class="fas fa-phone"></i>
                             Mobile Number
                         </label>
-                        <input type="text" class="form-input" id="mobile" name="mobile" value="<%= address.mobile %>" placeholder="Enter mobile number" required maxlength="10">
+                        <input type="text" class="form-input" id="mobile" name="mobile" placeholder="Enter mobile number" required maxlength="10">
                     </div>
 
                     <div class="form-group">
@@ -326,7 +320,7 @@
                             <i class="fas fa-home"></i>
                             Home Address
                         </label>
-                        <input type="text" class="form-input" id="homeAddress" name="homeAddress" value="<%= address.homeAddress %>" placeholder="House no., Building name" required>
+                        <input type="text" class="form-input" id="homeAddress" name="homeAddress" placeholder="House no., Building name" required>
                     </div>
 
                     <div class="form-group">
@@ -334,7 +328,7 @@
                             <i class="fas fa-city"></i>
                             City
                         </label>
-                        <input type="text" class="form-input" id="city" name="city" value="<%= address.city %>" placeholder="Enter city" required>
+                        <input type="text" class="form-input" id="city" name="city" placeholder="Enter city" required>
                     </div>
 
                     <div class="form-group">
@@ -342,7 +336,7 @@
                             <i class="fas fa-map"></i>
                             District
                         </label>
-                        <input type="text" class="form-input" id="district" name="district" value="<%= address.district %>" placeholder="Enter district" required>
+                        <input type="text" class="form-input" id="district" name="district" placeholder="Enter district" required>
                     </div>
 
                     <div class="form-group">
@@ -350,7 +344,7 @@
                             <i class="fas fa-flag"></i>
                             State
                         </label>
-                        <input type="text" class="form-input" id="state" name="state" value="<%= address.state %>" placeholder="Enter state" required>
+                        <input type="text" class="form-input" id="state" name="state" placeholder="Enter state" required>
                     </div>
 
                     <div class="form-group">
@@ -358,7 +352,7 @@
                             <i class="fas fa-map-pin"></i>
                             Pincode
                         </label>
-                        <input type="text" class="form-input" id="pincode" name="pincode" value="<%= address.pincode %>" placeholder="Enter pincode" required maxlength="6">
+                        <input type="text" class="form-input" id="pincode" name="pincode" placeholder="Enter pincode" required maxlength="6">
                     </div>
                 </div>
 
@@ -367,36 +361,25 @@
                         <i class="fas fa-times"></i>
                         Cancel
                     </a>
-                    <button type="submit" class="btn-submit">
+                    <button type="button" class="btn-submit" onclick="submitAddressForm()">
                         <i class="fas fa-check-circle"></i>
-                        Update Address
+                        Save Address
                     </button>
                 </div>
             </form>
-            <% } else { %>
-            <div class="info-box" style="background: #fee2e2; border-left-color: #dc2626;">
-                <p><i class="fas fa-exclamation-circle"></i> Address not found or user not authorized.</p>
-            </div>
-            <% } %>
         </div>
     </div>
 
-    <!-- Start Footer Section -->
     <%- include('./partials/userFooter.ejs') %>
-    <!-- End Footer Section -->
 
-    <!-- Scripts -->
     <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
     <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
     <script src="/userMng-assets/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
-        async function submitEditAddressForm(event) {
-            event.preventDefault(); // Prevent default form submission
-
+        async function submitAddressForm() {
             const formData = {
-                addressId: document.querySelector('input[name="addressId"]').value.trim(),
                 name: document.getElementById('name').value.trim(),
                 mobile: document.getElementById('mobile').value.trim(),
                 homeAddress: document.getElementById('homeAddress').value.trim(),
@@ -448,7 +431,7 @@
             }
 
             try {
-                const response = await fetch('/editAddress', {
+                const response = await fetch('/Addaddress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData),
@@ -458,7 +441,7 @@
 
                 if (response.ok) {
                     Toastify({
-                        text: "Address updated successfully!",
+                        text: "Address added successfully!",
                         duration: 3000,
                         gravity: "top",
                         position: "right",

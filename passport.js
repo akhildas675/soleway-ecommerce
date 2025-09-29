@@ -17,7 +17,10 @@ passport.deserializeUser((user, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://soleway.shop/auth/google/callback",
+    callbackURL: process.env.NODE_ENV === "production"
+    ? "https://soleway.shop/auth/google/callback"
+    : "http://localhost:3000/auth/google/callback",
+
     passReqToCallback: true
 },
 function(request, accessToken, refreshToken, profile, done) {

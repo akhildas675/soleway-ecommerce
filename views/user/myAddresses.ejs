@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Addresses - Soleway</title>
+    <link rel="shortcut icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/png">
+    <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css">
+    <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css">
+    <link rel="stylesheet" href="/userMng-assets/css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <%- include('./partials/solewayCss.ejs') %>
+
+    <style>
+        body { background-color: #f5f7fa; }
+        .addresses-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .page-header {
+            background: linear-gradient(135deg, #000000 0%, #3e3e3e 100%);
+            padding: 40px 30px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .page-header h2 { margin: 0; font-size: 32px; font-weight: 700; }
+        .page-header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
+
+        .account-nav {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;
+            background: white; border-radius: 12px; padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .account-nav a {
+            padding: 10px 20px; border-radius: 8px; text-decoration: none;
+            color: #64748b; font-weight: 500; transition: all 0.3s ease;
+        }
+        .account-nav a:hover { background-color: #f1f5f9; color: #334155; }
+        .account-nav a.active {
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            color: white; box-shadow: 0 4px 12px rgba(7, 7, 7, 0.3);
+        }
+
+        .add-address-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(3, 3, 3, 0.3);
+            margin-bottom: 30px;
+        }
+        .add-address-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            color: white;
+        }
+
+        .addresses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .address-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .address-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #000000;
+        }
+
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .address-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            color: #dadada;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .edit-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .delete-btn:hover {
+            background: #2c2a2a;
+            color: white;
+        }
+
+        .address-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .address-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .address-field {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .address-field i {
+            width: 20px;
+            color: #000000;
+            margin-top: 2px;
+        }
+
+        .address-field .value {
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .empty-state-icon {
+            width: 120px; height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+        }
+        .empty-state h3 {
+            font-size: 24px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .addresses-grid { grid-template-columns: 1fr; }
+            .page-header h2 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-section d-none d-xl-block">
+        <div class="header-wrapper">
+            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 d-flex align-items-center justify-content-between color--Black blackbg">
+                            <div class="header-logo">
+                                <div class="logo">
+                                    <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="main-menu menu-color--black menu-hover-color--Black">
+                                <nav>
+                                    <ul>
+                                        <li><a href="/">Home</a></li>
+                                        <li><a href="/Shop">Shop</a></li>
+                                        <li><a href="/Blog">Blog</a></li>
+                                        <li><a href="/About">About Us</a></li>
+                                        <li><a href="/Contact">Contact Us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <ul class="header-action-link action-color--black action-hover-color--white">
+                                <li>
+                                    <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
+                                        <i class="icon-menu"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 d-flex align-items-center justify-content-between">
+                    <div class="mobile-header-left">
+                        <ul class="mobile-menu-logo">
+                            <li>
+                                <a href="/">
+                                    <div class="logo">
+                                        <img src="/userMng-assets/images/logo/1.png" alt="">
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mobile-right-side">
+                        <ul class="header-action-link action-color--black action-hover-color--white">
+                            <li>
+                                <a href="#mobile-menu-offcanvas" class="offcanvas-toggle offside-menu">
+                                    <i class="icon-menu"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section breadcrumb-bg-color--white">
+        <div class="breadcrumb-wrapper">
+            <div class="container">
+                <div class="col-12">
+                    <h3 class="breadcrumb-title">My Addresses</h3>
+                    <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
+                        <nav aria-label="breadcrumb">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/Account">My Account</a></li>
+                                <li class="active" aria-current="page">Addresses</li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="addresses-wrapper">
+        <div class="page-header">
+            <h2><i class="fas fa-map-marker-alt"></i> My Addresses</h2>
+            <p>Manage your shipping and billing addresses</p>
+        </div>
+
+        <div class="account-nav">
+            <a href="/Account"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/orders"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <a href="/wallet"><i class="fas fa-wallet"></i> Wallet</a>
+            <a href="/coupons"><i class="fas fa-ticket-alt"></i> Coupons</a>
+            <a href="/addresses" class="active"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+        </div>
+
+        <a href="/add-address" class="add-address-btn">
+            <i class="fas fa-plus-circle"></i> Add New Address
+        </a>
+
+        <% if (addresses && addresses.length > 0) { %>
+            <div class="addresses-grid">
+                <% for (let i = 0; i < addresses.length; i++) { %>
+                    <div class="address-card">
+                        <div class="address-header">
+                            <span class="address-type">
+                                <i class="fas fa-home"></i>
+                                Address <%= i + 1 %>
+                            </span>
+                            <div class="address-actions">
+                                <a href="/addressEditView?id=<%= addresses[i]._id %>" class="action-btn edit-btn" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button onclick="deleteAddress('<%= addresses[i]._id %>')" class="action-btn delete-btn" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="address-details">
+                            <div class="address-name">
+                                <i class="fas fa-user"></i> <%= addresses[i].name %>
+                            </div>
+
+                            <div class="address-field">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="value">
+                                    <%= addresses[i].homeAddress %><br>
+                                    <%= addresses[i].city %>, <%= addresses[i].district %><br>
+                                    <%= addresses[i].state %> - <%= addresses[i].pincode %>
+                                </div>
+                            </div>
+
+                            <div class="address-field">
+                                <i class="fas fa-phone"></i>
+                                <div class="value"><%= addresses[i].mobile %></div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>No Addresses Found</h3>
+                <p>Add your first address to make checkout faster and easier!</p>
+                <a href="/add-address" class="add-address-btn">
+                    <i class="fas fa-plus-circle"></i> Add Your First Address
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('./partials/userFooter.ejs') %>
+
+    <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
+    <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
+    <script src="/userMng-assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function deleteAddress(addressId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this address?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ec4899',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/deleteAddress', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ addressId: addressId })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'The address has been deleted.',
+                                icon: 'success',
+                                confirmButtonColor: '#ec4899'
+                            }).then(() => window.location.reload());
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: 'Failed to delete the address.',
+                                icon: 'error',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
