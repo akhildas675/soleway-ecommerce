@@ -630,24 +630,38 @@ const userDetails = async (req, res) => {
   try {
     const userId = req.session.userData;
 
-    const [findUser, addresses, coupon, wallet] = await Promise.all([
+    if (!userId) {
+      console.log('No userId found in session');
+      return res.redirect('/login');
+    }
+
+    const [findUser, addresses, coupon, wallet, orderCount] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
       Coupon.find({ isActive: true }),
-      Wallet.findOne({ userId })
+      Wallet.findOne({ userId }),
+      Order.countDocuments({ userId }) // Fetch total order count
     ]);
+
+    if (!findUser) {
+      console.log('User not found for ID:', userId);
+      return res.redirect('/login');
+    }
 
     res.render("userAccount", {
       findUser,
       addresses,
       wallet,
-      coupon
+      coupon,
+      orderCount // Pass orderCount to the template
     });
   } catch (error) {
     console.error("Error in userDetails:", error);
     res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
+
+
 const addUserAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
@@ -753,22 +767,64 @@ const orderInfos = async (req, res) => {
     const orderId = req.query.id;
     const userId = req.session.userData;
 
+    if (!orderId) {
+      console.log('No orderId provided');
+      return res.redirect('/orders');
+    }
+    if (!userId) {
+      console.log('No userId found in session');
+      return res.redirect('/login');
+    }
+
+    console.log('Fetching order with ID:', orderId);
+
+    // Fetch user, addresses, and order data
     const [findUser, addresses, orderedData] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
-      Order.findOne({ _id: orderId }).populate({
-        path: "products.productId",
+      Order.findById(orderId).populate({
+        path: 'products.productId',
+        model: 'Product',
         populate: {
-          path: "offerId",
-          model: "Offer",
+          path: 'offerId',
+          model: 'Offer',
         },
-      })
+      }),
     ]);
 
-    res.render("orderDetails", { findUser, addresses, orderedData });
+    // Check if order exists
+    if (!orderedData) {
+      console.log('Order not found for ID:', orderId);
+      return res.redirect('/orders');
+    }
+
+    // Log the orderedData for debugging
+    console.log('Ordered Data:', JSON.stringify(orderedData, null, 2));
+
+    // Filter out products with null productId and log warnings
+    orderedData.products = orderedData.products.filter((product) => {
+      if (!product.productId) {
+        console.warn(`Product with _id ${product._id} has null productId`);
+        return false;
+      }
+      return true;
+    });
+
+    // Log each product's details
+    
+    // Render the order details page
+    res.render('orderDetails', {
+      findUser,
+      addresses,
+      orderedData,
+    });
   } catch (error) {
-    console.error("Error order details shows :", error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error('Error in orderInfos:', error);
+    res.status(500).render('user/500', {
+      findUser: null,
+      cartCount: 0,
+      wishlistCount: 0,
+    });
   }
 };
 
