@@ -1,114 +1,684 @@
 <!DOCTYPE html>
 <html lang="zxx">
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Checkout Page</title>
-
-    <!-- ::::::::::::::Favicon icon::::::::::::::-->
     <link rel="shortcut icon" href="/user-assets/images/icons/FAVICON SW.png" type="image/png" />
-
-    <!-- Bootstrap Icons CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css"
-        rel="stylesheet" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <%- include('./partials/solewayCss.ejs') %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css" />
+    <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css" />
+    <link rel="stylesheet" href="/userMng-assets/css/style.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #000000;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        body {
+            background: var(--light-bg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+        }
 
-        <link rel="stylesheet" href="/userMng-assets/css/vendor/vendor.min.css" />
-        <link rel="stylesheet" href="/userMng-assets/css/plugins/plugins.min.css" />
-        <link rel="stylesheet" href="/userMng-assets/css/style.min.css" />
-        <link rel="stylesheet" href="/userMng-assets/css/checkout.css" />
+        /* Breadcrumb Styling */
+        .breadcrumb-section {
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
 
-        <!-- Tostify link -->
+        .breadcrumb-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+        .breadcrumb-nav ul {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
 
-        
+        .breadcrumb-nav ul li {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .breadcrumb-nav ul li a {
+            color: rgba(255, 255, 255, 0.9);
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-nav ul li a:hover {
+            color: white;
+        }
+
+        /* Main Checkout Container */
+        .checkout-section {
+            padding: 40px 0 80px;
+        }
+
+        .checkout-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-header i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Address Selection */
+        .address-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .address-option {
+            position: relative;
+            display: none;
+        }
+
+        .address-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .address-label {
+            display: block;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        .address-option input[type="radio"]:checked + .address-label {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .address-label:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .address-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .address-details strong {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .address-details p {
+            margin: 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .address-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Add Address Button & Form */
+        .btn-add-address {
+            width: 100%;
+            padding: 16px;
+            border: 2px dashed var(--border-color);
+            background: transparent;
+            color: var(--primary-color);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add-address:hover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .add-address-form {
+            margin-top: 20px;
+            padding: 24px;
+            background: var(--light-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            gap: 12px;
+        }
+
+        .payment-option {
+            position: relative;
+            display: none;
+        }
+
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .payment-label {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        .payment-option input[type="radio"]:checked + .payment-label {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .payment-label:hover {
+            border-color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-bg);
+            border-radius: var(--radius-sm);
+            font-size: 24px;
+        }
+
+        .payment-info h5 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .payment-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Wallet Balance */
+        .wallet-balance {
+            margin-top: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #000000 0%, #000000 100%);
+            border-radius: var(--radius-md);
+            color: white;
+            display: none;
+        }
+
+        .wallet-balance.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .wallet-balance label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .wallet-balance p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+        }
+
+        .product-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--light-bg);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .offer-badge {
+            display: inline-block;
+            background: var(--success-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .no-offer {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Coupons */
+        .coupons-section {
+            margin: 24px 0;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: var(--radius-md);
+        }
+
+        .coupons-section h5 {
+            margin: 0 0 16px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .coupon-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .coupon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .coupon-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        .coupon-info strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .coupon-code {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            background: var(--light-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-coupon {
+            padding: 8px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-coupon:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .btn-coupon.applied {
+            background: var(--danger-color);
+        }
+
+        /* Price Summary */
+        .price-summary {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .price-row.subtotal {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .price-row.discount {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .price-row.discount span:last-child {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grand-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Place Order Button */
+        .btn-place-order {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-place-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-place-order:active {
+            transform: translateY(0);
+        }
+
+        /* Empty Cart State */
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-cart i {
+            font-size: 80px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+
+        .empty-cart h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .empty-cart p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        .btn-shop-now {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-shop-now:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .order-summary {
+                position: static;
+                margin-top: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-card {
+                padding: 20px;
+            }
+
+            .breadcrumb-title {
+                font-size: 2rem;
+            }
+
+            .product-item {
+                flex-direction: column;
+            }
+
+            .product-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Start Header Area -->
+    <!-- Header (Keep Original) -->
     <header class="header-section d-none d-xl-block">
         <div class="header-wrapper">
-            <div
-                class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
+            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12 d-flex align-items-center justify-content-between color--Black blackbg">
-                            <!-- Start Header Logo -->
                             <div class="header-logo">
                                 <div class="logo">
                                     <a href="/"><img src="/userMng-assets/images/logo/1.png" alt="" /></a>
                                 </div>
                             </div>
-                            <!-- End Header Logo -->
-
-                            <!-- Start Header Main Menu -->
                             <div class="main-menu menu-color--black menu-hover-color--Black">
                                 <nav>
                                     <ul>
                                         <li class="has-dropdown">
                                             <a class="active main-menu-link" href="/">Home <i class="fa"></i></a>
-                                            <!-- Sub Menu -->
                                         </li>
                                         <li class="has-dropdown has-megaitem">
                                             <a href="/Shop">Shop <i class="fa"></i></a>
-                                            <!-- Mega Menu -->
                                         </li>
-                                        
                                         <li class="has-dropdown">
                                             <a href="/Blog">Blog<i class="fa"></i></a>
-                                            <!-- Sub Menu -->
                                         </li>
-                                        <li>
-                                            <a href="/About">About Us</a>
-                                        </li>
-                                        <li>
-                                            <a href="/Contact">Contact Us</a>
-                                        </li>
+                                        <li><a href="/About">About Us</a></li>
+                                        <li><a href="/Contact">Contact Us</a></li>
                                     </ul>
                                 </nav>
                             </div>
-                            <!-- End Header Main Menu Start -->
-
-                            <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--white action-hover-color--white">
-                                <li>
-
-                                </li>
-                                <li>
-
-                                </li>
-                                <li>
-
-                                </li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
                                 <li>
                                     <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
                                         <i class="icon-menu"></i>
                                     </a>
                                 </li>
                             </ul>
-                            <!-- End Header Action Link -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-    <!-- Start Header Area -->
 
-    <!-- Start Mobile Header -->
+    <!-- Mobile Header (Keep Original) -->
     <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
         <div class="container">
             <div class="row">
                 <div class="col-12 d-flex align-items-center justify-content-between">
-                    <!-- Start Mobile Left Side -->
                     <div class="mobile-header-left">
                         <ul class="mobile-menu-logo">
                             <li>
@@ -120,9 +690,6 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- End Mobile Left Side -->
-
-                    <!-- Start Mobile Right Side -->
                     <div class="mobile-right-side">
                         <ul class="header-action-link action-color--black action-hover-color--white">
                             <li></li>
@@ -135,139 +702,74 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- End Mobile Right Side -->
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Mobile Header -->
 
-    <!--  Start Offcanvas Mobile Menu Section -->
+    <!-- Offcanvas Sections (Keep Original) -->
     <div id="mobile-menu-offcanvas" class="offcanvas offcanvas-rightside offcanvas-mobile-menu-section">
-        <!-- Start Offcanvas Header -->
         <div class="offcanvas-header text-right">
-            <button class="offcanvas-close">
-                <i class="ion-android-close"></i>
-            </button>
+            <button class="offcanvas-close"><i class="ion-android-close"></i></button>
         </div>
-        <!-- End Offcanvas Header -->
-        <!-- Start Offcanvas Mobile Menu Wrapper -->
         <div class="offcanvas-mobile-menu-wrapper">
-            <!-- Start Mobile Menu  -->
             <div class="mobile-menu-bottom">
-                <!-- Start Mobile Menu Nav -->
                 <div class="offcanvas-menu">
                     <ul>
-                        <li>
-                            <a href="/"><span>Home</span></a>
-                        </li>
-                        <li>
-                            <a href="/Shop"><span>Shop</span></a>
-                        </li>
-                        <li>
-                            <a href="/Blog"><span>Blogs</span></a>
-                        </li>
-            
+                        <li><a href="/"><span>Home</span></a></li>
+                        <li><a href="/Shop"><span>Shop</span></a></li>
+                        <li><a href="/Blog"><span>Blogs</span></a></li>
                         <li><a href="/About">About Us</a></li>
                         <li><a href="/Contact">Contact Us</a></li>
                     </ul>
                 </div>
-                <!-- End Mobile Menu Nav -->
             </div>
-            <!-- End Mobile Menu -->
-
-            <!-- Start Mobile contact Info -->
             <div class="mobile-contact-info">
                 <div class="logo">
                     <a href="index.html"><img src="/userMng-assets/images/logo/1.png" alt="" /></a>
                 </div>
-
-                <!-- <ul class="social-link">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                </ul> -->
-
                 <ul class="user-link">
                     <li><a href="/Wishlist">Wishlist</a></li>
                     <li><a href="/Cart">Cart</a></li>
                     <li><a href="/Account">Account</a></li>
                 </ul>
             </div>
-            <!-- End Mobile contact Info -->
         </div>
-        <!-- End Offcanvas Mobile Menu Wrapper -->
     </div>
-    <!-- ...:::: End Offcanvas Mobile Menu Section:::... -->
 
-    <!-- Start Offcanvas Mobile Menu Section -->
     <div id="offcanvas-about" class="offcanvas offcanvas-rightside offcanvas-mobile-about-section">
-        <!-- Start Offcanvas Header -->
         <div class="offcanvas-header text-right">
-            <button class="offcanvas-close">
-                <i class="ion-android-close"></i>
-            </button>
+            <button class="offcanvas-close"><i class="ion-android-close"></i></button>
         </div>
-        <!-- End Offcanvas Header -->
-        <!-- Start Offcanvas Mobile Menu Wrapper -->
-        <!-- Start Mobile contact Info -->
         <div class="mobile-contact-info">
             <div class="logo">
                 <a href="index.html"><img src="/userMng-assets/images/logo/1.png" alt="" /></a>
             </div>
-
             <address class="address">
                 <span>Name of the maker: Akhildas H.</span>
                 <span>Call Us: 6238381782</span>
                 <span>Email: akhildas675@gmail.com</span>
             </address>
-
             <ul class="social-link">
-                <li>
-                    <a href="#"><i class="fa fa-facebook"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-instagram"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-linkedin"></i></a>
-                </li>
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
             </ul>
-
             <ul class="user-link">
                 <li><a href="/Wishlist">Wishlist</a></li>
                 <li><a href="/Cart">Cart</a></li>
                 <li><a href="/Account">Account</a></li>
             </ul>
         </div>
-        <!-- End Mobile contact Info -->
     </div>
-    <!-- ...:::: End Offcanvas Mobile Menu Section:::... -->
 
-    <!-- Start Offcanvas Addcart Section -->
     <div id="offcanvas-add-cart" class="offcanvas offcanvas-rightside offcanvas-add-cart-section">
-        <!-- Start Offcanvas Header -->
         <div class="offcanvas-header text-right">
-            <button class="offcanvas-close">
-                <i class="ion-android-close"></i>
-            </button>
+            <button class="offcanvas-close"><i class="ion-android-close"></i></button>
         </div>
-        <!-- End Offcanvas Header -->
-
-        <!-- Start  Offcanvas Addcart Wrapper -->
-        <!-- End  Offcanvas Addcart Wrapper -->
     </div>
-    <!-- End  Offcanvas Addcart Section -->
 
-    <!-- Start Offcanvas Mobile Menu Section -->
-
-    <!-- End Offcanvas Mobile Menu Section -->
-
-    <!-- Start Offcanvas Search Bar Section -->
     <div id="search" class="search-modal">
         <button type="button" class="close">×</button>
         <form>
@@ -275,23 +777,23 @@
             <button type="submit" class="btn btn-lg btn-white">Search</button>
         </form>
     </div>
-    <!-- End Offcanvas Search Bar Section -->
 
-    <!-- Offcanvas Overlay -->
     <div class="offcanvas-overlay"></div>
 
-    <!-- ...:::: Start Breadcrumb Section:::... -->
-    <div class="breadcrumb-section breadcrumb-bg-color--white">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section">
         <div class="breadcrumb-wrapper">
             <div class="container">
                 <div class="row">
-                    <div class="col-12">
-                        <h3 class="breadcrumb-title">Checkout</h3>
-                        <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
+                    <div class="col-12 text-center">
+                        <h3 class="breadcrumb-title">SeCheckout</h3>
+                        <div class="breadcrumb-nav">
                             <nav aria-label="breadcrumb">
                                 <ul>
                                     <li><a href="/">Home</a></li>
-                                    <li><a href="/productShop">Shop</a></li>
+                                    <li>/</li>
+                                    <li><a href="/Shop">Shop</a></li>
+                                    <li>/</li>
                                     <li class="active" aria-current="page">Checkout</li>
                                 </ul>
                             </nav>
@@ -301,331 +803,338 @@
             </div>
         </div>
     </div>
-    <!-- ...:::: End Breadcrumb Section:::... -->
 
-    <!-- ...:::: Start Checkout Section:::... -->
-    <% if (locals.findAddress && locals.findCartItems.cartProducts.length> 0 &&locals.coupon && locals.wallet) { %>
+    <!-- Checkout Section -->
+    <% if (locals.findAddress && locals.findCartItems.cartProducts.length > 0 && locals.coupon && locals.wallet) { %>
         <div class="checkout-section">
             <div class="container">
                 <div class="row">
-                    <!-- User Quick Action Form -->
-                    <div class="col-12">
-                        <!-- ... (other content) ... -->
-                    </div>
-                </div>
+                    <!-- Left Column: Address & Payment -->
+                    <div class="col-lg-7">
+                        <!-- Shipping Address -->
+                        <div class="checkout-card">
+                            <div class="card-header">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <h4>Shipping Address</h4>
+                            </div>
 
-                <!-- Start User Details Checkout Form -->
-                <div class="row">
-                    <!-- Left Column: Shipping and Payment Details -->
-                    <div class="col-lg-7 col-md-12 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="400">
-                        <div class="checkout_form">
-                            <div class="row">
-                                <!-- Address Selection -->
-                                <div class="col-12">
-                                    <div class="default-form-box">
-                                        <label>Select Shipping Address <span></span></label>
-
-                                        <% if (findAddress.length> 0) { %> <% for (let i=0; i < findAddress.length; i++){ %>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="address"
-                                                        id="address<%= i %>" value="<%=findAddress[i]._id %>" <%=i===0
-                                                        ? 'checked' : '' %>>
-                                                    <label class="form-check-label address-box" for="address<%= i %>">
-                                                        <div>
-                                                            <strong>
-                                                                <%= findAddress[i].name %>
-                                                            </strong><br />
-                                                            Mobile: <%= findAddress[i].mobile %><br />
-                                                                Home Address: <%= findAddress[i].homeAddress %><br />
-                                                                    City: <%= findAddress[i].city %><br />
-                                                                        District: <%= findAddress[i].district %><br />
-                                                                            State: <%= findAddress[i].state %><br />
-                                                                                Pincode: <%= findAddress[i].pincode %>
-                                                                                    <br />
-                                                        </div>
-                                                    </label>
+                            <div class="address-grid">
+                                <% if (findAddress.length > 0) { %>
+                                    <% for (let i = 0; i < findAddress.length; i++) { %>
+                                        <div class="address-option">
+                                            <input type="radio" name="address" id="address<%= i %>" 
+                                                   value="<%= findAddress[i]._id %>" <%= i === 0 ? 'checked' : '' %>>
+                                            <label class="address-label" for="address<%= i %>">
+                                                <div class="address-content">
+                                                    <div class="address-details">
+                                                        <strong><%= findAddress[i].name %></strong>
+                                                        <p><i class="bi bi-telephone-fill"></i> <%= findAddress[i].mobile %></p>
+                                                        <p><i class="bi bi-house-fill"></i> <%= findAddress[i].homeAddress %></p>
+                                                        <p><i class="bi bi-map-fill"></i> <%= findAddress[i].city %>, <%= findAddress[i].district %>, <%= findAddress[i].state %> - <%= findAddress[i].pincode %></p>
+                                                    </div>
+                                                    <% if (i === 0) { %>
+                                                        <span class="address-badge">Default</span>
+                                                    <% } %>
                                                 </div>
-                                                <% } %>
-                                                    <% } else { %>
-                                                        <p>No addresses found. Please add an address.</p>
-                                                        <% } %>
-
-                                                            <!-- Add Address Button -->
-                                                            <button class="btn btn-secondary mt-3" type="button"
-                                                                onclick="toggleAddAddressForm()">
-                                                                Add Address
-                                                            </button>
-
-                                                            <!-- Add Address Form (Initially Hidden) -->
-                                                            <div id="add-address-form"
-                                                                style="display: none; margin-top: 20px">
-                                                                <form id="addressForm" onsubmit="addAddress(event)">
-                                                                    <div class="form-group">
-                                                                        <label for="name">Name</label>
-                                                                        <input type="text" id="name"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="mobile">Mobile</label>
-                                                                        <input type="number" id="mobile"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="homeAddress">Home Address</label>
-                                                                        <input type="text" id="homeAddress"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="city">City</label>
-                                                                        <input type="text" id="city"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="district">District</label>
-                                                                        <input type="text" id="district"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="state">State</label>
-                                                                        <input type="text" id="state"
-                                                                            class="form-control" required />
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="pincode">Pincode</label>
-                                                                        <input type="number" id="pincode"
-                                                                            class="form-control" required />
-                                                                    </div>
-
-                                                                    <button type="submit" class="btn btn-primary mt-3">
-                                                                        Save Address
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                    </div>
-                                </div>
-
-                                <!-- Payment Method Selection -->
-                                <div class="col-12 mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="payment_method" id="cod"
-                                            value="COD" onclick="hideWalletBalance()" />
-                                        <label class="form-check-label" for="cod">Cash on Delivery</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="payment_method" id="online"
-                                            value="Online" onclick="hideWalletBalance()" />
-                                        <label class="form-check-label" for="online">Online Payment</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="payment_method" id="wallet"
-                                            value="Wallet" onclick="showWalletBalance()" />
-                                        <label class="form-check-label" for="wallet">Wallet</label>
-                                    </div>
-                                </div>
-
-                                <% if (wallet && wallet.balance !==undefined) { %>
-                                    <!-- Wallet Balance Display -->
-                                    <div class="col-12 mt-3" id="wallet-balance-container" style="display: none">
-                                        <div class="default-form-box">
-                                            <label for="wallet-balance">Wallet Balance:</label>
-                                            <p>
-                                                Your current balance is:
-                                                <strong>
-                                                    <%= wallet.balance.toFixed(2) %>
-                                                </strong>
-                                            </p>
+                                            </label>
                                         </div>
-                                    </div>
-                                    <% } else { %>
-                                        <!-- Fallback if wallet balance is not found -->
-                                        <div class="col-12 mt-3" id="wallet-balance-container" style="display: none">
-                                            <div class="default-form-box">
-                                                <label for="wallet-balance">Wallet Balance:</label>
-                                                <p><strong>No wallet balance found</strong></p>
+                                    <% } %>
+                                <% } else { %>
+                                    <p style="color: var(--text-secondary);">No addresses found. Please add an address below.</p>
+                                <% } %>
+
+                                <button class="btn-add-address" type="button" onclick="toggleAddAddressForm()">
+                                    <i class="bi bi-plus-circle"></i> Add New Address
+                                </button>
+
+                                <div id="add-address-form" class="add-address-form" style="display: none;">
+                                    <form id="addressForm" onsubmit="addAddress(event)">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name">Full Name *</label>
+                                                    <input type="text" id="name" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="mobile">Mobile Number *</label>
+                                                    <input type="number" id="mobile" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="homeAddress">Home Address *</label>
+                                                    <input type="text" id="homeAddress" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="city">City *</label>
+                                                    <input type="text" id="city" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="district">District *</label>
+                                                    <input type="text" id="district" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="state">State *</label>
+                                                    <input type="text" id="state" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="pincode">Pincode *</label>
+                                                    <input type="number" id="pincode" class="form-control" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <button type="submit" class="btn-place-order">
+                                                    <i class="bi bi-check-circle"></i> Save Address
+                                                </button>
                                             </div>
                                         </div>
-                                        <% } %>
-
-
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Right Column: Product Details Table -->
-                    <div class="col-lg-5 col-md-12 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="600">
-                        <div class="order-container">
-                            <h4 class="order-title">Your Order</h4>
-                            <table id="orderTable">
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Details</th>
-                                </tr>
+                        <!-- Payment Method -->
+                        <div class="checkout-card">
+                            <div class="card-header">
+                                <i class="bi bi-credit-card-fill"></i>
+                                <h4>Payment Method</h4>
+                            </div>
 
-                                <% let grandTotal=0 %>
-                                    <!-- Initialize grand total -->
-                                    <% for (let i=0; i < findCartItems.cartProducts.length; i++) { %>
-                                        <% let product=findCartItems.cartProducts[i]; %>
-                                            <% let price=product.productId.offerPrice || product.productId.realPrice; %>
-                                                <% let productTotal=product.quantity * price; %>
-                                                    <% grandTotal +=productTotal; %>
-                                                        <!-- Add to grand total -->
+                            <div class="payment-methods">
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="cod" value="COD" onclick="hideWalletBalance()">
+                                    <label class="payment-label" for="cod">
+                                        <div class="payment-icon">
+                                            <i class="bi bi-cash-coin" style="color: var(--success-color);"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <h5>Cash on Delivery</h5>
+                                            <p>Pay when you receive your order</p>
+                                        </div>
+                                    </label>
+                                </div>
 
-                                                        <tr class="product-row">
-                                                            <td>
-                                                                <div style="
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                      ">
-                                                                    <img src="../<%= product.productId.images[0] %>"
-                                                                        alt="Product Image" />
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <strong style="font-size: 18px">
-                                                                    <%= product.productId.productName %>
-                                                                </strong><br />
-                                                                <span style="font-size: 16px">Size: <%= product.size %>
-                                                                </span><br />
-                                                                <span style="font-size: 16px">Price: ₹<%= price %>
-                                                                </span><br />
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="online" value="Online" onclick="hideWalletBalance()">
+                                    <label class="payment-label" for="online">
+                                        <div class="payment-icon">
+                                            <i class="bi bi-credit-card-2-front-fill" style="color: var(--primary-color);"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <h5>Online Payment</h5>
+                                            <p>Pay securely using cards, UPI, or net banking</p>
+                                        </div>
+                                    </label>
+                                </div>
 
-                                                    <% if (product.productId.offerId &&product.productId.offerId.offerPercentage) { %>
-                                                 <span class="offer-available">Offer: <%= product.productId.offerId.offerPercentage %>
-                                                                            %
-                                                                            Off</span><br />
-                                                                    <% } else { %>
-                                                                        <span class="no-offer">No Offer
-                                                                            Available</span><br />
-                                                                        <% } %>
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="wallet" value="Wallet" onclick="showWalletBalance()">
+                                    <label class="payment-label" for="wallet">
+                                        <div class="payment-icon">
+                                            <i class="bi bi-wallet2" style="color: var(--warning-color);"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <h5>Wallet</h5>
+                                            <p>Pay using your wallet balance</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
 
-                                                                            <span style="font-size: 16px">Quantity: <%=
-                                                                                    product.quantity %></span><br />
-                                                                <span style="font-size: 16px">Total: ₹<%=productTotal.toFixed(2) %></span>
-                                                            </td>
-                                                        </tr>
-                                                        <% } %>
-
-                                                            <!-- Available Coupons -->
-                                                            <% if (coupon.length> 0) { %>
-                                                                <tr>
-                                                                    <td colspan="2">
-                                                                        <div id="availableCoupons">
-                                                                            <p>Select any one coupon:</p>
-                                                                            <ul>
-                                                                                <% for (let i=0; i < coupon.length; i++){ %>
-                                                                                    <li class="coupon-card">
-                                                                                        <div>
-                                                                                            <span
-                                                                                                class="coupon-name"><strong>
-                                                                                                    <%= coupon[i].couponN %>
-                                                                                                </strong></span>
-                                                                                            <span class="coupon-code">
-                                                                                                <%= coupon[i].couponCode %>
-                                                                                            </span>
-                                                                                        </div>
-                                                                                        <button id="coupon-btn-<%= i %>"
-                                                                                            class="coupon-button"
-                                                                                            data-coupon-code="<%= coupon[i].couponCode %>"
-                                                                                            onclick="applyOrRemoveCoupon('<%= coupon[i].couponCode %>', '<%= i %>')">
-                                                                                            Apply
-                                                                                        </button>
-                                                                                    </li>
-                                                                                    <% } %>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <% } else { %>
-                                                                    <tr>
-                                                                        <td colspan="2">
-                                                                            <p>No coupons available.</p>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% } %>
-
-                                                                        <!-- Grand Total -->
-                                                                        <tr class="grand-total-row">
-                                                                            <td colspan="2">
-                                                                                Grand Total: ₹<strong id="grandTotal">
-                                                                                    <%= grandTotal.toFixed(2) %>
-                                                                                </strong>
-                                                                            </td>
-                                                                        </tr>
-                            </table>
+                            <% if (wallet && wallet.balance !== undefined) { %>
+                                <div class="wallet-balance" id="wallet-balance-container">
+                                    <label>Available Wallet Balance</label>
+                                    <p>₹<%= wallet.balance.toFixed(2) %></p>
+                                </div>
+                            <% } else { %>
+                                <div class="wallet-balance" id="wallet-balance-container">
+                                    <label>Wallet Balance</label>
+                                    <p>No wallet balance found</p>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
-                </div>
-                <!-- Place Order Button -->
-                <div class="col-12 mt-3">
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block" type="button" onclick="placeOrder(event)">
-                            Place Order
-                        </button>
+
+                    <!-- Right Column: Order Summary -->
+                    <div class="col-lg-5">
+                        <div class="order-summary">
+                            <div class="card-header">
+                                <i class="bi bi-bag-check-fill"></i>
+                                <h4>Order Summary</h4>
+                            </div>
+
+                            <!-- Products List -->
+                            <% let grandTotal = 0 %>
+                            <% for (let i = 0; i < findCartItems.cartProducts.length; i++) { %>
+                                <% let product = findCartItems.cartProducts[i]; %>
+                                <% let price = product.productId.offerPrice || product.productId.realPrice; %>
+                                <% let productTotal = product.quantity * price; %>
+                                <% grandTotal += productTotal; %>
+
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <img src="../<%= product.productId.images[0] %>" alt="<%= product.productId.productName %>" />
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-name"><%= product.productId.productName %></div>
+                                        <div class="product-meta">
+                                            <span>Size: <%= product.size %></span>
+                                            <span>Quantity: <%= product.quantity %></span>
+                                            <span>Price: ₹<%= price.toFixed(2) %></span>
+                                            <% if (product.productId.offerId && product.productId.offerId.offerPercentage) { %>
+                                                <span class="offer-badge"><%= product.productId.offerId.offerPercentage %>% OFF</span>
+                                            <% } %>
+                                        </div>
+                                        <div style="margin-top: 8px; font-weight: 600; color: var(--text-primary);">
+                                            Total: ₹<%= productTotal.toFixed(2) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <!-- Coupons Section -->
+                            <% if (coupon.length > 0) { %>
+                                <div class="coupons-section">
+                                    <h5><i class="bi bi-tag-fill"></i> Available Coupons</h5>
+                                    <div class="coupon-list">
+                                        <% for (let i = 0; i < coupon.length; i++) { %>
+                                            <div class="coupon-item">
+                                                <div class="coupon-info">
+                                                    <strong><%= coupon[i].couponN %></strong>
+                                                    <span class="coupon-code"><%= coupon[i].couponCode %></span>
+                                                </div>
+                                                <button id="coupon-btn-<%= i %>" 
+                                                        class="btn-coupon" 
+                                                        data-coupon-code="<%= coupon[i].couponCode %>" 
+                                                        onclick="applyOrRemoveCoupon('<%= coupon[i].couponCode %>', '<%= i %>')">
+                                                    Apply
+                                                </button>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <!-- Price Summary -->
+                            <div class="price-summary">
+                                <div class="price-row subtotal">
+                                    <span>Subtotal</span>
+                                    <span>₹<span id="subtotal"><%= grandTotal.toFixed(2) %></span></span>
+                                </div>
+                                <div class="price-row discount" id="discount-row" style="display: none;">
+                                    <span>Discount</span>
+                                    <span>- ₹<span id="discount-amount">0.00</span> <i class="bi bi-tag-fill"></i></span>
+                                </div>
+                                <div class="grand-total">
+                                    <span>Grand Total</span>
+                                    <span>₹<span id="grandTotal"><%= grandTotal.toFixed(2) %></span></span>
+                                </div>
+                            </div>
+
+                            <!-- Place Order Button -->
+                            <button class="btn-place-order" type="button" onclick="placeOrder(event)">
+                                <i class="bi bi-lock-fill"></i> Place Order Securely
+                            </button>
+
+                            <!-- Trust Badges -->
+                            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                                <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                                    <i class="bi bi-shield-check" style="font-size: 24px; color: var(--success-color);"></i>
+                                    <div>Secure</div>
+                                </div>
+                                <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                                    <i class="bi bi-truck" style="font-size: 24px; color: var(--primary-color);"></i>
+                                    <div>Fast Delivery</div>
+                                </div>
+                                <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                                    <i class="bi bi-arrow-return-left" style="font-size: 24px; color: var(--warning-color);"></i>
+                                    <div>Easy Returns</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <% } else { %>
-            <!-- Message for no product in checkout -->
+    <% } else { %>
+        <!-- Empty Cart State -->
+        <div class="checkout-section">
             <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <i class="bi bi-cart" style="font-size: 48px; color: #666"></i>
-                        <h2 class="mt-3">Your cart is empty.</h2>
-                        <p>Please add some products to proceed to checkout.</p>
-
-                        <a href="/Shop" class="btn btn-primary mt-3">
-                            <i class="bi bi-shop"></i> Shop Now
-                        </a>
-                    </div>
+                <div class="empty-cart">
+                    <i class="bi bi-cart-x"></i>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added anything to your cart yet.</p>
+                    <a href="/Shop" class="btn-shop-now">
+                        <i class="bi bi-shop"></i> Continue Shopping
+                    </a>
                 </div>
             </div>
-            <% } %>
-            <!-- Hidden input to store adjustments data -->
-<input type="hidden" id="adjustmentsData" value='<%= JSON.stringify(adjustments) %>' />
+        </div>
+    <% } %>
 
+    <!-- Hidden input to store adjustments data -->
+    <input type="hidden" id="adjustmentsData" value='<%= JSON.stringify(adjustments) %>' />
 
-                <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Footer (Keep Original) -->
+    <%- include('./partials/userFooter.ejs') %>
 
-                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                <!-- Include SweetAlert2 -->
-                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <button class="material-scrolltop" type="button"></button>
 
-              
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
+    <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
+    <script src="/userMng-assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/userMng-assets/js/checkout.js"></script>
 
-                <br />
-                <br />
+    <script>
+        function toggleAddAddressForm() {
+            const form = document.getElementById('add-address-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
 
-                <!-- Start Footer Section -->
-                <%- include('./partials/userFooter.ejs') %>
+        function showWalletBalance() {
+            const walletBalance = document.getElementById('wallet-balance-container');
+            if (walletBalance) {
+                walletBalance.classList.add('active');
+            }
+        }
 
-                    <!-- End Footer Top -->
+        function hideWalletBalance() {
+            const walletBalance = document.getElementById('wallet-balance-container');
+            if (walletBalance) {
+                walletBalance.classList.remove('active');
+            }
+        }
 
-                    <!-- material-scrolltop button -->
-                    <button class="material-scrolltop" type="button"></button>
+        // Initialize payment and address options display
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show all address options
+            const addressOptions = document.querySelectorAll('.address-option');
+            addressOptions.forEach(option => {
+                option.style.display = 'block';
+            });
 
-                    <!-- Start Modal Add cart -->
-
-                    <!-- Use the minified version files listed below for better performance and remove the files listed above -->
-                    <script src="/userMng-assets/js/vendor/vendor.min.js"></script>
-                    <script src="/userMng-assets/js/plugins/plugins.min.js"></script>
-
-                    <!-- Main JS -->
-                    <script src="/userMng-assets/js/main.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                    <script src="/userMng-assets/js/checkout.js"></script>
-
-
-                  
-                    
+            // Show all payment options
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            paymentOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+        });
+    </script>
 </body>
-
 </html>
+                                                
