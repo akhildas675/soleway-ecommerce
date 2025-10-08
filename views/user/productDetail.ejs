@@ -9,7 +9,8 @@
 	<%- include('./partials/solewayCss.ejs') %>
 
 	<!-- Magic Zoom CSS -->
-	<link href="/css/magiczoomplus.css" rel="stylesheet" type="text/css" media="screen">
+	<link rel="stylesheet" href="/user-assets/css/magiczoom.css">
+<script src="/user-assets/js/magiczoom.js"></script>
 	<!-- Toastify CSS -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 	<!-- Bootstrap Icons for Wishlist -->
@@ -69,7 +70,7 @@
 			transition: all 0.3s ease;
 			padding: 5px 10px;
 			border-radius: 3px;
-			margin-left: 10px; /* Added spacing between buttons */
+			margin-left: 10px;
 		}
 
 		.btn-addwish-b2 .bi-heart {
@@ -90,16 +91,86 @@
 			transform: scale(1.1);
 		}
 
+		/* Enhanced Image Zoom Styles */
+		.item-slick3 {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.zoom-container {
+			position: relative;
+			overflow: hidden;
+			cursor: zoom-in;
+		}
+
+		.zoom-container img {
+			display: block;
+			width: 100%;
+			height: auto;
+			transition: transform 0.3s ease;
+		}
+
+		.zoom-container:hover img {
+			transform: scale(1.05);
+		}
+
+		/* Magic Zoom Enhancement */
+		.MagicZoom {
+			position: relative;
+			display: block;
+			width: 100%;
+		}
+
+		.MagicZoom img {
+			width: 100%;
+			height: auto;
+			display: block;
+		}
+
+		/* Thumbnail hover effect */
+		.wrap-slick3-dots .slick-dots li {
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.wrap-slick3-dots .slick-dots li:hover {
+			transform: scale(1.1);
+		}
+
 		/* Ensure buttons align properly on smaller screens */
 		@media (max-width: 576px) {
 			.btn-addwish-b2 {
 				margin-left: 5px;
 				padding: 3px 8px;
 			}
-			.size-101 { /* Adjust Add to Cart button size for mobile */
+			.size-101 {
 				padding: 10px 8px;
 				font-size: 14px;
 			}
+		}
+
+		/* Star Rating Styles */
+		.star {
+			font-size: 3rem;
+			color: #ff9800;
+			background-color: unset;
+			border: none;
+		}
+
+		.star-raiting {
+			user-select: none;
+		}
+
+		.star:hover {
+			cursor: pointer;
+		}
+
+		.star.selected {
+			color: #ff9800;
+		}
+
+		.star:not(.selected) {
+			color: #e0e0e0;
 		}
 	</style>
 </head>
@@ -260,13 +331,18 @@
 							<div class="slick3 gallery-lb">
 								<% for(let i=0; i < products.images.length; i++) { %>
 									<div class="item-slick3" data-thumb="<%= products.images[i] %>">
-										<a href="<%= products.images[i] %>" class="MagicZoom"
-											data-options="zoomPosition: inner">
-											<img src="<%= products.images[i] %>" alt="Product Image">
-										</a>
+										<div class="zoom-container">
+											<a href="<%= products.images[i] %>" 
+											   class="MagicZoom" data-options="zoomPosition: inner">
+												<img src="<%= products.images[i] %>" 
+												     alt="<%= products.productName %>"
+												     style="width: 100%; height: auto;">
+											</a>
+										</div>
 										<div class="wrap-pic-w pos-relative">
 											<a href="<%= products.images[i] %>"
-												class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04">
+												class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+												data-lightbox="product-gallery">
 												<i class="fa fa-expand"></i>
 											</a>
 										</div>
@@ -445,31 +521,6 @@
 										</div>
 
 										<!-- Add Review -->
-										<style>
-											.star {
-												font-size: 3rem;
-												color: #ff9800;
-												background-color: unset;
-												border: none;
-											}
-
-											.star-raiting {
-												user-select: none;
-											}
-
-											.star:hover {
-												cursor: pointer;
-											}
-
-											.star.selected {
-												color: #ff9800;
-											}
-
-											.star:not(.selected) {
-												color: #e0e0e0;
-											}
-										</style>
-
 										<form class="w-full" id="reviewForm">
 											<h5 class="mtext-108 cl2 p-b-7">Add a review</h5>
 											<p class="stext-102 cl6">Your email address will not be published. Required fields are marked *</p>
@@ -591,12 +642,26 @@
 	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script src="js/main.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/magiczoomplus@5.1.4/magiczoomplus.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/magiczoomplus/5.3.3/magiczoomplus.min.js" type="text/javascript"></script>
 
 	<script>
-		// Initialize Magic Zoom
+		// Initialize Magic Zoom with enhanced settings
 		document.addEventListener('DOMContentLoaded', function () {
-			// Magic Zoom will automatically initialize itself on elements with the class 'MagicZoom'
+			// Magic Zoom will automatically initialize
+			// Additional configuration can be done here if needed
+			if (typeof MagicZoom !== 'undefined') {
+				MagicZoom.refresh();
+			}
+		});
+
+		// Reinitialize Magic Zoom when slider changes
+		$('.slick3').on('afterChange', function(event, slick, currentSlide) {
+			// Small delay to ensure DOM is ready
+			setTimeout(function() {
+				if (typeof MagicZoom !== 'undefined') {
+					MagicZoom.refresh();
+				}
+			}, 100);
 		});
 
 		// Initialize Select2
@@ -613,7 +678,7 @@
 		// Initialize Gallery Lightbox
 		$('.gallery-lb').each(function () {
 			$(this).magnificPopup({
-				delegate: 'a',
+				delegate: 'a[data-lightbox="product-gallery"]',
 				type: 'image',
 				gallery: {
 					enabled: true
@@ -622,7 +687,7 @@
 			});
 		});
 
-		// Initialize Perfect Scrollbar
+		// Perfect Scrollbar
 		$('.js-pscroll').each(function () {
 			$(this).css('position', 'relative');
 			$(this).css('overflow', 'hidden');
