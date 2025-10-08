@@ -11,6 +11,8 @@ let currentDiscount = 0;
 async function applyOrRemoveCoupon(couponCode, index) {
   const button = document.getElementById(`coupon-btn-${index}`);
   const grandTotalElement = document.querySelector("#grandTotal");
+  const discountRow = document.getElementById("discount-row");
+  const discountAmount = document.getElementById("discount-amount");
 
   if (button.disabled) {
     Swal.fire({
@@ -40,11 +42,17 @@ async function applyOrRemoveCoupon(couponCode, index) {
         appliedCouponCode = null;
         currentDiscount = 0;
 
-        // Enable all coupon buttons
-        const buttons = document.querySelectorAll(".coupon-button");
+        // Hide discount row
+        if (discountRow) {
+          discountRow.style.display = "none";
+        }
+
+        // Enable all coupon buttons and reset text
+        const buttons = document.querySelectorAll(".btn-coupon");
         buttons.forEach((btn) => {
           btn.disabled = false;
           btn.textContent = "Apply";
+          btn.classList.remove("applied");
         });
 
         Swal.fire({
@@ -92,13 +100,20 @@ async function applyOrRemoveCoupon(couponCode, index) {
         appliedCouponCode = couponCode;
         currentDiscount = parseFloat(data.discountAmount);
 
-        // Disable other coupon buttons
-        const buttons = document.querySelectorAll(".coupon-button");
+        // Show discount row
+        if (discountRow && discountAmount) {
+          discountAmount.textContent = data.discountAmount;
+          discountRow.style.display = "flex";
+        }
+
+        // Disable other coupon buttons and update current button
+        const buttons = document.querySelectorAll(".btn-coupon");
         buttons.forEach((btn) => {
           if (btn !== button) {
             btn.disabled = true;
           } else {
             btn.textContent = "Remove";
+            btn.classList.add("applied");
           }
         });
 
