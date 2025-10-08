@@ -475,7 +475,7 @@ const deleteOffer = async (req, res) => {
 };
 
 module.exports = {
-  // product management
+ 
   productPage,
   addProduct,
   productVerify,
@@ -485,7 +485,6 @@ module.exports = {
   productBlocking,
   productUnblocking,
   deleteProduct,
-  //offer management
   loadOffer,
   addOffer,
   loadEditOffer,

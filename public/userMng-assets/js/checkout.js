@@ -1,11 +1,11 @@
-// Fixed checkout frontend JavaScript - Secure Payment Flow
+
 
 let appliedCouponCode = null;
 let originalGrandTotal = parseFloat(
   document.querySelector("#grandTotal").textContent
 );
 
-// Store the current discount amount
+
 let currentDiscount = 0;
 
 async function applyOrRemoveCoupon(couponCode, index) {
@@ -37,17 +37,17 @@ async function applyOrRemoveCoupon(couponCode, index) {
       const data = await response.json();
 
       if (data.success) {
-        // Reset to original total
+       
         grandTotalElement.textContent = originalGrandTotal.toFixed(2);
         appliedCouponCode = null;
         currentDiscount = 0;
 
-        // Hide discount row
+       
         if (discountRow) {
           discountRow.style.display = "none";
         }
 
-        // Enable all coupon buttons and reset text
+       
         const buttons = document.querySelectorAll(".btn-coupon");
         buttons.forEach((btn) => {
           btn.disabled = false;
@@ -77,7 +77,7 @@ async function applyOrRemoveCoupon(couponCode, index) {
       });
     }
   } else {
-    // Apply coupon (preview only)
+ 
     const grandTotal = originalGrandTotal;
 
     try {
@@ -95,18 +95,18 @@ async function applyOrRemoveCoupon(couponCode, index) {
       const data = await response.json();
 
       if (data.success) {
-        // Update display with discounted amount
+     
         grandTotalElement.textContent = data.finalAmount;
         appliedCouponCode = couponCode;
         currentDiscount = parseFloat(data.discountAmount);
 
-        // Show discount row
+        
         if (discountRow && discountAmount) {
           discountAmount.textContent = data.discountAmount;
           discountRow.style.display = "flex";
         }
 
-        // Disable other coupon buttons and update current button
+        
         const buttons = document.querySelectorAll(".btn-coupon");
         buttons.forEach((btn) => {
           if (btn !== button) {
@@ -173,7 +173,7 @@ function placeOrder() {
   const addressId = selectedAddress.value;
   const paymentMethod = selectPaymentMethod.value;
 
-  // Check COD limit
+ 
   if (paymentMethod === "COD" && totalAmountOfProducts > 1000) {
     Swal.fire({
       icon: "warning",
@@ -192,7 +192,7 @@ function placeOrder() {
   };
 
   if (paymentMethod === "COD") {
-    // COD orders can be created immediately
+    
     fetch("/codOrder", {
       method: "POST",
       headers: {
@@ -200,7 +200,7 @@ function placeOrder() {
       },
       body: JSON.stringify({
         ...orderData,
-        paymentStatus: "Pending", // COD is always pending initially
+        paymentStatus: "Pending",
       }),
     })
       .then((response) => {
@@ -233,7 +233,7 @@ function placeOrder() {
       });
       
   } else if (paymentMethod === "Online") {
-    // Show loading while preparing payment
+    
     Swal.fire({
       title: 'Preparing Payment...',
       text: 'Please wait while we set up your payment',
@@ -243,7 +243,7 @@ function placeOrder() {
       }
     });
 
-    // First, create Razorpay order (no database order yet)
+
     fetch("/onlinePay", {
       method: "POST",
       headers: {
@@ -252,24 +252,24 @@ function placeOrder() {
       body: JSON.stringify({
         ...orderData,
         amount: totalAmountOfProducts,
-        initial: true, // This tells backend to only create Razorpay order
+        initial: true, 
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("Razorpay order created:", data);
         
-        // Close loading dialog
+    
         Swal.close();
 
         if (!data.success) {
           throw new Error(data.message || "Failed to create payment order");
         }
 
-        // Initialize Razorpay with correct amount
+       
         const options = {
           key: "rzp_test_72sGbnDINNYlKN",
-          amount: data.amount, // Discounted amount from backend
+          amount: data.amount, 
           currency: "INR",
           name: "SOLEWAY",
           description: "Purchase Details",
@@ -277,7 +277,7 @@ function placeOrder() {
           handler: function (response) {
             console.log("Payment successful:", response);
             
-            // Show success loading
+      
             Swal.fire({
               title: 'Payment Successful!',
               text: 'Creating your order...',
@@ -287,7 +287,7 @@ function placeOrder() {
               }
             });
 
-            // NOW create the order in database after successful payment
+         
             fetch("/onlinePay", {
               method: "POST",
               headers: {
@@ -300,7 +300,7 @@ function placeOrder() {
                 paymentMethod: paymentMethod,
                 totalAmount: totalAmountOfProducts,
                 appliedCouponCode: appliedCouponCode,
-                initial: false, // This creates actual order
+                initial: false, 
               }),
             })
               .then((orderResponse) => orderResponse.json())
@@ -342,29 +342,29 @@ function placeOrder() {
             ondismiss: function () {
               console.log("Payment modal dismissed by user");
               
-              // Payment was dismissed/cancelled - NO ORDER CREATED
+             
               Swal.fire({
                 icon: "info",
                 title: "Payment Cancelled",
                 text: "You cancelled the payment. No order has been created. You can try again anytime.",
                 confirmButtonText: "OK",
               }).then(() => {
-                // Just stay on the same page - no order created
+                
                 console.log("Payment cancelled, staying on checkout page");
               });
             },
-            escape: false, // Prevent accidental ESC key dismissal
-            backdropclose: false, // Prevent accidental backdrop click dismissal
+            escape: false,
+            backdropclose: false,
           },
         };
 
-        // Open Razorpay modal
+  
         const razorpayInstance = new Razorpay(options);
         razorpayInstance.open();
       })
       .catch((error) => {
         console.error("Payment preparation error:", error);
-        Swal.close(); // Close any loading dialogs
+        Swal.close(); 
         Swal.fire({
           icon: "error",
           title: "Payment Setup Failed",
@@ -391,11 +391,11 @@ function placeOrder() {
       },
       body: JSON.stringify({
         ...orderData,
-        paymentStatus: "Received", // Wallet payment is immediate
+        paymentStatus: "Received", 
       }),
     })
       .then((response) => {
-        Swal.close(); // Close loading
+        Swal.close();
         
         if (response.ok) {
           return response.json().then((data) => {
@@ -423,7 +423,7 @@ function placeOrder() {
       })
       .catch((error) => {
         console.error("Wallet payment error:", error);
-        Swal.close(); // Close any loading dialogs
+        Swal.close(); 
         Swal.fire({
           icon: "error",
           title: "Payment Failed",
@@ -434,7 +434,7 @@ function placeOrder() {
   }
 }
 
-// Address management functions
+
 function toggleAddAddressForm() {
   var form = document.getElementById("add-address-form");
   form.style.display = form.style.display === "none" ? "block" : "none";
@@ -506,7 +506,7 @@ async function addAddress(event) {
   }
 }
 
-// Wallet balance visibility functions
+
 function showWalletBalance() {
   var walletContainer = document.getElementById("wallet-balance-container");
   walletContainer.style.display = "block";
@@ -517,9 +517,9 @@ function hideWalletBalance() {
   walletContainer.style.display = "none";
 }
 
-// Page initialization
+
 document.addEventListener("DOMContentLoaded", function () {
-  // Handle cart adjustments
+  
   const adjustmentsData = document.getElementById("adjustmentsData")?.value;
   const adjustments = adjustmentsData ? JSON.parse(adjustmentsData) : [];
 
@@ -534,20 +534,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Prevent accidental page refresh during payment
+
   let paymentInProgress = false;
   
-  // Set flag when payment starts
+
   document.addEventListener('razorpay_payment_start', () => {
     paymentInProgress = true;
   });
   
-  // Clear flag when payment completes or fails
+
   document.addEventListener('razorpay_payment_end', () => {
     paymentInProgress = false;
   });
   
-  // Warn user about page refresh during payment
+
   window.addEventListener('beforeunload', function (e) {
     if (paymentInProgress) {
       e.preventDefault();

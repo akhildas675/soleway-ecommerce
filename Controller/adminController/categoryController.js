@@ -12,7 +12,7 @@ const {
   getCategoryStats
 } = require("../../helper/services/adminServices/categoryService");
 
-// ===================== CATEGORY MANAGEMENT CONTROLLERS =====================
+
 
 const categoryPage = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ const categoryPage = async (req, res) => {
       getCategoryStats()
     ]);
 
-    // Handle success/error messages from query params
+
     const { success, error } = req.query;
     let message = null;
     let messageType = null;
@@ -58,13 +58,13 @@ const categoryAdding = async (req, res) => {
   try {
     const { categoryName, description } = req.body;
 
-    // Validate input
+ 
     const errors = validateCategoryData(categoryName, description);
     if (errors.length > 0) {
       return res.redirect("/admin/categoryAdd?error=validation");
     }
 
-    // Create category
+   
     await createCategory(categoryName, description);
     res.redirect("/admin/categoryAdd?success=true");
   } catch (error) {
@@ -141,16 +141,16 @@ const editingCategory = async (req, res) => {
       return res.redirect("/admin/categoryAdd?error=session");
     }
 
-    // Validate input
+ 
     const errors = validateCategoryData(categoryName, description);
     if (errors.length > 0) {
       return res.redirect("/admin/categoryAdd?error=validation");
     }
 
-    // Update category
+    
     await updateCategory(categoryId, categoryName, description);
     
-    // Clear session
+  
     delete req.session.categoryId;
     
     res.redirect("/admin/categoryAdd?success=true");
@@ -165,7 +165,7 @@ const editingCategory = async (req, res) => {
   }
 };
 
-// Additional controller for deleting categories (if needed)
+
 const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.query.id || req.params.id;
@@ -199,7 +199,7 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-// API endpoint for getting category details (AJAX)
+
 const getCategoryDetails = async (req, res) => {
   try {
     const categoryId = req.query.id || req.params.id;
@@ -233,7 +233,7 @@ const getCategoryDetails = async (req, res) => {
   }
 };
 
-// API endpoint for category validation (AJAX)
+
 const validateCategoryName = async (req, res) => {
   try {
     const { categoryName, excludeId } = req.body;
@@ -276,18 +276,17 @@ const validateCategoryName = async (req, res) => {
   }
 };
 
-// ===================== MODULE EXPORTS =====================
+
+
 
 module.exports = {
-  // Main CRUD operations
+
   categoryPage,
   categoryAdding,
   editCategory,
   editingCategory,
   categoryBlocking,
   categoryUnblocking,
-  
-  // Additional operations
   deleteCategory,
   getCategoryDetails,
   validateCategoryName,

@@ -36,7 +36,7 @@ const addToCart = async (req, res) => {
       return res.json({ success: false, message: "Cannot find product" });
     }
 
-    //========Check both Size id is are equal======
+ 
     let currentSize = findSQ.sizes.find((obj) => obj._id.toString() === sizeId);
 
     if (!currentSize || currentSize.quantity <= 0) {
@@ -45,7 +45,7 @@ const addToCart = async (req, res) => {
         message: "Product size is out of stock",
       });
     }
-    //====checking already in the cart otherwise create new cartitems==
+
     const existingCart = await Cart.findOne({ userId });
 
     let cartProduct = existingCart?.cartProducts.find(
@@ -53,7 +53,7 @@ const addToCart = async (req, res) => {
         item.productId.toString() === productId &&
         item.size === currentSize.size
     );
-    //already in the cart add quantity
+
     if (cartProduct) {
       if (cartProduct.quantity + 1 > currentSize.quantity) {
         return res.json({
@@ -188,20 +188,20 @@ const loadWishlist = async (req, res) => {
       userWishlist = wishlistData.wishlistProducts.map((p) =>
         p.productId._id.toString()
       );
-      wishlistCount = wishlistData.wishlistProducts.length; // Calculate wishlist count
+      wishlistCount = wishlistData.wishlistProducts.length;
     }
 
     let cartCount = 0;
     if (cartData && cartData.cartProducts) {
-      cartCount = cartData.cartProducts.length; // Calculate cart count
+      cartCount = cartData.cartProducts.length; 
     }
 
     res.render("wishlist", {
       wishlistData,
       findUser,
       userWishlist,
-      cartCount, // Pass cartCount to the template
-      wishlistCount, // Pass wishlistCount to the template
+      cartCount, 
+      wishlistCount, 
     });
   } catch (error) {
     console.log(error);
@@ -230,25 +230,25 @@ const addToWishlist = async (req, res) => {
 
     let action;
     if (productIndex > -1) {
-      // Remove product from wishlist
+     
       wishlist.wishlistProducts.splice(productIndex, 1);
       action = "removed";
     } else {
-      // Add product to wishlist
+   
       wishlist.wishlistProducts.push({ productId });
       action = "added";
     }
 
     await wishlist.save();
 
-    // Get updated wishlist count
+
     const wishlistCount = wishlist.wishlistProducts.length;
 
     return res.json({
       success: true,
       message: `Product ${action} ${action === "added" ? "to" : "from"} wishlist`,
       action,
-      wishlistCount, // Include updated wishlist count
+      wishlistCount,
     });
   } catch (error) {
     console.error("Server Error:", error);

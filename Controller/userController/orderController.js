@@ -37,7 +37,7 @@ const loadCheckout = async (req, res) => {
       },
     });
 
-    // Store the error messages 
+  
     let adjustments = []; 
 
     for (let item of findCartItems.cartProducts) {
@@ -101,7 +101,7 @@ const loadCheckout = async (req, res) => {
   }
 };
 
-// Apply Coupon Function (preview only - no redemption)
+
 const applyCoupon = async (req, res) => {
   try {
     const { couponCode, totalAmount } = req.body;
@@ -244,7 +244,7 @@ const onlinepay = async (req, res) => {
 
     console.log('Online payment request:', { addressId, appliedCouponCode, amount, initial });
 
-    // Get cart to calculate actual total
+    // actual total
     const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
     if (!findCart || !findCart.cartProducts || findCart.cartProducts.length === 0) {
       return res.status(400).json({ 
@@ -278,7 +278,7 @@ const onlinepay = async (req, res) => {
     // If this is initial request, create Razorpay order
     if (initial) {
       const razorpayOrder = await instance.orders.create({
-        amount: Math.round(finalAmount * 100), // Convert to paise and use discounted amount
+        amount: Math.round(finalAmount * 100), 
         currency: "INR",
         receipt: "order_" + Date.now(),
       });
@@ -297,7 +297,7 @@ const onlinepay = async (req, res) => {
         appliedCouponCode,
       });
     } else {
-      // This is for processing after payment - use processPurchase service
+     
       const result = await processPurchase({
         userId,
         addressId,
@@ -327,7 +327,7 @@ const onlinepay = async (req, res) => {
   }
 };
 
-// Re-payment for failed orders
+
 const rePayment = async (req, res) => {
   try {
     const userId = req.session.userData;
@@ -346,7 +346,7 @@ const rePayment = async (req, res) => {
     const totalAmount = findOrder.totalAmount;
 
     if (!paymentId) {
-      // Create new Razorpay order for retry
+
       const razorpayOrder = await instance.orders.create({
         amount: totalAmount * 100,
         currency: "INR",
@@ -361,12 +361,12 @@ const rePayment = async (req, res) => {
         amount: razorpayOrder.amount,
       });
     } else {
-      // Payment successful - update order
+    
       findOrder.paymentId = paymentId;
       findOrder.orderStatus = "Order Placed";
       findOrder.paymentStatus = "Received";
 
-      // Update stock
+      
       for (const item of findOrder.products) {
         await updateProductStock(item.productId, item.size, item.quantity);
       }
@@ -606,11 +606,11 @@ const returnOrder = async (req, res) => {
       });
     }
 
-    // Update the product quantity back in inventory
+   
     matchSizeAndQuantity.quantity += parseInt(productQ);
     await thisIsTheProduct.save();
 
-    // Update the order status and add the return reason
+   
     const updatedOrder = await Order.findByIdAndUpdate(orderId, {
       orderStatus: "Returned",
       returnReason: returnReason,
@@ -689,7 +689,7 @@ const invoiceDownload = async (req, res) => {
   try {
     const orderId = req.params.orderId;
 
-    // Get order with product details
+ 
     const order = await Order.findOne({ orderId: orderId }).populate(
       "products.productId"
     );
@@ -701,15 +701,15 @@ const invoiceDownload = async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    // Create the invoice URL
+  
     const invoiceUrl = `${req.protocol}://${req.get(
       "host"
     )}/order/invoice/${orderId}`;
 
-    // Navigate to the invoice page
+   
     await page.goto(invoiceUrl, { waitUntil: "networkidle0" });
 
-    // Generate the PDF
+   
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
@@ -717,14 +717,12 @@ const invoiceDownload = async (req, res) => {
 
     await browser.close();
 
-    // Set headers for file download
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=invoice_${orderId}.pdf`
     );
 
-    // Send the PDF file as a response
     res.send(pdf);
   } catch (error) {
     console.error("Error in invoiceDownload:", error);
