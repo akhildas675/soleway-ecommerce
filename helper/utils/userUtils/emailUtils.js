@@ -5,10 +5,12 @@ const createTransporter = () => {
     service: "gmail",
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.PASSKEY,
+      pass:"rztv dgys phdn hdkw",
     },
   });
 };
+
+
 
 const generateOTP = () => {
   return Math.floor(1000 + Math.random() * 9000).toString();
