@@ -6,26 +6,46 @@ const Order = require("../../Model/orderModel");
 const Wallet = require("../../Model/walletModel");
 const Coupon = require("../../Model/couponModel");
 const Feedback = require("../../Model/feedback");
-
-// Import services
-const { validateUserRegistration, validateAddress, validateFeedback } = require("../../helper/utils/userUtils/validationUtils");
-const { generateOTP, sendOTPEmail, sendPasswordResetOTP } = require("../../helper/utils/userUtils/emailUtils");
-const { getCommonPageData } = require("../../helper/services/user/userDataService");
-const { getActiveProducts, getNewArrivals, getProductWithDetails, getRelatedProducts, searchAndFilterProducts } = require("../../helper/services/user/productService");
-const { createUser, authenticateUser, updateUserPassword } = require("../../helper/services/user/authService");
-const { createRazorpayOrder, processWalletPayment } = require("../../helper/services/user/walletService");
-
-// Page loading controllers
+const {
+  validateUserRegistration,
+  validateAddress,
+  validateFeedback,
+} = require("../../helper/utils/userUtils/validationUtils");
+const {
+  generateOTP,
+  sendOTPEmail,
+  sendPasswordResetOTP,
+} = require("../../helper/utils/userUtils/emailUtils");
+const {
+  getCommonPageData,
+} = require("../../helper/services/user/userDataService");
+const {
+  getActiveProducts,
+  getNewArrivals,
+  getProductWithDetails,
+  getRelatedProducts,
+  searchAndFilterProducts,
+} = require("../../helper/services/user/productService");
+const {
+  createUser,
+  authenticateUser,
+  updateUserPassword,
+} = require("../../helper/services/user/authService");
+const {
+  createRazorpayOrder,
+  processWalletPayment,
+} = require("../../helper/services/user/walletService");
 
 const loadHome = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount, userWishlist } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount, userWishlist } =
+      await getCommonPageData(userId);
+
     const [categories, products, newArrivals] = await Promise.all([
       Category.find({ is_active: true }),
       getActiveProducts(8),
-      getNewArrivals(3)
+      getNewArrivals(3),
     ]);
 
     res.status(200).render("index", {
@@ -35,19 +55,22 @@ const loadHome = async (req, res) => {
       newArrival: newArrivals,
       wishlist: userWishlist,
       cartCount,
-      wishlistCount
+      wishlistCount,
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const loadAbout = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount, userWishlist } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount, userWishlist } =
+      await getCommonPageData(userId);
+
     const categories = await Category.find({ is_active: true });
 
     res.status(200).render("about", {
@@ -55,48 +78,54 @@ const loadAbout = async (req, res) => {
       categories,
       wishlist: userWishlist,
       cartCount,
-      wishlistCount
+      wishlistCount,
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const loadBlog = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount, userWishlist } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount, userWishlist } =
+      await getCommonPageData(userId);
+
     const [categories, newArrivals, products] = await Promise.all([
       Category.find({ is_active: true }),
       getNewArrivals(6),
-      getActiveProducts(8)
+      getActiveProducts(8),
     ]);
 
-    res.render('blog', {
+    res.render("blog", {
       findUser,
       categories,
       wishlist: userWishlist,
       cartCount,
       wishlistCount,
       newArrivals,
-      products
+      products,
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const loadContact = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount, userWishlist } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount, userWishlist } =
+      await getCommonPageData(userId);
+
     const categories = await Category.find({ is_active: true });
 
-    res.render('contact', {
+    res.render("contact", {
       findUser,
       categories,
       wishlist: userWishlist,
@@ -105,23 +134,22 @@ const loadContact = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
-
-// Add these new controller functions to your existing userController.js
 
 const loadOrders = async (req, res) => {
   try {
     const userId = req.session.userData;
-    
+
     if (!userId) {
-      return res.redirect('/Login');
+      return res.redirect("/Login");
     }
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 4; // 4 orders per page
+    const limit = 4;
     const skip = (page - 1) * limit;
 
     const [findUser, orderedData, totalOrders] = await Promise.all([
@@ -131,7 +159,7 @@ const loadOrders = async (req, res) => {
         .sort({ orderDate: -1 })
         .skip(skip)
         .limit(limit),
-      Order.countDocuments({ userId })
+      Order.countDocuments({ userId }),
     ]);
 
     const totalPages = Math.ceil(totalOrders / limit);
@@ -141,29 +169,31 @@ const loadOrders = async (req, res) => {
       orderedData,
       currentPage: page,
       totalPages,
-      totalOrders
+      totalOrders,
     });
   } catch (error) {
-    console.error('Error loading orders page:', error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error loading orders page:", error);
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const loadWallet = async (req, res) => {
   try {
     const userId = req.session.userData;
-    
+
     if (!userId) {
-      return res.redirect('/Login');
+      return res.redirect("/Login");
     }
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 8; // 8 transactions per page
+    const limit = 8;
     const skip = (page - 1) * limit;
 
     const [findUser, wallet] = await Promise.all([
       User.findById(userId),
-      Wallet.findOne({ userId })
+      Wallet.findOne({ userId }),
     ]);
 
     let transactions = [];
@@ -171,14 +201,13 @@ const loadWallet = async (req, res) => {
     let totalTransactions = 0;
 
     if (wallet && wallet.history && wallet.history.length > 0) {
-      // Sort transactions by date (newest first)
-      const sortedHistory = wallet.history.sort((a, b) => 
-        new Date(b.transactionDate) - new Date(a.transactionDate)
+      const sortedHistory = wallet.history.sort(
+        (a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)
       );
-      
+
       totalTransactions = sortedHistory.length;
       totalPages = Math.ceil(totalTransactions / limit);
-      
+
       // Get paginated transactions
       transactions = sortedHistory.slice(skip, skip + limit);
     }
@@ -189,11 +218,13 @@ const loadWallet = async (req, res) => {
       transactions,
       currentPage: page,
       totalPages,
-      totalTransactions
+      totalTransactions,
     });
   } catch (error) {
-    console.error('Error loading wallet page:', error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error loading wallet page:", error);
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -201,21 +232,23 @@ const loadCoupons = async (req, res) => {
   try {
     const userId = req.session.userData;
     if (!userId) {
-      return res.redirect('/Login');
+      return res.redirect("/Login");
     }
 
     const [findUser, coupons] = await Promise.all([
       User.findById(userId),
-      Coupon.find({ isActive: true })
+      Coupon.find({ isActive: true }),
     ]);
 
     res.render("coupons", {
       findUser,
-      coupons
+      coupons,
     });
   } catch (error) {
-    console.error('Error loading coupons page:', error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error loading coupons page:", error);
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -223,21 +256,23 @@ const loadAddresses = async (req, res) => {
   try {
     const userId = req.session.userData;
     if (!userId) {
-      return res.redirect('/Login');
+      return res.redirect("/Login");
     }
 
     const [findUser, addresses] = await Promise.all([
       User.findById(userId),
-      Address.find({ userId })
+      Address.find({ userId }),
     ]);
 
     res.render("myAddresses", {
       findUser,
-      addresses
+      addresses,
     });
   } catch (error) {
-    console.error('Error loading addresses page:', error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error loading addresses page:", error);
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -245,62 +280,70 @@ const loadAddAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
     if (!userId) {
-      return res.redirect('/Login');
+      return res.redirect("/Login");
     }
 
     const findUser = await User.findById(userId);
 
     res.render("addAddresses", {
-      findUser
+      findUser,
     });
   } catch (error) {
-    console.error('Error loading add address page:', error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    console.error("Error loading add address page:", error);
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
-// Error page controllers
 
 const render404 = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount } = await getCommonPageData(
+      userId
+    );
+
     res.status(404).render("user/404", {
       findUser,
       cartCount,
-      wishlistCount
+      wishlistCount,
     });
   } catch (error) {
     console.error("Error rendering 404:", error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const render500 = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { findUser, cartCount, wishlistCount } = await getCommonPageData(userId);
-    
+    const { findUser, cartCount, wishlistCount } = await getCommonPageData(
+      userId
+    );
+
     res.status(500).render("user/500", {
       findUser,
       cartCount,
-      wishlistCount
+      wishlistCount,
     });
   } catch (error) {
     console.error("Error rendering 500:", error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
-// Auth controllers
 
 const loadRegister = async (req, res) => {
   try {
     res.status(200).render("userRegister");
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -326,7 +369,7 @@ const insertUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ errors: ["Server error. Please try again later."] }); 
+    res.status(500).json({ errors: ["Server error. Please try again later."] });
   }
 };
 
@@ -337,11 +380,13 @@ const otpGet = async (req, res) => {
 
     const { email, name } = req.session.data;
     await sendOTPEmail(email, name, otp);
-    
+
     res.status(200).render("userOtp", { message: "" });
   } catch (error) {
     console.error("Error sending email: ", error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -358,7 +403,8 @@ const verifyOtp = async (req, res) => {
         res.status(200).render("userLogin");
       } else {
         res.render("userOtp", {
-          message: "There was an issue registering your account. Please try again.",
+          message:
+            "There was an issue registering your account. Please try again.",
         });
       }
     } else {
@@ -366,7 +412,9 @@ const verifyOtp = async (req, res) => {
     }
   } catch (error) {
     console.error("Error verifying OTP: ", error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -375,7 +423,9 @@ const loadLogin = async (req, res) => {
     res.status(200).render("userLogin");
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -384,15 +434,16 @@ const verifyLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ 
-        message: `${!email ? 'Email' : 'Password'} is required.` 
+      return res.status(400).json({
+        message: `${!email ? "Email" : "Password"} is required.`,
       });
     }
 
     const result = await authenticateUser(email, password);
-    
+
     if (!result.success) {
-      return res.status(result.message.includes('blocked') ? 403 : 400)
+      return res
+        .status(result.message.includes("blocked") ? 403 : 400)
         .json({ message: result.message });
     }
 
@@ -412,14 +463,18 @@ const googleAuth = async (req, res) => {
     const findUser = await User.findOne({ email: email, is_active: true });
 
     if (!findUser) {
-      return res.status(403).send("Your account is inactive or blocked. Please contact support.");
+      return res
+        .status(403)
+        .send("Your account is inactive or blocked. Please contact support.");
     }
 
     req.session.userData = findUser;
     res.redirect("/");
   } catch (error) {
     console.log("Error during Google Authentication:", error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -428,24 +483,30 @@ const userLogOut = async (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.log(err.message);
-        return res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+        return res.status(500).render("user/500", {
+          findUser: null,
+          cartCount: 0,
+          wishlistCount: 0,
+        });
       }
       res.status(200).redirect("/");
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
-// Password reset controllers
 
 const verifyEmail = async (req, res) => {
   try {
     res.status(200).render("emailVerify");
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -462,7 +523,9 @@ const resetPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -476,7 +539,9 @@ const resetPasswordOtp = async (req, res) => {
     res.status(200).render("passwordOtp");
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -490,7 +555,9 @@ const verifyResetOtp = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -504,24 +571,25 @@ const savePassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
-// Product controllers
 
 const productDetailedView = async (req, res) => {
   try {
     const userId = req.session.userData;
     const productId = req.query.id;
-    
-    const [{ findUser, cartCount, wishlistCount, userWishlist }, product] = await Promise.all([
-      getCommonPageData(userId),
-      getProductWithDetails(productId)
-    ]);
+
+    const [{ findUser, cartCount, wishlistCount, userWishlist }, product] =
+      await Promise.all([
+        getCommonPageData(userId),
+        getProductWithDetails(productId),
+      ]);
 
     const [relatedProduct] = await Promise.all([
-      getRelatedProducts(product.categoryId._id, productId)
+      getRelatedProducts(product.categoryId._id, productId),
     ]);
 
     const sizeOrder = product.sizes.sort((a, b) => a.size - b.size);
@@ -537,14 +605,16 @@ const productDetailedView = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const productShop = async (req, res) => {
   try {
     const userId = req.session.userData;
-    
+
     // Build filters
     let filter = { is_active: true };
     if (req.query.category) filter.categoryId = req.query.category;
@@ -553,13 +623,12 @@ const productShop = async (req, res) => {
       filter.productName = { $regex: new RegExp(searchTerm, "i") };
     }
 
-    // Build sort options
     let sortOptions = {};
     const sortMap = {
-      "lowToHigh": { realPrice: 1 },
-      "HighToLow": { realPrice: -1 },
-      "nameSortAToZ": { productName: 1 },
-      "nameSortZToA": { productName: -1 }
+      lowToHigh: { realPrice: 1 },
+      HighToLow: { realPrice: -1 },
+      nameSortAToZ: { productName: 1 },
+      nameSortZToA: { productName: -1 },
     };
     if (req.query.sort && sortMap[req.query.sort]) {
       sortOptions = sortMap[req.query.sort];
@@ -568,10 +637,14 @@ const productShop = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = 8;
 
-    const [{ findUser, cartCount, wishlistCount, userWishlist }, category, productData] = await Promise.all([
+    const [
+      { findUser, cartCount, wishlistCount, userWishlist },
+      category,
+      productData,
+    ] = await Promise.all([
       getCommonPageData(userId),
       Category.find(),
-      searchAndFilterProducts(filter, sortOptions, page, perPage)
+      searchAndFilterProducts(filter, sortOptions, page, perPage),
     ]);
 
     res.render("shopPage", {
@@ -587,7 +660,9 @@ const productShop = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -617,35 +692,39 @@ const addReview = async (req, res) => {
     });
 
     await findProduct.save();
-    return res.status(200).json({ message: "Thank you for your valuable feedback." });
+    return res
+      .status(200)
+      .json({ message: "Thank you for your valuable feedback." });
   } catch (error) {
     console.error("Error submitting review:", error);
-    return res.status(500).json({ message: "An error occurred. Please try again." });
+    return res
+      .status(500)
+      .json({ message: "An error occurred. Please try again." });
   }
 };
-
-// User account controllers
 
 const userDetails = async (req, res) => {
   try {
     const userId = req.session.userData;
 
     if (!userId) {
-      console.log('No userId found in session');
-      return res.redirect('/login');
+      console.log("No userId found in session");
+      return res.redirect("/login");
     }
 
-    const [findUser, addresses, coupon, wallet, orderCount] = await Promise.all([
-      User.findById(userId),
-      Address.find({ userId }),
-      Coupon.find({ isActive: true }),
-      Wallet.findOne({ userId }),
-      Order.countDocuments({ userId }) // Fetch total order count
-    ]);
+    const [findUser, addresses, coupon, wallet, orderCount] = await Promise.all(
+      [
+        User.findById(userId),
+        Address.find({ userId }),
+        Coupon.find({ isActive: true }),
+        Wallet.findOne({ userId }),
+        Order.countDocuments({ userId }),
+      ]
+    );
 
     if (!findUser) {
-      console.log('User not found for ID:', userId);
-      return res.redirect('/login');
+      console.log("User not found for ID:", userId);
+      return res.redirect("/login");
     }
 
     res.render("userAccount", {
@@ -653,27 +732,27 @@ const userDetails = async (req, res) => {
       addresses,
       wallet,
       coupon,
-      orderCount // Pass orderCount to the template
+      orderCount,
     });
   } catch (error) {
     console.error("Error in userDetails:", error);
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
-
 
 const addUserAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { name, mobile, homeAddress, city, district, state, pincode } = req.body;
+    const { name, mobile, homeAddress, city, district, state, pincode } =
+      req.body;
 
-    // Validate address
     const errors = validateAddress(req.body);
     if (errors.length > 0) {
       return res.status(400).json({ message: errors });
     }
 
-    // Create new address
     const address = new Address({
       userId,
       name,
@@ -689,7 +768,9 @@ const addUserAddress = async (req, res) => {
     return res.status(200).json({ message: "Address added successfully" });
   } catch (error) {
     console.error("Error adding user address:", error);
-    return res.status(500).json({ message: "An error occurred while adding the address. Please try again." });
+    return res.status(500).json({
+      message: "An error occurred while adding the address. Please try again.",
+    });
   }
 };
 
@@ -700,27 +781,44 @@ const editAddressPage = async (req, res) => {
 
     const [address, findUser] = await Promise.all([
       Address.findOne({ _id: addressId, userId }),
-      User.findById(userId)
+      User.findById(userId),
     ]);
 
     res.render("editAddress", { address, findUser });
   } catch (error) {
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
 const editAddress = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { addressId, name, mobile, homeAddress, city, district, state, pincode } = req.body;
+    const {
+      addressId,
+      name,
+      mobile,
+      homeAddress,
+      city,
+      district,
+      state,
+      pincode,
+    } = req.body;
 
-    // Validate address
-    const errors = validateAddress({ name, mobile, homeAddress, city, district, state, pincode });
+    const errors = validateAddress({
+      name,
+      mobile,
+      homeAddress,
+      city,
+      district,
+      state,
+      pincode,
+    });
     if (errors.length > 0) {
       return res.status(400).json({ message: errors });
     }
 
-    // Update address
     const updatedAddress = await Address.findOneAndUpdate(
       { _id: addressId, userId },
       {
@@ -736,13 +834,18 @@ const editAddress = async (req, res) => {
     );
 
     if (!updatedAddress) {
-      return res.status(404).json({ message: "Address not found or user not authorized" });
+      return res
+        .status(404)
+        .json({ message: "Address not found or user not authorized" });
     }
 
     res.status(200).json({ message: "Address updated successfully" });
   } catch (error) {
     console.error("Error updating address:", error);
-    res.status(500).json({ message: "An error occurred while updating the address. Please try again." });
+    res.status(500).json({
+      message:
+        "An error occurred while updating the address. Please try again.",
+    });
   }
 };
 
@@ -758,7 +861,9 @@ const deleteAddress = async (req, res) => {
 
     res.status(200).send("Address deleted successfully");
   } catch (error) {
-    res.status(500).render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
+    res
+      .status(500)
+      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
   }
 };
 
@@ -768,40 +873,35 @@ const orderInfos = async (req, res) => {
     const userId = req.session.userData;
 
     if (!orderId) {
-      console.log('No orderId provided');
-      return res.redirect('/orders');
+      console.log("No orderId provided");
+      return res.redirect("/orders");
     }
     if (!userId) {
-      console.log('No userId found in session');
-      return res.redirect('/login');
+      console.log("No userId found in session");
+      return res.redirect("/login");
     }
 
-    console.log('Fetching order with ID:', orderId);
+    console.log("Fetching order with ID:", orderId);
 
-    // Fetch user, addresses, and order data
     const [findUser, addresses, orderedData] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
       Order.findById(orderId).populate({
-        path: 'products.productId',
-        model: 'Product',
+        path: "products.productId",
+        model: "Product",
         populate: {
-          path: 'offerId',
-          model: 'Offer',
+          path: "offerId",
+          model: "Offer",
         },
       }),
     ]);
 
-    // Check if order exists
     if (!orderedData) {
-      console.log('Order not found for ID:', orderId);
-      return res.redirect('/orders');
+      console.log("Order not found for ID:", orderId);
+      return res.redirect("/orders");
     }
 
-    // Log the orderedData for debugging
-    console.log('Ordered Data:', JSON.stringify(orderedData, null, 2));
-
-    // Filter out products with null productId and log warnings
+    console.log("Ordered Data:", JSON.stringify(orderedData, null, 2));
     orderedData.products = orderedData.products.filter((product) => {
       if (!product.productId) {
         console.warn(`Product with _id ${product._id} has null productId`);
@@ -809,26 +909,20 @@ const orderInfos = async (req, res) => {
       }
       return true;
     });
-
-    // Log each product's details
-    
-    // Render the order details page
-    res.render('orderDetails', {
+    res.render("orderDetails", {
       findUser,
       addresses,
       orderedData,
     });
   } catch (error) {
-    console.error('Error in orderInfos:', error);
-    res.status(500).render('user/500', {
+    console.error("Error in orderInfos:", error);
+    res.status(500).render("user/500", {
       findUser: null,
       cartCount: 0,
       wishlistCount: 0,
     });
   }
 };
-
-// Wallet controllers
 
 const addWallet = async (req, res) => {
   try {
@@ -839,11 +933,11 @@ const addWallet = async (req, res) => {
     }
 
     const order = await createRazorpayOrder(amount);
-    
+
     // Return the order directly, not wrapped in another object
     res.json(order);
   } catch (error) {
-    console.log('Error in addWallet:', error);
+    console.log("Error in addWallet:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -856,17 +950,15 @@ const walletPaymentSuccess = async (req, res) => {
     await processWalletPayment(userId, paymentId, amount);
     res.json({ success: true });
   } catch (error) {
-    console.log('Error in walletPaymentSuccess:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.log("Error in walletPaymentSuccess:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
-// Feedback controller
 
 const addFeedback = async (req, res) => {
   try {
     const userId = req.session.userData;
-    
+
     if (!userId) {
       return res.status(400).json({ message: "User is not logged in." });
     }
@@ -892,17 +984,13 @@ const addFeedback = async (req, res) => {
   }
 };
 
-// Search controller
-
 const searchProducts = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { findUser } = await getCommonPageData(userId);
-    
-    // This function can be expanded based on your search requirements
+
     const products = await Products.find();
-    
-    // Add your search logic here
+
     res.json({ products, findUser });
   } catch (error) {
     console.log(error);
@@ -911,15 +999,12 @@ const searchProducts = async (req, res) => {
 };
 
 module.exports = {
-  // Page loading controllers
   loadHome,
   loadAbout,
   loadBlog,
   loadContact,
   render404,
   render500,
-  
-  // Auth controllers
   loadRegister,
   insertUser,
   otpGet,
@@ -930,37 +1015,25 @@ module.exports = {
   userLogOut,
   loadOrders,
   loadWallet,
-  loadCoupons,      // Add this
-  loadAddresses,    // Add this
-  loadAddAddress,   // Add this
-  
-  // Password reset controllers
+  loadCoupons,
+  loadAddresses,
+  loadAddAddress,
   verifyEmail,
   resetPassword,
   resetPasswordOtp,
   verifyResetOtp,
   savePassword,
-  
-  // Product controllers
   productDetailedView,
   productShop,
   addReview,
-  
-  // User account controllers
   userDetails,
   addUserAddress,
   editAddressPage,
   editAddress,
   deleteAddress,
   orderInfos,
-  
-  // Wallet controllers
   addWallet,
   walletPaymentSuccess,
-  
-  // Feedback controller
   addFeedback,
-  
-  // Search controller
   searchProducts,
 };
