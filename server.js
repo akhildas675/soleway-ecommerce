@@ -3,58 +3,51 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const nocache = require('nocache');
-const userRoute = require('./routes/userRoutes'); 
-const adminRoute = require('./routes/adminRoute'); 
-const userController = require('./Controller/userController/userController'); // Import userController
-const app = express();
-
+const passport = require('passport');
 require('dotenv').config();
 
-const passport = require('passport');
-require('./passport');
+const userRoute = require('./routes/userRoutes');
+const adminRoute = require('./routes/adminRoute');
+const userController = require('./Controller/userController/userController');
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/soleway', {
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch((error) => {
-    console.error('Error connecting to MongoDB', error.message);
-});
+const app = express();
 
-// Parsing body data 
+// Connect MongoDB (Atlas recommended for deployment)
+mongoose.connect(process.env.MONGO_URL, {})
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch(err => console.error('❌ MongoDB connection error:', err.message));
+
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 app.use(nocache());
 
 app.use(session({
-    secret: "mySiteSessionSecret",
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.SESSION_SECRET || "mySiteSessionSecret",
+  resave: false,
+  saveUninitialized: false
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Routes
 app.use('/admin', adminRoute);
 app.use('/', userRoute);
 
-// 404 Handler
+// 404 handler
 app.use((req, res) => {
-    userController.render404(req, res);
+  userController.render404(req, res);
 });
 
-// 500 Error Handler
+// 500 handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    userController.render500(req, res);
+  console.error(err.stack);
+  userController.render500(req, res);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`http://localhost:${PORT}`);
-});
+
+module.exports = app;
