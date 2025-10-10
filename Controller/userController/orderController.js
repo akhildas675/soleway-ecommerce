@@ -107,7 +107,7 @@ const applyCoupon = async (req, res) => {
     const { couponCode, totalAmount } = req.body;
     const userId = req.session.userData;
 
-    console.log('Applying coupon preview:', { couponCode, totalAmount, userId });
+    // console.log('Applying coupon preview:', { couponCode, totalAmount, userId });
 
     const couponResult = await previewCouponDiscount(couponCode, totalAmount, userId);
 
@@ -121,11 +121,11 @@ const applyCoupon = async (req, res) => {
     const discountAmount = couponResult.discountAmount;
     const finalAmount = totalAmount - discountAmount;
 
-    console.log('Coupon preview result:', {
-      original: totalAmount,
-      discount: discountAmount,
-      final: finalAmount
-    });
+    // console.log('Coupon preview result:', {
+    //   original: totalAmount,
+    //   discount: discountAmount,
+    //   final: finalAmount
+    // });
 
     return res.json({
       success: true,
@@ -165,12 +165,12 @@ const codPlaceOrder = async (req, res) => {
     const userId = req.session.userData;
     const { addressId, paymentMethod, appliedCouponCode } = req.body;
 
-    console.log('COD Order request:', {
-      userId,
-      addressId,
-      paymentMethod,
-      appliedCouponCode
-    });
+    // console.log('COD Order request:', {
+    //   userId,
+    //   addressId,
+    //   paymentMethod,
+    //   appliedCouponCode
+    // });
 
     const result = await processPurchase({
       userId,
@@ -200,12 +200,12 @@ const walletPay = async (req, res) => {
     const userId = req.session.userData;
     const { addressId, paymentMethod, appliedCouponCode } = req.body;
 
-    console.log('Wallet payment request:', {
-      userId,
-      addressId,
-      paymentMethod,
-      appliedCouponCode
-    });
+    // console.log('Wallet payment request:', {
+    //   userId,
+    //   addressId,
+    //   paymentMethod,
+    //   appliedCouponCode
+    // });
 
     const result = await processPurchase({
       userId,
@@ -242,7 +242,7 @@ const onlinepay = async (req, res) => {
     const userId = req.session.userData;
     let { addressId, appliedCouponCode, amount, initial } = req.body;
 
-    console.log('Online payment request:', { addressId, appliedCouponCode, amount, initial });
+    // console.log('Online payment request:', { addressId, appliedCouponCode, amount, initial });
 
     // actual total
     const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
@@ -283,11 +283,11 @@ const onlinepay = async (req, res) => {
         receipt: "order_" + Date.now(),
       });
 
-      console.log('Razorpay order created:', {
-        id: razorpayOrder.id,
-        amount: razorpayOrder.amount,
-        finalAmount
-      });
+      // console.log('Razorpay order created:', {
+      //   id: razorpayOrder.id,
+      //   amount: razorpayOrder.amount,
+      //   finalAmount
+      // });
 
       return res.json({
         success: true,
@@ -333,7 +333,7 @@ const rePayment = async (req, res) => {
     const userId = req.session.userData;
     const { orderId, paymentId } = req.body;
 
-    console.log('Re-payment request:', { userId, orderId, paymentId });
+    // console.log('Re-payment request:', { userId, orderId, paymentId });
 
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -390,12 +390,12 @@ const updateOrderStatus = async (req, res) => {
     const { paymentId, orderId, paymentStatus, couponCode } = req.body;
     const userId = req.session.userData;
 
-    console.log('Updating order status:', {
-      paymentId,
-      orderId, 
-      paymentStatus,
-      couponCode
-    });
+    // console.log('Updating order status:', {
+    //   paymentId,
+    //   orderId, 
+    //   paymentStatus,
+    //   couponCode
+    // });
 
     // Update order status
     await Order.findByIdAndUpdate(orderId, {
@@ -443,7 +443,7 @@ const cancelation = async (req, res) => {
     const userId = req.session.userData;
     const { orderId, actionType } = req.body;
 
-    console.log('Order cancellation request:', { userId, orderId, actionType });
+    // console.log('Order cancellation request:', { userId, orderId, actionType });
 
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -548,7 +548,7 @@ const returnOrder = async (req, res) => {
     const { returnReason, orderId } = req.body;
     const userId = req.session.userData;
 
-    console.log('Order return request:', { returnReason, orderId, userId });
+    // console.log('Order return request:', { returnReason, orderId, userId });
 
     if (!returnReason) {
       return res.status(400).json({

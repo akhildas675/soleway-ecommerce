@@ -19,13 +19,13 @@ const processPurchase = async (purchaseData) => {
   } = purchaseData;
 
   try {
-    console.log('Processing purchase with data:', {
-      userId,
-      paymentMethod,
-      appliedCouponCode,
-      paymentStatus,
-      initial
-    });
+    // console.log('Processing purchase with data:', {
+    //   userId,
+    //   paymentMethod,
+    //   appliedCouponCode,
+    //   paymentStatus,
+    //   initial
+    // });
 
     // 1. Validate and fetch required data
     const findUser = await User.findById(userId);
@@ -46,28 +46,28 @@ const processPurchase = async (purchaseData) => {
       return acc + productPrice * item.quantity;
     }, 0);
 
-    console.log('Original total amount:', totalAmount);
+    // console.log('Original total amount:', totalAmount);
 
     // 3. Handle coupon logic (preview only - no redemption yet)
     let couponDetails = {};
     let discountAmount = 0;
     
     if (appliedCouponCode) {
-      console.log('Previewing coupon:', appliedCouponCode);
+      // console.log('Previewing coupon:', appliedCouponCode);
       const couponResult = await previewCouponDiscount(appliedCouponCode, totalAmount, userId);
       
       if (!couponResult.success) {
-        console.log('Coupon validation failed:', couponResult.message);
+        // console.log('Coupon validation failed:', couponResult.message);
         return couponResult;
       }
       
       couponDetails = couponResult.couponDetails;
       discountAmount = couponResult.discountAmount;
-      console.log('Coupon discount amount:', discountAmount);
+      // console.log('Coupon discount amount:', discountAmount);
     }
 
     const finalAmount = totalAmount - discountAmount;
-    console.log('Final amount after discount:', finalAmount);
+    // console.log('Final amount after discount:', finalAmount);
 
     // 4. Handle different payment methods
     let result;
@@ -99,15 +99,21 @@ const processPurchase = async (purchaseData) => {
         return { success: false, message: "Invalid payment method", statusCode: 400 };
     }
 
-    // 5. ✅ Redeem coupon only after successful payment/order creation
+    //  Redeem coupon only after successful payment/order creation
+    
     if (result.success && appliedCouponCode && !initial) {
-      console.log('Payment successful, redeeming coupon:', appliedCouponCode);
+
+      // console.log('Payment successful, redeeming coupon:', appliedCouponCode);
       
       // Only redeem if payment was successful (not for initial Razorpay order creation)
       if (paymentMethod !== "Online" || paymentStatus === "Received") {
+
         const redemptionResult = await redeemCoupon(appliedCouponCode, userId);
+
         if (redemptionResult.success) {
-          console.log('Coupon redeemed successfully');
+
+          // console.log('Coupon redeemed successfully');
+
         } else {
           console.warn('Coupon redemption failed:', redemptionResult.message);
           // Don't fail the entire process if coupon redemption fails

@@ -144,9 +144,9 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    console.log(`Updating product ${productId}...`);
-    console.log(`Existing images count: ${existingProduct.images?.length || 0}`);
-    console.log(`New files count: ${req.files?.length || 0}`);
+    // console.log(`Updating product ${productId}...`);
+    // console.log(`Existing images count: ${existingProduct.images?.length || 0}`);
+    // console.log(`New files count: ${req.files?.length || 0}`);
 
     // Parse and validate sizes
     const sizes = [];
@@ -169,7 +169,7 @@ const updateProduct = async (req, res) => {
 
     // If new images are uploaded, process them
     if (req.files && req.files.length > 0) {
-      console.log(`Processing ${req.files.length} new images...`);
+      // console.log(`Processing ${req.files.length} new images...`);
       
       const imageResult = await updateProductImages(
         req.files, 
@@ -185,7 +185,7 @@ const updateProduct = async (req, res) => {
       }
 
       finalImages = imageResult.images;
-      console.log(`Successfully processed images. Total count: ${finalImages.length}`);
+      // console.log(`Successfully processed images. Total count: ${finalImages.length}`);
     }
 
     // Validate minimum image requirement
@@ -204,7 +204,7 @@ const updateProduct = async (req, res) => {
       finalImages
     );
 
-    console.log(`Product ${productId} updated successfully`);
+    // console.log(`Product ${productId} updated successfully`);
 
     // Send success response
     if (req.xhr || req.headers.accept?.indexOf('json') > -1) {

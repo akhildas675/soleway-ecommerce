@@ -881,7 +881,7 @@ const orderInfos = async (req, res) => {
       return res.redirect("/login");
     }
 
-    console.log("Fetching order with ID:", orderId);
+    // console.log("Fetching order with ID:", orderId);
 
     const [findUser, addresses, orderedData] = await Promise.all([
       User.findById(userId),
@@ -901,7 +901,7 @@ const orderInfos = async (req, res) => {
       return res.redirect("/orders");
     }
 
-    console.log("Ordered Data:", JSON.stringify(orderedData, null, 2));
+    // console.log("Ordered Data:", JSON.stringify(orderedData, null, 2));
     orderedData.products = orderedData.products.filter((product) => {
       if (!product.productId) {
         console.warn(`Product with _id ${product._id} has null productId`);

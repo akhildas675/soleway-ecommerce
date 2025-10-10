@@ -155,7 +155,7 @@ const updateProductImages = async (files, existingImages = []) => {
         await fs.access(imageOutput);
 
         imagesStore.push(imagePath.replace(/\\/g, "/"));
-        console.log(` Added new image: ${filename}`);
+        // console.log(` Added new image: ${filename}`);
       } catch (sharpError) {
         console.error("Error processing image with Sharp:", sharpError);
         errors.push(`Error processing image ${file.originalname || "unknown"}: ${sharpError.message}`);
