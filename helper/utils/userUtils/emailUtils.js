@@ -102,7 +102,7 @@ const sendOTPEmail = async (email, name, otp) => {
     `,
   };
 
-  console.log('otp for signup', `Verification OTP sent to ${email}`);
+  console.log('otp for signup', `${otp} Verification OTP sent to ${email}`);
 
   return await transporter.sendMail(mailOptions);
 };
