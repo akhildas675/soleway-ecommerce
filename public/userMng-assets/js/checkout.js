@@ -232,147 +232,213 @@ function placeOrder() {
         });
       });
       
-  } else if (paymentMethod === "Online") {
-    
-    Swal.fire({
-      title: 'Preparing Payment...',
-      text: 'Please wait while we set up your payment',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
+  } 
+
+
+
+// ONLINE PAYMENT HANDLING
+else if (paymentMethod === "Online") {
+  // Show loading
+  Swal.fire({
+    title: 'Preparing Payment...',
+    text: 'Please wait while we set up your payment',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
+  // Create Razorpay order
+  fetch("/onlinePay", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...orderData,
+      amount: totalAmountOfProducts,
+      initial: true, 
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Razorpay order created:", data);
+      
+      // Close loading
+      Swal.close();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to create payment order");
       }
+
+      // Track payment status
+      let paymentCompleted = false;
+      let paymentData = null;
+
+      // Open Razorpay checkout
+      const options = {
+        key: data.razorPayKey,
+        amount: data.amount, 
+        currency: "INR",
+        name: "SOLEWAY",
+        description: "Purchase Details",
+        order_id: data.orderId,
+        handler: function (response) {
+          console.log("Payment successful:", response);
+          paymentCompleted = true;
+          paymentData = response;
+          
+          // Show loading for order creation
+          Swal.fire({
+            title: 'Payment Successful!',
+            text: 'Creating your order...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          //Create order with successful payment
+          fetch("/onlinePay", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              addressId: selectedAddress.value,
+              paymentStatus: "Received",
+              paymentId: response.razorpay_payment_id,
+              paymentMethod: paymentMethod,
+              totalAmount: totalAmountOfProducts,
+              appliedCouponCode: appliedCouponCode,
+              initial: false,
+            }),
+          })
+            .then((orderResponse) => orderResponse.json())
+            .then((orderData) => {
+              console.log("Order created after payment:", orderData);
+              
+              if (orderData.success) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Order Placed!",
+                  text: "Your payment was successful and your order has been placed.",
+                  confirmButtonText: "OK",
+                }).then(() => {
+                  window.location.href = "/orderSuccess";
+                });
+              } else {
+                throw new Error(orderData.message || "Failed to create order");
+              }
+            })
+            .catch((error) => {
+              console.error("Order creation error after payment:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Order Creation Failed",
+                text: "Payment was successful but failed to create order. Please contact support with payment ID: " + response.razorpay_payment_id,
+                confirmButtonText: "OK"
+              });
+            });
+        },
+        prefill: {
+          name: "SOLEWAY Customer",
+          email: "customer@example.com",
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#667eea",
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Payment modal dismissed by user");
+            
+            // If payment was not completed, create pending order
+            if (!paymentCompleted) {
+              console.log('Creating pending order due to payment cancellation');
+              
+              Swal.fire({
+                title: 'Creating Order...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                }
+              });
+
+              // Create order with failed payment status
+              fetch("/onlinePay", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  addressId: selectedAddress.value,
+                  paymentStatus: "Failed",
+                  paymentMethod: paymentMethod,
+                  totalAmount: totalAmountOfProducts,
+                  appliedCouponCode: appliedCouponCode,
+                  initial: false,
+                }),
+              })
+                .then((response) => response.json())
+                .then((result) => {
+                  console.log('Pending order created:', result);
+                  
+                  if (result.success) {
+                    Swal.fire({
+                      icon: "info",
+                      title: "Payment Cancelled",
+                      html: "Your order has been saved with pending status.<br>You can complete the payment from your <b>Order Details</b> page.",
+                      confirmButtonText: "View Orders",
+                      showCancelButton: true,
+                      cancelButtonText: "Stay Here"
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = "/orders";
+                      }
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: result.message || "Failed to save order. Please try again.",
+                      confirmButtonText: "OK"
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.error('Error creating pending order:', error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred. Please try again.",
+                    confirmButtonText: "OK"
+                  });
+                });
+            }
+          },
+          escape: false,
+          backdropclose: false,
+        },
+      };
+
+      // Open Razorpay
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.open();
+    })
+    .catch((error) => {
+      console.error("Payment preparation error:", error);
+      Swal.close(); 
+      Swal.fire({
+        icon: "error",
+        title: "Payment Setup Failed",
+        text: error.message || "There was an error setting up the payment. Please try again.",
+        confirmButtonText: "OK",
+      });
     });
 
-
-    fetch("/onlinePay", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...orderData,
-        amount: totalAmountOfProducts,
-        initial: true, 
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Razorpay order created:", data);
-        
     
-        Swal.close();
-
-        if (!data.success) {
-          throw new Error(data.message || "Failed to create payment order");
-        }
-
-       
-        const options = {
-          key: "rzp_test_72sGbnDINNYlKN",
-          amount: data.amount, 
-          currency: "INR",
-          name: "SOLEWAY",
-          description: "Purchase Details",
-          order_id: data.orderId,
-          handler: function (response) {
-            console.log("Payment successful:", response);
-            
-      
-            Swal.fire({
-              title: 'Payment Successful!',
-              text: 'Creating your order...',
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              }
-            });
-
-         
-            fetch("/onlinePay", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                addressId: selectedAddress.value,
-                paymentStatus: "Received",
-                paymentId: response.razorpay_payment_id,
-                paymentMethod: paymentMethod,
-                totalAmount: totalAmountOfProducts,
-                appliedCouponCode: appliedCouponCode,
-                initial: false, 
-              }),
-            })
-              .then((orderResponse) => orderResponse.json())
-              .then((orderData) => {
-                console.log("Order created after payment:", orderData);
-                
-                if (orderData.success) {
-                  Swal.fire({
-                    icon: "success",
-                    title: "Payment Successful!",
-                    text: "Your payment was successful and your order has been placed.",
-                    confirmButtonText: "OK",
-                  }).then(() => {
-                    window.location.href = "/orderSuccess";
-                  });
-                } else {
-                  throw new Error(orderData.message || "Failed to create order");
-                }
-              })
-              .catch((error) => {
-                console.error("Order creation error after payment:", error);
-                Swal.fire({
-                  icon: "error",
-                  title: "Order Creation Failed",
-                  text: "Payment was successful but failed to create order. Please contact support with payment ID: " + response.razorpay_payment_id,
-                  confirmButtonText: "OK"
-                });
-              });
-          },
-          prefill: {
-            name: "SOLEWAY Customer",
-            email: "customer@example.com",
-            contact: "9999999999",
-          },
-          theme: {
-            color: "#000000",
-          },
-          modal: {
-            ondismiss: function () {
-              console.log("Payment modal dismissed by user");
-              
-             
-              Swal.fire({
-                icon: "info",
-                title: "Payment Cancelled",
-                text: "You cancelled the payment. No order has been created. You can try again anytime.",
-                confirmButtonText: "OK",
-              }).then(() => {
-                
-                console.log("Payment cancelled, staying on checkout page");
-              });
-            },
-            escape: false,
-            backdropclose: false,
-          },
-        };
-
-  
-        const razorpayInstance = new Razorpay(options);
-        razorpayInstance.open();
-      })
-      .catch((error) => {
-        console.error("Payment preparation error:", error);
-        Swal.close(); 
-        Swal.fire({
-          icon: "error",
-          title: "Payment Setup Failed",
-          text: error.message || "There was an error setting up the payment. Please try again.",
-          confirmButtonText: "OK",
-        });
-      });
-      
   } else if (paymentMethod === "Wallet") {
     // Show loading
     Swal.fire({
@@ -556,3 +622,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+
+
+        function toggleAddAddressForm() {
+            const form = document.getElementById('add-address-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showWalletBalance() {
+            const walletBalance = document.getElementById('wallet-balance-container');
+            if (walletBalance) {
+                walletBalance.classList.add('active');
+            }
+        }
+
+        function hideWalletBalance() {
+            const walletBalance = document.getElementById('wallet-balance-container');
+            if (walletBalance) {
+                walletBalance.classList.remove('active');
+            }
+        }
+
+        // Initialize payment and address options display
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show all address options
+            const addressOptions = document.querySelectorAll('.address-option');
+            addressOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+
+            // Show all payment options
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            paymentOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+        });
+  

@@ -237,14 +237,30 @@ const walletPay = async (req, res) => {
 };
 
 // Online Payment
-const onlinepay = async (req, res) => {
+
+
+const onlinePay = async (req, res) => {
   try {
     const userId = req.session.userData;
-    let { addressId, appliedCouponCode, amount, initial } = req.body;
+    let { addressId, appliedCouponCode, initial, paymentStatus, paymentId } = req.body;
 
-    // console.log('Online payment request:', { addressId, appliedCouponCode, amount, initial });
+    console.log('Online payment request:', { 
+      addressId, 
+      appliedCouponCode, 
+      initial, 
+      paymentStatus,
+      paymentId 
+    });
 
-    // actual total
+    // Validate user
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "User not authenticated" 
+      });
+    }
+
+    // Fetch cart and calculate total
     const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
     if (!findCart || !findCart.cartProducts || findCart.cartProducts.length === 0) {
       return res.status(400).json({ 
@@ -275,58 +291,90 @@ const onlinepay = async (req, res) => {
       }
     }
 
-    // If this is initial request, create Razorpay order
+    // Initial request - Create Razorpay order only
     if (initial) {
-      const razorpayOrder = await instance.orders.create({
-        amount: Math.round(finalAmount * 100), 
-        currency: "INR",
-        receipt: "order_" + Date.now(),
-      });
+      try {
+        const result = await processPurchase({
+          userId,
+          addressId,
+          paymentMethod: 'Online',
+          appliedCouponCode,
+          initial: true
+        });
 
-      // console.log('Razorpay order created:', {
-      //   id: razorpayOrder.id,
-      //   amount: razorpayOrder.amount,
-      //   finalAmount
-      // });
+        if (!result.success) {
+          return res.status(result.statusCode || 400).json({ 
+            success: false,
+            message: result.message 
+          });
+        }
 
-      return res.json({
-        success: true,
-        orderId: razorpayOrder.id,
-        amount: razorpayOrder.amount,
-        finalAmount: finalAmount,
-        appliedCouponCode,
-      });
-    } else {
-     
-      const result = await processPurchase({
-        userId,
-        addressId,
-        paymentMethod: 'Online',
-        appliedCouponCode,
-        paymentStatus: req.body.paymentStatus || 'Received',
-        paymentId: req.body.paymentId,
-        initial: false
-      });
-
-      if (!result.success) {
-        return res.status(result.statusCode || 400).json({ 
+        return res.json({
+          success: true,
+          orderId: result.orderId,
+          amount: result.amount,
+          finalAmount: finalAmount,
+          appliedCouponCode,
+          razorPayKey:RAZORPAY_ID_KEY,
+        });
+      } catch (error) {
+        console.error('Error creating Razorpay order:', error);
+        return res.status(500).json({
           success: false,
-          message: result.message 
+          message: "Failed to initiate payment"
         });
       }
+    } 
+    
+   
+    else {
+      
+      const status = paymentId ? 'Received' : 'Failed';
+      
+      // console.log('Creating order with payment status:', status);
 
-      return res.json({
-        success: true,
-        message: result.message,
-        orderIds: result.orderIds
-      });
+      try {
+        const result = await processPurchase({
+          userId,
+          addressId,
+          paymentMethod: 'Online',
+          appliedCouponCode,
+          paymentStatus: status,
+          paymentId: paymentId || null,
+          initial: false
+        });
+
+        if (!result.success) {
+          return res.status(result.statusCode || 400).json({ 
+            success: false,
+            message: result.message 
+          });
+        }
+
+        // Success response
+        return res.json({
+          success: true,
+          message: result.message,
+          orderIds: result.orderIds,
+          orderStatus: result.orderStatus,
+          paymentStatus: result.paymentStatus
+        });
+      } catch (error) {
+        console.error('Error creating order:', error);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to create order"
+        });
+      }
     }
   } catch (error) {
     console.error("Error in online payment:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal Server Error" 
+    });
   }
 };
-
 
 const rePayment = async (req, res) => {
   try {
@@ -438,7 +486,7 @@ const successOrder = async (req, res) => {
 };
 
 // Cancel Order
-const cancelation = async (req, res) => {
+const cancellation = async (req, res) => {
   try {
     const userId = req.session.userData;
     const { orderId, actionType } = req.body;
@@ -736,11 +784,11 @@ module.exports = {
   removeCoupon,
   codPlaceOrder,
   walletPay,
-  onlinepay,
+  onlinePay,
   rePayment,
   updateOrderStatus,
   successOrder,
-  cancelation,
+  cancellation,
   returnOrder,
   getInvoice,
   invoiceDownload,

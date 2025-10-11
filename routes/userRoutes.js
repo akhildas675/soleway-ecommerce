@@ -89,7 +89,7 @@ userRoute.post(
 // Order procedures
 userRoute.get("/Checkout", Auth.isLogin, orderController.loadCheckout);
 userRoute.post("/codOrder", Auth.isLogin, orderController.codPlaceOrder);
-userRoute.post("/onlinePay", Auth.isLogin, orderController.onlinepay);
+userRoute.post("/onlinePay", Auth.isLogin, orderController.onlinePay);
 userRoute.post("/walletOrder", Auth.isLogin, orderController.walletPay);
 userRoute.post(
   "/updateOrderStatus",
@@ -100,7 +100,7 @@ userRoute.post("/applyCoupon", Auth.isLogin, orderController.applyCoupon);
 userRoute.post("/removeCoupon", Auth.isLogin, orderController.removeCoupon);
 
 userRoute.get("/orderSuccess", Auth.isLogin, orderController.successOrder);
-userRoute.post("/orderCancel", Auth.isLogin, orderController.cancelation);
+userRoute.post("/orderCancel", Auth.isLogin, orderController.cancellation);
 userRoute.post("/returnOrder", Auth.isLogin, orderController.returnOrder);
 userRoute.post("/rePay", Auth.isLogin, orderController.rePayment);
 userRoute.get(
