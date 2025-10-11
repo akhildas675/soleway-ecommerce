@@ -1,5 +1,3 @@
-// Enhanced onlinePaymentHandler.js
-
 const {createOrders} = require('../orderServices');
 const {clearCart} = require('../../../utils/userUtils/cartUtils');
 
