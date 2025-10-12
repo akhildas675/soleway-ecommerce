@@ -1,7 +1,6 @@
-// Fixed couponServices.js
 const Coupon = require("../../../Model/couponModel");
 
-// Separate function for preview (validation only)
+
 const previewCouponDiscount = async (couponCode, totalAmount, userId) => {
   try {
     const coupon = await Coupon.findOne({
@@ -61,7 +60,6 @@ const previewCouponDiscount = async (couponCode, totalAmount, userId) => {
   }
 };
 
-// Function to actually redeem the coupon (only after successful payment)
 const redeemCoupon = async (couponCode, userId) => {
   try {
     const coupon = await Coupon.findOne({
@@ -98,12 +96,12 @@ const redeemCoupon = async (couponCode, userId) => {
   }
 };
 
-// Legacy function for backward compatibility (now uses preview)
+
 const applyCouponLogic = async (couponCode, totalAmount, userId, previewOnly = false) => {
   if (previewOnly) {
     return await previewCouponDiscount(couponCode, totalAmount, userId);
   } else {
-    // This should not be used anymore - use redeemCoupon separately
+    
     console.warn("applyCouponLogic called without previewOnly flag - this is deprecated");
     return await previewCouponDiscount(couponCode, totalAmount, userId);
   }

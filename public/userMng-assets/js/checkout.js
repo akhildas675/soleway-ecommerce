@@ -262,7 +262,7 @@ else if (paymentMethod === "Online") {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Razorpay order created:", data);
+      // console.log("Razorpay order created:", data);
       
       // Close loading
       Swal.close();

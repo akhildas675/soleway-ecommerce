@@ -37,7 +37,7 @@ const handleOnlinePayment = async (data) => {
         }
       });
       
-      console.log('Razorpay order created - Amount:', onlineOrder.amount);
+      // console.log('Razorpay order created - Amount:', onlineOrder.amount);
       
       return {
         success: true,

@@ -27,7 +27,7 @@ const processPurchase = async (purchaseData) => {
     //   initial
     // });
 
-    // 1. Validate and fetch required data
+
     const findUser = await User.findById(userId);
     const findCart = await Cart.findOne({ userId }).populate("cartProducts.productId");
     const findAddress = await Address.findById(addressId);
@@ -40,7 +40,7 @@ const processPurchase = async (purchaseData) => {
       return { success: false, message: "No products in the cart", statusCode: 400 };
     }
 
-    // 2. Calculate total amount
+ 
     let totalAmount = findCart.cartProducts.reduce((acc, item) => {
       const productPrice = item.productId.offerPrice || item.productId.realPrice;
       return acc + productPrice * item.quantity;
@@ -48,7 +48,7 @@ const processPurchase = async (purchaseData) => {
 
     // console.log('Original total amount:', totalAmount);
 
-    // 3. Handle coupon logic (preview only - no redemption yet)
+ 
     let couponDetails = {};
     let discountAmount = 0;
     
@@ -69,7 +69,7 @@ const processPurchase = async (purchaseData) => {
     const finalAmount = totalAmount - discountAmount;
     // console.log('Final amount after discount:', finalAmount);
 
-    // 4. Handle different payment methods
+    // Handle different payment methods
     let result;
     const paymentData = {
       findCart, 
@@ -105,7 +105,7 @@ const processPurchase = async (purchaseData) => {
 
       // console.log('Payment successful, redeeming coupon:', appliedCouponCode);
       
-      // Only redeem if payment was successful (not for initial Razorpay order creation)
+      // Only redeem if payment was successful 
       if (paymentMethod !== "Online" || paymentStatus === "Received") {
 
         const redemptionResult = await redeemCoupon(appliedCouponCode, userId);
@@ -116,7 +116,7 @@ const processPurchase = async (purchaseData) => {
 
         } else {
           console.warn('Coupon redemption failed:', redemptionResult.message);
-          // Don't fail the entire process if coupon redemption fails
+          
         }
       }
     }

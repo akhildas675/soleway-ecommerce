@@ -1,609 +1,608 @@
-
-        :root {
-            --primary-color: #000000;
-            --secondary-color: #000000;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --light-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-        }
-
-        body {
-            background: var(--light-bg);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: var(--text-primary);
-        }
-
-        /* Breadcrumb Styling */
-        .breadcrumb-section {
-            background: linear-gradient(135deg, #000000 0%, #000000 100%);
-            padding: 60px 0;
-            margin-bottom: 40px;
-        }
-
-        .breadcrumb-title {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .breadcrumb-nav ul {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .breadcrumb-nav ul li {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
-        }
-
-        .breadcrumb-nav ul li a {
-            color: rgba(255, 255, 255, 0.9);
-            transition: color 0.3s;
-        }
-
-        .breadcrumb-nav ul li a:hover {
-            color: white;
-        }
-
-        /* Main Checkout Container */
-        .checkout-section {
-            padding: 40px 0 80px;
-        }
-
-        .checkout-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .checkout-card:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .card-header i {
-            font-size: 24px;
-            color: var(--primary-color);
-        }
-
-        .card-header h4 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Address Selection */
-        .address-grid {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .address-option {
-            position: relative;
-            display: none;
-        }
-
-        .address-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .address-label {
-            display: block;
-            padding: 20px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--card-bg);
-        }
-
-        .address-option input[type="radio"]:checked + .address-label {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.05);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .address-label:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .address-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-        }
-
-        .address-details strong {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .address-details p {
-            margin: 4px 0;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .address-badge {
-            background: var(--success-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Add Address Button & Form */
-        .btn-add-address {
-            width: 100%;
-            padding: 16px;
-            border: 2px dashed var(--border-color);
-            background: transparent;
-            color: var(--primary-color);
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-add-address:hover {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .add-address-form {
-            margin-top: 20px;
-            padding: 24px;
-            background: var(--light-bg);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Payment Methods */
-        .payment-methods {
-            display: grid;
-            gap: 12px;
-        }
-
-        .payment-option {
-            position: relative;
-            display: none;
-        }
-
-        .payment-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .payment-label {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--card-bg);
-        }
-
-        .payment-option input[type="radio"]:checked + .payment-label {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .payment-label:hover {
-            border-color: var(--primary-color);
-            transform: translateX(4px);
-        }
-
-        .payment-icon {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-bg);
-            border-radius: var(--radius-sm);
-            font-size: 24px;
-        }
-
-        .payment-info h5 {
-            margin: 0 0 4px 0;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .payment-info p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Wallet Balance */
-        .wallet-balance {
-            margin-top: 16px;
-            padding: 20px;
-            background: linear-gradient(135deg, #000000 0%, #000000 100%);
-            border-radius: var(--radius-md);
-            color: white;
-            display: none;
-        }
-
-        .wallet-balance.active {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .wallet-balance label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .wallet-balance p {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        /* Order Summary */
-        .order-summary {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            box-shadow: var(--shadow-md);
-            position: sticky;
-            top: 100px;
-        }
-
-        .product-item {
-            display: flex;
-            gap: 16px;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .product-item:last-child {
-            border-bottom: none;
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            flex-shrink: 0;
-            background: var(--light-bg);
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .product-details {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .product-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .offer-badge {
-            display: inline-block;
-            background: var(--success-color);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .no-offer {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        /* Coupons */
-        .coupons-section {
-            margin: 24px 0;
-            padding: 20px;
-            background: var(--light-bg);
-            border-radius: var(--radius-md);
-        }
-
-        .coupons-section h5 {
-            margin: 0 0 16px 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .coupon-list {
-            display: grid;
-            gap: 12px;
-        }
-
-        .coupon-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: white;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            transition: all 0.3s ease;
-        }
-
-        .coupon-item:hover {
-            border-color: var(--primary-color);
-            transform: translateX(4px);
-        }
-
-        .coupon-info strong {
-            display: block;
-            color: var(--text-primary);
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .coupon-code {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-family: 'Courier New', monospace;
-            background: var(--light-bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .btn-coupon {
-            padding: 8px 20px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-coupon:hover {
-            background: var(--secondary-color);
-            transform: scale(1.05);
-        }
-
-        .btn-coupon.applied {
-            background: var(--danger-color);
-        }
-
-        /* Price Summary */
-        .price-summary {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 2px solid var(--border-color);
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-
-        .price-row.subtotal {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .price-row.discount {
-            color: var(--success-color);
-            font-weight: 600;
-        }
-
-        .price-row.discount span:last-child {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .grand-total {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 2px solid var(--border-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        /* Place Order Button */
-        .btn-place-order {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 24px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-place-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-place-order:active {
-            transform: translateY(0);
-        }
-
-        /* Empty Cart State */
-        .empty-cart {
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-        .empty-cart i {
-            font-size: 80px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            opacity: 0.5;
-        }
-
-        .empty-cart h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .empty-cart p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 32px;
-        }
-
-        .btn-shop-now {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 32px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-shop-now:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Responsive */
-        @media (max-width: 991px) {
-            .order-summary {
-                position: static;
-                margin-top: 24px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .checkout-card {
-                padding: 20px;
-            }
-
-            .breadcrumb-title {
-                font-size: 2rem;
-            }
-
-            .product-item {
-                flex-direction: column;
-            }
-
-            .product-image {
-                width: 100%;
-                height: 200px;
-            }
-        }
-   
+:root {
+    --primary-color: #000000;
+    --secondary-color: #000000;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+body {
+    background: var(--light-bg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-primary);
+}
+
+/* Breadcrumb Styling */
+.breadcrumb-section {
+    background: linear-gradient(135deg, #000000 0%, #000000 100%);
+    padding: 60px 0;
+    margin-bottom: 40px;
+}
+
+.breadcrumb-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.breadcrumb-nav ul {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.breadcrumb-nav ul li {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+}
+
+.breadcrumb-nav ul li a {
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.3s;
+}
+
+.breadcrumb-nav ul li a:hover {
+    color: white;
+}
+
+/* Main Checkout Container */
+.checkout-section {
+    padding: 40px 0 80px;
+}
+
+.checkout-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.checkout-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.card-header i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Address Selection */
+.address-grid {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.address-option {
+    position: relative;
+    display: none;
+}
+
+.address-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.address-label {
+    display: block;
+    padding: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--card-bg);
+}
+
+.address-option input[type="radio"]:checked+.address-label {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.address-label:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.address-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.address-details strong {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.address-details p {
+    margin: 4px 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.address-badge {
+    background: var(--success-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Add Address Button & Form */
+.btn-add-address {
+    width: 100%;
+    padding: 16px;
+    border: 2px dashed var(--border-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-address:hover {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.add-address-form {
+    margin-top: 20px;
+    padding: 24px;
+    background: var(--light-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Payment Methods */
+.payment-methods {
+    display: grid;
+    gap: 12px;
+}
+
+.payment-option {
+    position: relative;
+    display: none;
+}
+
+.payment-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.payment-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--card-bg);
+}
+
+.payment-option input[type="radio"]:checked+.payment-label {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.payment-label:hover {
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.payment-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+    font-size: 24px;
+}
+
+.payment-info h5 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.payment-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Wallet Balance */
+.wallet-balance {
+    margin-top: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #000000 0%, #000000 100%);
+    border-radius: var(--radius-md);
+    color: white;
+    display: none;
+}
+
+.wallet-balance.active {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wallet-balance label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.wallet-balance p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Order Summary */
+.order-summary {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 100px;
+}
+
+.product-item {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-item:last-child {
+    border-bottom: none;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--light-bg);
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.product-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.offer-badge {
+    display: inline-block;
+    background: var(--success-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.no-offer {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Coupons */
+.coupons-section {
+    margin: 24px 0;
+    padding: 20px;
+    background: var(--light-bg);
+    border-radius: var(--radius-md);
+}
+
+.coupons-section h5 {
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.coupon-list {
+    display: grid;
+    gap: 12px;
+}
+
+.coupon-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.coupon-item:hover {
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.coupon-info strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.coupon-code {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    background: var(--light-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.btn-coupon {
+    padding: 8px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-coupon:hover {
+    background: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+.btn-coupon.applied {
+    background: var(--danger-color);
+}
+
+/* Price Summary */
+.price-summary {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border-color);
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.price-row.subtotal {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.price-row.discount {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.price-row.discount span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.grand-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Place Order Button */
+.btn-place-order {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-place-order:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-place-order:active {
+    transform: translateY(0);
+}
+
+/* Empty Cart State */
+.empty-cart {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-cart i {
+    font-size: 80px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.empty-cart h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.empty-cart p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+}
+
+.btn-shop-now {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-shop-now:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .order-summary {
+        position: static;
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-card {
+        padding: 20px;
+    }
+
+    .breadcrumb-title {
+        font-size: 2rem;
+    }
+
+    .product-item {
+        flex-direction: column;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 200px;
+    }
+}

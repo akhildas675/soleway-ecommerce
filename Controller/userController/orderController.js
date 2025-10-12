@@ -244,13 +244,13 @@ const onlinePay = async (req, res) => {
     const userId = req.session.userData;
     let { addressId, appliedCouponCode, initial, paymentStatus, paymentId } = req.body;
 
-    console.log('Online payment request:', { 
-      addressId, 
-      appliedCouponCode, 
-      initial, 
-      paymentStatus,
-      paymentId 
-    });
+    // console.log('Online payment request:', { 
+    //   addressId, 
+    //   appliedCouponCode, 
+    //   initial, 
+    //   paymentStatus,
+    //   paymentId 
+    // });
 
     // Validate user
     if (!userId) {
@@ -282,7 +282,7 @@ const onlinePay = async (req, res) => {
       
       if (couponResult.success) {
         finalAmount = totalAmount - couponResult.discountAmount;
-        console.log('Coupon applied - Original:', totalAmount, 'Final:', finalAmount);
+        // console.log('Coupon applied - Original:', totalAmount, 'Final:', finalAmount);
       } else {
         return res.status(400).json({
           success: false,
