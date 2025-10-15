@@ -7,15 +7,9 @@ const Wallet = require("../../Model/walletModel");
 const Coupon = require("../../Model/couponModel");
 const Feedback = require("../../Model/feedback");
 const {
-  validateUserRegistration,
   validateAddress,
   validateFeedback,
 } = require("../../helper/utils/userUtils/validationUtils");
-const {
-  generateOTP,
-  sendOTPEmail,
-  sendPasswordResetOTP,
-} = require("../../helper/utils/userUtils/emailUtils");
 const {
   getCommonPageData,
 } = require("../../helper/services/user/userDataService");
@@ -26,11 +20,6 @@ const {
   getRelatedProducts,
   searchAndFilterProducts,
 } = require("../../helper/services/user/productService");
-const {
-  createUser,
-  authenticateUser,
-  updateUserPassword,
-} = require("../../helper/services/user/authService");
 const {
   createRazorpayOrder,
   processWalletPayment,
@@ -208,7 +197,6 @@ const loadWallet = async (req, res) => {
       totalTransactions = sortedHistory.length;
       totalPages = Math.ceil(totalTransactions / limit);
 
-      // Get paginated transactions
       transactions = sortedHistory.slice(skip, skip + limit);
     }
 
@@ -336,247 +324,6 @@ const render500 = async (req, res) => {
   }
 };
 
-const loadRegister = async (req, res) => {
-  try {
-    res.status(200).render("userRegister");
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const insertUser = async (req, res) => {
-  try {
-    const errors = validateUserRegistration(req.body);
-
-    if (errors.length > 0) {
-      return res.status(400).json({ errors });
-    }
-
-    const existingUser = await User.findOne({ email: req.body.email });
-    if (existingUser) {
-      return res.status(400).json({
-        errors: ["An account with this email already exists. Please login."],
-      });
-    }
-
-    req.session.data = req.body;
-    res.status(200).json({
-      message: "Registration successful! Please verify your account via OTP.",
-      redirect: "/otpGet",
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ errors: ["Server error. Please try again later."] });
-  }
-};
-
-const otpGet = async (req, res) => {
-  try {
-    const otp = generateOTP();
-    req.session.otp = otp;
-
-    const { email, name } = req.session.data;
-    await sendOTPEmail(email, name, otp);
-
-    res.status(200).render("userOtp", { message: "" });
-  } catch (error) {
-    console.error("Error sending email: ", error);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const verifyOtp = async (req, res) => {
-  try {
-    const { otp } = req.body;
-
-    if (req.session.otp === otp) {
-      const userData = await createUser(req.session.data);
-
-      if (userData) {
-        req.session.user = userData._id;
-        delete req.session.otp;
-        res.status(200).render("userLogin");
-      } else {
-        res.render("userOtp", {
-          message:
-            "There was an issue registering your account. Please try again.",
-        });
-      }
-    } else {
-      res.render("userOtp", { message: "Invalid OTP, please try again." });
-    }
-  } catch (error) {
-    console.error("Error verifying OTP: ", error);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const loadLogin = async (req, res) => {
-  try {
-    res.status(200).render("userLogin");
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const verifyLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        message: `${!email ? "Email" : "Password"} is required.`,
-      });
-    }
-
-    const result = await authenticateUser(email, password);
-
-    if (!result.success) {
-      return res
-        .status(result.message.includes("blocked") ? 403 : 400)
-        .json({ message: result.message });
-    }
-
-    req.session.userData = result.user._id;
-    res.status(200).json({ message: "Login successful" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "An internal server error occurred" });
-  }
-};
-
-const googleAuth = async (req, res) => {
-  try {
-    const googleUser = req.user;
-    const email = googleUser.emails[0].value;
-
-    const findUser = await User.findOne({ email: email, is_active: true });
-
-    if (!findUser) {
-      return res
-        .status(403)
-        .send("Your account is inactive or blocked. Please contact support.");
-    }
-
-    req.session.userData = findUser;
-    res.redirect("/");
-  } catch (error) {
-    console.log("Error during Google Authentication:", error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const userLogOut = async (req, res) => {
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err.message);
-        return res.status(500).render("user/500", {
-          findUser: null,
-          cartCount: 0,
-          wishlistCount: 0,
-        });
-      }
-      res.status(200).redirect("/");
-    });
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const verifyEmail = async (req, res) => {
-  try {
-    res.status(200).render("emailVerify");
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const resetPassword = async (req, res) => {
-  try {
-    const matchEmail = await User.findOne({ email: req.body.email });
-    if (matchEmail) {
-      req.session.email = req.body.email;
-      res.status(200).redirect("/userNewOtp");
-    } else {
-      res.render("emailVerify", {
-        message: "You have no account, please register",
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const resetPasswordOtp = async (req, res) => {
-  try {
-    const userData = await User.findOne({ email: req.session.email });
-    const otp = generateOTP();
-    req.session.resetPOtp = otp;
-
-    await sendPasswordResetOTP(req.session.email, userData.name, otp);
-    res.status(200).render("passwordOtp");
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const verifyResetOtp = async (req, res) => {
-  try {
-    const resetOtp = req.body.otp;
-    if (req.session.resetPOtp === resetOtp) {
-      res.status(200).render("resetPassword");
-    } else {
-      res.render("passwordOtp", { message: "Please enter valid OTP" });
-    }
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
-const savePassword = async (req, res) => {
-  try {
-    if (req.body.password === req.body.cpassword) {
-      await updateUserPassword(req.session.email, req.body.password);
-      res.status(200).redirect("/Login");
-    } else {
-      res.render("resetPassword", { message: "Passwords do not match" });
-    }
-  } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .render("user/500", { findUser: null, cartCount: 0, wishlistCount: 0 });
-  }
-};
-
 const productDetailedView = async (req, res) => {
   try {
     const userId = req.session.userData;
@@ -615,7 +362,6 @@ const productShop = async (req, res) => {
   try {
     const userId = req.session.userData;
 
-    // Build filters
     let filter = { is_active: true };
     if (req.query.category) filter.categoryId = req.query.category;
     if (req.query.search) {
@@ -881,8 +627,6 @@ const orderInfos = async (req, res) => {
       return res.redirect("/login");
     }
 
-    // console.log("Fetching order with ID:", orderId);
-
     const [findUser, addresses, orderedData] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
@@ -901,7 +645,6 @@ const orderInfos = async (req, res) => {
       return res.redirect("/orders");
     }
 
-    // console.log("Ordered Data:", JSON.stringify(orderedData, null, 2));
     orderedData.products = orderedData.products.filter((product) => {
       if (!product.productId) {
         console.warn(`Product with _id ${product._id} has null productId`);
@@ -934,7 +677,6 @@ const addWallet = async (req, res) => {
 
     const order = await createRazorpayOrder(amount);
 
-    // Return the order directly, not wrapped in another object
     res.json(order);
   } catch (error) {
     console.log("Error in addWallet:", error);
@@ -1005,24 +747,11 @@ module.exports = {
   loadContact,
   render404,
   render500,
-  loadRegister,
-  insertUser,
-  otpGet,
-  verifyOtp,
-  loadLogin,
-  verifyLogin,
-  googleAuth,
-  userLogOut,
   loadOrders,
   loadWallet,
   loadCoupons,
   loadAddresses,
   loadAddAddress,
-  verifyEmail,
-  resetPassword,
-  resetPasswordOtp,
-  verifyResetOtp,
-  savePassword,
   productDetailedView,
   productShop,
   addReview,

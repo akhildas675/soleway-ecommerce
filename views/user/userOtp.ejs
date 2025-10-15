@@ -67,7 +67,7 @@
     <div class="container">
         <div class="otp-card">
             <h1>OTP Verification</h1>
-            <form id="otpForm" action="/verifyOtp" method="post" onsubmit="return validateOtp()">
+           <form id="otpForm" onsubmit="return validateOtp(event)">
                 <label for="otpCode" class="center-label">Enter the OTP code sent to your email:</label>
                 <div class="otp-field">
                     <input type="text" id="otp1" maxlength="1" minlength="1" aria-label="OTP digit 1" required>
