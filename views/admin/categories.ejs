@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
   <head>
     <meta charset="utf-8" />
     <title>Category</title>
@@ -11,26 +10,30 @@
     <meta property="og:type" content="" />
     <meta property="og:url" content="" />
     <meta property="og:image" content="" />
+
     <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png" />
+
+    <!-- Custom Button Styles -->
     <style>
-      #btnBlock {
-          color: #fff;
-          background-color: #ff0000;
-          border: 1px solid #ff0000;
-          padding: 5px 10px;
-          border-radius: 4px;
-      }
-      
-      #btnUnblock {
-          color: #fff;
-          background-color: #28a745;
-          border: 1px solid #28a745;
-          padding: 5px 10px;
-          border-radius: 4px;
-      }
-  </style>
-    <link
-      rel="shortcut icon" type="image/x-icon" href="/user-assets/images/icons/FAVICON SW.png"/>
+     .btnBlock {
+  color: #fff !important;
+  background-color: #a5454f !important; /* Red */
+  border-color: #5a2d2d !important;
+  padding: 5px 12px;
+  border-radius: 5px;
+}
+
+.btnUnblock {
+  color: #fff !important;
+  background-color: #28a745 !important; /* Green */
+  border-color: #28a745 !important;
+  padding: 5px 12px;
+  border-radius: 5px;
+}
+
+    </style>
+
     <!-- Template CSS -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -48,20 +51,16 @@
             <p>Add, edit or delete a category</p>
           </div>
           <div>
-            <input
-              type="text"
-              placeholder="Search Categories"
-              class="form-control bg-white"
-            />
+            <input type="text" placeholder="Search Categories" class="form-control bg-white" />
           </div>
         </div>
+
         <div class="card">
           <div class="card-body">
             <div class="row">
               <div class="col-md-3">
-                <!-- Category -->
-      
-                <form id="category" action="/admin/addingCategory" method="post" onsubmit="return validateForm()">
+                <!-- Category Form -->
+                <form id="category" action="/admin/addingCategory" method="post">
                   <div class="container">
                     <div class="mb-4">
                       <label for="category_name" class="form-label">Name</label>
@@ -73,9 +72,9 @@
                         id="category_name"
                         maxlength="30"
                       />
-                      <div id="categoryNameError" style="color: red;"></div> <!-- Error message container for category name -->
+                      <div id="categoryNameError" style="color: red;"></div>
                     </div>
-                
+
                     <div class="mb-4">
                       <label class="form-label">Description</label>
                       <textarea
@@ -84,203 +83,196 @@
                         class="form-control"
                         id="description"
                         maxlength="150"
-                       
                       ></textarea>
-                      <div id="descriptionError" style="color: red;"></div> <!-- Error message container for description -->
+                      <div id="descriptionError" style="color: red;"></div>
                     </div>
                   </div>
                   <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Create category</button>
                   </div>
                 </form>
-                
-                
-      
-                <!-- ------------------------ -->
               </div>
+
               <div class="col-md-9">
                 <div class="table-responsive">
                   <% if (locals.category) { %>
-
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th class="text-center">
-                            <h6>No.</h6>
-                          </th>
+                          <th class="text-center"><h6>No.</h6></th>
                           <th>Name</th>
                           <th>Description</th>
                           <th>Status</th>
                           <th class="text-end">Action</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <% for( let i = 0; i < category.length; i++ ) { %>
-                          <tr>
-                            <td>
-                              <%= i+1 %>
-                            </td>
-                            <td><b>
-                              <%= category[i].categoryName %>
-                            </b></td>
-                            <td>
-                              <b>
-                              <%= category[i].description.substring(0, 40) %>
-                            </b>
-                          </td>
-                            <td>
-                              <% if (category[i].is_active) { %>
-                                <span class="status">Active</span>
-                              <% } else { %>
-                                <span class="status">Inactive</span>
-                              <% } %>
-                            </td>
+                      <tbody id="categoryTableBody">
+                        <% category.forEach((cat, index) => { %>
+                          <tr data-id="<%= cat._id %>">
+                            <td><%= index + 1 %></td>
+                            <td class="cat-name"><%= cat.categoryName %></td>
+                            <td class="cat-desc"><%= cat.description.substring(0, 40) %></td>
+                            <td class="cat-status"><%= cat.is_active ? "Active" : "Inactive" %></td>
+                            
                             <td class="text-end">
-                              <div>
-                                <a href="/admin/categoryEdit?id=<%= category[i]._id %>" class="btn btn-light rounded btn-sm font-sm me-2">Edit</a>
-                                &nbsp;
-                                <% if (category[i].is_active) { %>
-                                  <a href="/admin/categoryBlock?id=<%= category[i]._id %>" id="btnBlock">Block</a>
-                                <% } else { %>
-                                  <a href="/admin/categoryUnblock?id=<%= category[i]._id %>" id="btnUnblock">Unblock</a>
-                                <% } %>
-                              </div>
+                              <button class="btn btn-sm btn-warning editBtn">Edit</button>
+                              <button
+                                class="btn btn-sm toggleBtn <%= cat.is_active ? 'btnBlock' : 'btnUnblock' %>"
+                                data-active="<%= cat.is_active %>"
+                              >
+                                <%= cat.is_active ? "Block" : "Unblock" %>
+                              </button>
+                              <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
                             </td>
                           </tr>
-                        <% } %>
+                        <% }) %>
                       </tbody>
-                      
                     </table>
                   <% } %>
-                  
                 </div>
               </div>
             </div>
-            <!-- .row // -->
           </div>
-          <!-- card body .// -->
         </div>
-        <!-- card .// -->
       </section>
-      
-      <!-- content-main end// -->
     </main>
+
+    <!-- JS Dependencies -->
     <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="admin-assets/js/vendors/select2.min.js"></script>
     <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
-    <!-- Main Script -->
     <script src="admin-assets/js/main.js" type="text/javascript"></script>
 
-
-
     <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // CREATE CATEGORY
+        document.getElementById("category").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const data = {
+            categoryName: form.categoryName.value.trim(),
+            description: form.description.value.trim(),
+          };
 
-    
+          const res = await fetch("/admin/category", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
 
-      
-      let buttons = document.querySelectorAll(".block-unblock");
-      for (let i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", function (event) {
-          event.preventDefault();
-          let statusCell = this.closest("tr").querySelector(".status");
-          if (buttons[i].textContent.trim() === "Block") {
-            statusCell.textContent = "Inactive";
-            buttons[i].textContent = "Unblock";
-            buttons[i].classList.remove("btn-warning");
-            buttons[i].classList.add("btn-success");
+          const result = await res.json();
+
+          if (result.success) {
+            Swal.fire("Success", "Category added successfully", "success");
+            addCategoryRow(result.category);
+            form.reset();
           } else {
-            statusCell.textContent = "Active";
-            buttons[i].textContent = "Block";
-            buttons[i].classList.remove("btn-success");
-            buttons[i].classList.add("btn-warning");
+            Swal.fire("Error", result.message, "error");
           }
         });
-      }
 
-
-      //validation
-
-      
-
-function validateForm() {
-  const categoryName = document.querySelector('input[name="categoryName"]').value.trim();
-  const description = document.querySelector('textarea[name="description"]').value.trim();
-
-  const categoryNameError = document.getElementById('categoryNameError');
-  const descriptionError = document.getElementById('descriptionError');
-
-  categoryNameError.textContent = "";
-  descriptionError.textContent = "";
-
-  let isValid = true;
-  let regex=/^[A-Za-z]+$/
-
-  if (!regex.test(categoryName)) {
-    categoryNameError.textContent = 'Category name is required';
-    isValid = false;
-  }
-
-  if (description === '') {
-    descriptionError.textContent = 'Description is required';
-    isValid = false;
-  } else if (description.length > 150) {
-    descriptionError.textContent = 'Description must be 40 characters or less';
-    isValid = false;
-  }
-
-  // Clear messages after 3 seconds
-  if (!isValid) {
-    setTimeout(() => {
-      categoryNameError.textContent = "";
-      descriptionError.textContent = "";
-    }, 3000);
-  }
-
-  return isValid;
-}
-
-
-  document.getElementById('category').addEventListener('submit', function(event) {
-    if (!validateForm()) {
-      event.preventDefault();
-    }
-  });
-
-
-
-
-
-
-      const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('success')) {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Category added successfully',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Remove query parameter
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        } else if (urlParams.has('error') && urlParams.get('error') === 'exists') {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Category already exists',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Removing query parameter 
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
+        // ADD NEW ROW DYNAMICALLY
+        function addCategoryRow(cat) {
+          const tbody = document.getElementById("categoryTableBody");
+          const row = document.createElement("tr");
+          row.dataset.id = cat._id;
+          row.innerHTML = `
+            <td>New</td>
+            <td class="cat-name">${cat.categoryName}</td>
+            <td class="cat-desc">${cat.description}</td>
+            <td class="cat-status">${cat.is_active ? "Active" : "Inactive"}</td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-primary editBtn">Edit</button>
+              <button class="btn btn-sm toggleBtn ${cat.is_active ? 'btnBlock' : 'btnUnblock'}" data-active="${cat.is_active}">
+                ${cat.is_active ? "Block" : "Unblock"}
+              </button>
+              <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
+            </td>`;
+          tbody.prepend(row);
         }
 
+        // TABLE EVENT HANDLER (EDIT / DELETE / TOGGLE)
+        document.getElementById("categoryTableBody").addEventListener("click", async (e) => {
+          const tr = e.target.closest("tr");
+          const id = tr.dataset.id;
 
+          // DELETE CATEGORY
+          if (e.target.classList.contains("deleteBtn")) {
+            if (confirm("Delete this category?")) {
+              const res = await fetch(`/admin/category/${id}`, { method: "DELETE" });
+              const result = await res.json();
+              if (result.success) {
+                tr.remove();
+                Swal.fire("Deleted", "Category removed", "success");
+              }
+            }
+          }
 
+          // TOGGLE STATUS (BLOCK/UNBLOCK)
+          if (e.target.classList.contains("toggleBtn")) {
+            const current = e.target.dataset.active === "true";
+            const res = await fetch(`/admin/category/${id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ is_active: !current }),
+            });
+            const result = await res.json();
 
+            if (result.success) {
+              const newStatus = !current ? "Active" : "Inactive";
+              tr.querySelector(".cat-status").textContent = newStatus;
+              e.target.textContent = !current ? "Block" : "Unblock";
+              e.target.dataset.active = (!current).toString();
 
+              // Toggle button color
+              e.target.classList.toggle("btnBlock", !current);
+              e.target.classList.toggle("btnUnblock", current);
+            }
+          }
 
+          // EDIT CATEGORY
+          if (e.target.classList.contains("editBtn")) {
+            const nameCell = tr.querySelector(".cat-name");
+            const descCell = tr.querySelector(".cat-desc");
+            const currentName = nameCell.textContent;
+            const currentDesc = descCell.textContent;
+
+            const { value: formValues } = await Swal.fire({
+              title: "Edit Category",
+              html:
+                `<input id="swal-name" class="swal2-input" value="${currentName}">` +
+                `<textarea id="swal-desc" class="swal2-textarea">${currentDesc}</textarea>`,
+              focusConfirm: false,
+              showCancelButton: true,
+              preConfirm: () => {
+                return {
+                  categoryName: document.getElementById("swal-name").value,
+                  description: document.getElementById("swal-desc").value,
+                };
+              },
+            });
+
+            if (formValues) {
+              const res = await fetch(`/admin/category/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formValues),
+              });
+              const result = await res.json();
+
+              if (result.success) {
+                nameCell.textContent = result.category.categoryName;
+                descCell.textContent = result.category.description;
+                Swal.fire("Updated", "Category updated successfully", "success");
+              } else {
+                Swal.fire("Error", result.message, "error");
+              }
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>

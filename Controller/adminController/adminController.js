@@ -124,24 +124,53 @@ const loadUsers = async (req, res) => {
 const userBlocking = async (req, res) => {
   try {
     const userId = req.query.id;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'User ID is required' 
+      });
+    }
+    
     await toggleUserStatus(userId, false);
-    res.status(200).json({ message: 'User blocked successfully' });
+    res.status(200).json({ 
+      success: true, 
+      message: 'User blocked successfully' 
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error blocking user' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error blocking user' 
+    });
   }
 };
 
 const userUnblocking = async (req, res) => {
   try {
     const userId = req.query.id;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'User ID is required' 
+      });
+    }
+    
     await toggleUserStatus(userId, true);
-    res.status(200).json({ message: 'User unblocked successfully' });
+    res.status(200).json({ 
+      success: true, 
+      message: 'User unblocked successfully' 
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error unblocking user' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error unblocking user' 
+    });
   }
 };
+
 
 // coupon management 
 

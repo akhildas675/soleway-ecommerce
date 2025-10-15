@@ -27,7 +27,6 @@ adminRoute.use(
 //To get login page
 adminRoute.get("/signIn", Auth.isLogout, adminController.adminLogin);
 
-
 adminRoute.post("/loginAdmin", Auth.isLogout, adminController.verifyAdminLogin);
 adminRoute.get("/salesReport", Auth.isLogin, adminController.salesReport);
 
@@ -39,32 +38,28 @@ adminRoute.get("/adminLogout", Auth.isLogin, adminController.adminLogout);
 //user Management
 
 adminRoute.get("/usersView", Auth.isLogin, adminController.loadUsers);
-adminRoute.get("/blockUser", Auth.isLogin, adminController.userBlocking);
-adminRoute.get("/unBlockUser", Auth.isLogin, adminController.userUnblocking);
+
+adminRoute.post("/blockUser", Auth.isLogin, adminController.userBlocking);
+adminRoute.post("/unBlockUser", Auth.isLogin, adminController.userUnblocking);
 
 //Category Controller
 
 adminRoute.get("/categoryAdd", Auth.isLogin, categoryController.categoryPage);
-adminRoute.post(
-  "/addingCategory",
-  Auth.isLogin,
-  categoryController.categoryAdding
-);
-adminRoute.get(
-  "/categoryBlock",
-  Auth.isLogin,
-  categoryController.categoryBlocking
-);
-adminRoute.get(
-  "/categoryUnblock",
-  Auth.isLogin,
-  categoryController.categoryUnblocking
-);
-adminRoute.get("/categoryEdit", Auth.isLogin, categoryController.editCategory);
-adminRoute.post(
-  "/editCategory",
+adminRoute.post("/category", Auth.isLogin, categoryController.categoryAdding);
+adminRoute.put(
+  "/category/:id",
   Auth.isLogin,
   categoryController.editingCategory
+);
+adminRoute.patch(
+  "/category/:id",
+  Auth.isLogin,
+  categoryController.toggleCategory
+);
+adminRoute.delete(
+  "/category/:id",
+  Auth.isLogin,
+  categoryController.deleteCategory
 );
 
 //productController

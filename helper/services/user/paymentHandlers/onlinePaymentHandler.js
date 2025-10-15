@@ -68,7 +68,7 @@ const handleOnlinePayment = async (data) => {
     // Payment successful - create order and update stock
     orderStatus = "Order Placed";
     updateStock = true;
-    console.log('Creating confirmed order after successful payment');
+    // console.log('Creating confirmed order after successful payment');
     
   } else {
     return {

@@ -291,7 +291,7 @@ const render404 = async (req, res) => {
       userId
     );
 
-    res.status(404).render("user/404", {
+    res.status(404).render("404", {
       findUser,
       cartCount,
       wishlistCount,
