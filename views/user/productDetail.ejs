@@ -10,7 +10,7 @@
 
 	<!-- Magic Zoom CSS -->
 	<link rel="stylesheet" href="/user-assets/css/magiczoom.css">
-<script src="/user-assets/js/magiczoom.js"></script>
+	<script src="/user-assets/js/magiczoom.js"></script>
 	<!-- Toastify CSS -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 	<!-- Bootstrap Icons for Wishlist -->
@@ -157,7 +157,7 @@
 			border: none;
 		}
 
-		.star-raiting {
+		.star-rating {
 			user-select: none;
 		}
 
@@ -171,6 +171,32 @@
 
 		.star:not(.selected) {
 			color: #e0e0e0;
+		}
+
+		/* Alert Styles */
+		.alert {
+			padding: 15px;
+			margin-bottom: 20px;
+			border: 1px solid transparent;
+			border-radius: 4px;
+		}
+
+		.alert-info {
+			background-color: #d9edf7;
+			border-color: #bce8f1;
+			color: #31708f;
+		}
+
+		.alert-warning {
+			background-color: #fcf8e3;
+			border-color: #faebcc;
+			color: #8a6d3b;
+		}
+
+		.alert a {
+			font-weight: bold;
+			color: inherit;
+			text-decoration: underline;
 		}
 	</style>
 </head>
@@ -451,7 +477,7 @@
 							<a class="nav-link" data-toggle="tab" href="#information" role="tab">Additional information</a>
 						</li>
 						<li class="nav-item p-b-10">
-							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews (1)</a>
+							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews (<%= products.review.length %>)</a>
 						</li>
 					</ul>
 
@@ -496,57 +522,81 @@
 							<div class="row">
 								<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
 									<div class="p-b-30 m-lr-15-sm">
-										<!-- Review -->
-										<div class="flex-w flex-t p-b-68">
-											<% for (let i=0; i < products.review.length; i++) { %>
-												<div class="size-207">
-													<div class="flex-w flex-sb-m p-b-17">
-														<span class="mtext-107 cl16 p-r-20">
-															<%= products.review[i].userId.name %>
-														</span>
-														<div class="fs-18 cl11">
-															<% for (let j=0; j < products.review[i].rating; j++) { %>
-																<i class="zmdi zmdi-star"></i>
-															<% } %>
-															<p class="stext-102 cl6" style="margin-top: 5px;">
-																Rating: <%= products.review[i].rating %>/5
-															</p>
+										<!-- Existing Reviews -->
+										<% if (products.review && products.review.length > 0) { %>
+											<div class="flex-w flex-t p-b-68">
+												<% for (let i=0; i < products.review.length; i++) { %>
+													<div class="size-207 w-full p-b-20">
+														<div class="flex-w flex-sb-m p-b-17">
+															<span class="mtext-107 cl16 p-r-20">
+																<%= products.review[i].userId.name %>
+															</span>
+															<div class="fs-18 cl11">
+																<% for (let j=0; j < products.review[i].rating; j++) { %>
+																	<i class="zmdi zmdi-star"></i>
+																<% } %>
+																<p class="stext-102 cl6" style="margin-top: 5px;">
+																	Rating: <%= products.review[i].rating %>/5
+																</p>
+															</div>
+														</div>
+														<p class="stext-102 cl6">
+															<%= products.review[i].comment %>
+														</p>
+													</div>
+												<% } %>
+											</div>
+										<% } else { %>
+											<p class="stext-102 cl6 p-b-30">No reviews yet. Be the first to review this product!</p>
+										<% } %>
+
+										<!-- Add Review Form -->
+										<% if (locals.findUser) { %>
+											<% if (hasReviewed) { %>
+												<div class="alert alert-info">
+													<strong>Thank you!</strong> You have already reviewed this product.
+												</div>
+											<% } else if (canReview) { %>
+												<form class="w-full" id="reviewForm">
+													<h5 class="mtext-108 cl2 p-b-7">Add a review</h5>
+													<p class="stext-102 cl6">Your email address will not be published. Required fields are marked *</p>
+													
+													<div class="flex-w flex-m p-t-50 p-b-23">
+														<span class="stext-102 cl3 m-r-16">Your Rating *</span>
+														<div class="star-rating">
+															<span class="star">&#9734;</span>
+															<span class="star">&#9734;</span>
+															<span class="star">&#9734;</span>
+															<span class="star">&#9734;</span>
+															<span class="star">&#9734;</span>
+														</div>
+														<input type="hidden" name="rating" id="rating" value="0">
+													</div>
+													
+													<div class="row p-b-25">
+														<div class="col-12 p-b-5">
+															<label class="stext-102 cl3" for="review">Your review *</label>
+															<textarea class="size-110 bor8 stext-102 cl16 p-lr-20 p-tb-10"
+																id="review" name="review" rows="4" 
+																placeholder="Share your experience with this product..."></textarea>
 														</div>
 													</div>
-													<p class="stext-102 cl6">
-														<%= products.review[i].comment %>
-													</p>
+													
+													<button type="submit"
+														class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+														Submit Review
+													</button>
+												</form>
+											<% } else { %>
+												<div class="alert alert-warning">
+													<strong>Note:</strong> You can only review products you have purchased and received (delivered orders).
 												</div>
 											<% } %>
-										</div>
-
-										<!-- Add Review -->
-										<form class="w-full" id="reviewForm">
-											<h5 class="mtext-108 cl2 p-b-7">Add a review</h5>
-											<p class="stext-102 cl6">Your email address will not be published. Required fields are marked *</p>
-											<div class="flex-w flex-m p-t-50 p-b-23">
-												<span class="stext-102 cl3 m-r-16">Your Rating</span>
-												<div class="star-rating">
-													<span class="star">&#9734;</span>
-													<span class="star">&#9734;</span>
-													<span class="star">&#9734;</span>
-													<span class="star">&#9734;</span>
-													<span class="star">&#9734;</span>
-												</div>
-												<input type="hidden" name="rating" id="rating" value="0">
+										<% } else { %>
+											<div class="alert alert-info">
+												<strong>Please <a href="/Login">login</a></strong> to add a review.
 											</div>
-											<div class="row p-b-25">
-												<div class="col-12 p-b-5">
-													<label class="stext-102 cl3" for="review">Your review</label>
-													<textarea class="size-110 bor8 stext-102 cl16 p-lr-20 p-tb-10"
-														id="review" name="review"></textarea>
-												</div>
-											</div>
-											<button type="submit"
-												class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
-												Submit
-											</button>
-										</form>
+										<% } %>
 									</div>
 								</div>
 							</div>
@@ -647,8 +697,6 @@
 	<script>
 		// Initialize Magic Zoom with enhanced settings
 		document.addEventListener('DOMContentLoaded', function () {
-			// Magic Zoom will automatically initialize
-			// Additional configuration can be done here if needed
 			if (typeof MagicZoom !== 'undefined') {
 				MagicZoom.refresh();
 			}
@@ -656,7 +704,6 @@
 
 		// Reinitialize Magic Zoom when slider changes
 		$('.slick3').on('afterChange', function(event, slick, currentSlide) {
-			// Small delay to ensure DOM is ready
 			setTimeout(function() {
 				if (typeof MagicZoom !== 'undefined') {
 					MagicZoom.refresh();
@@ -765,41 +812,94 @@
 			};
 		});
 
-		// Review Submission
-		document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+		// Review Submission with Toast Notifications
+		document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
 			e.preventDefault();
+			
 			const rating = document.getElementById('rating').value;
 			const comment = document.getElementById('review').value;
-			let productId = document.getElementById('productId').innerText.trim();
+			const productId = document.getElementById('productId').innerText.trim();
 
-			const response = await fetch('/submitReview', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					productId,
-					rating,
-					comment,
-				}),
-			});
-
-			const result = await response.json();
-			if (response.ok) {
+			// Client-side validation
+			if (!rating || rating === "0") {
 				Toastify({
-					text: result.message || "Product Review submitted successfully!",
+					text: "Please select a rating by clicking on the stars!",
 					duration: 3000,
 					close: true,
 					gravity: "top",
 					position: "center",
-					backgroundColor: "#28a745",
+					backgroundColor: "#dc3545",
 				}).showToast();
-				setTimeout(() => {
-					window.location.reload();
-				}, 3000);
-			} else {
+				return;
+			}
+
+			if (!comment || comment.trim() === "") {
 				Toastify({
-					text: result.message || "Failed to submit review!",
+					text: "Please write a review comment!",
+					duration: 3000,
+					close: true,
+					gravity: "top",
+					position: "center",
+					backgroundColor: "#dc3545",
+				}).showToast();
+				return;
+			}
+
+			try {
+				const response = await fetch('/submitReview', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						productId,
+						rating,
+						comment,
+					}),
+				});
+
+				const result = await response.json();
+
+				if (result.success) {
+					// Success toast
+					Toastify({
+						text: result.message || "Review submitted successfully!",
+						duration: 3000,
+						close: true,
+						gravity: "top",
+						position: "center",
+						backgroundColor: "#28a745",
+					}).showToast();
+
+					// Reset form
+					document.getElementById('reviewForm').reset();
+					document.getElementById('rating').value = "0";
+					
+					// Reset stars
+					allStars.forEach(star => {
+						star.innerHTML = '&#9734;';
+						star.classList.remove('selected');
+					});
+
+					// Reload page after delay to show new review
+					setTimeout(() => {
+						window.location.reload();
+					}, 2000);
+				} else {
+					// Error toast
+					Toastify({
+						text: result.message || "Failed to submit review!",
+						duration: 4000,
+						close: true,
+						gravity: "top",
+						position: "center",
+						backgroundColor: "#dc3545",
+					}).showToast();
+				}
+			} catch (error) {
+				console.error('Error submitting review:', error);
+				Toastify({
+					text: "Network error. Please try again!",
 					duration: 3000,
 					close: true,
 					gravity: "top",

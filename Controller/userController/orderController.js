@@ -489,9 +489,9 @@ const successOrder = async (req, res) => {
 const cancellation = async (req, res) => {
   try {
     const userId = req.session.userData;
-    const { orderId, actionType } = req.body;
+    const { orderId, actionType, cancellationReason } = req.body;
 
-    // console.log('Order cancellation request:', { userId, orderId, actionType });
+    // console.log('Order cancellation request:', { userId, orderId, actionType, cancellationReason });
 
     const findOrder = await Order.findById(orderId);
     if (!findOrder) {
@@ -542,9 +542,10 @@ const cancellation = async (req, res) => {
       matchSizeAndQuantity.quantity += parseInt(productQ);
       await thisIsTheProduct.save();
 
-      // Update order status
+      // Update order status with cancellation reason
       await Order.findByIdAndUpdate(orderId, {
         orderStatus: "Cancelled",
+        cancellationReason: cancellationReason || "No reason provided",
       });
 
       // Refund to wallet
@@ -598,7 +599,7 @@ const returnOrder = async (req, res) => {
 
     // console.log('Order return request:', { returnReason, orderId, userId });
 
-    if (!returnReason) {
+    if (!returnReason || returnReason.trim() === "") {
       return res.status(400).json({
         message: "Return reason is required.",
         success: false,
@@ -654,11 +655,11 @@ const returnOrder = async (req, res) => {
       });
     }
 
-   
+    // Increase product stock
     matchSizeAndQuantity.quantity += parseInt(productQ);
     await thisIsTheProduct.save();
 
-   
+    // Update order with return reason
     const updatedOrder = await Order.findByIdAndUpdate(orderId, {
       orderStatus: "Returned",
       returnReason: returnReason,

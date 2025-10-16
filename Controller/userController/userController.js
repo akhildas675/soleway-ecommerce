@@ -341,6 +341,26 @@ const productDetailedView = async (req, res) => {
 
     const sizeOrder = product.sizes.sort((a, b) => a.size - b.size);
 
+    // Check if user has purchased this product and can review
+    let canReview = false;
+    let hasReviewed = false;
+    
+    if (userId) {
+      // Check if user has purchased and received this product
+      const userPurchase = await Order.findOne({
+        userId: userId,
+        "products.productId": productId,
+        orderStatus: "Delivered"
+      });
+      
+      canReview = !!userPurchase;
+      
+      // Check if user has already reviewed this product
+      hasReviewed = product.review.some(
+        (review) => review.userId && review.userId.toString() === userId.toString()
+      );
+    }
+
     res.render("productDetail", {
       products: product,
       findUser,
@@ -349,6 +369,8 @@ const productDetailedView = async (req, res) => {
       cartCount,
       wishlistCount,
       userWishlist,
+      canReview,
+      hasReviewed
     });
   } catch (error) {
     console.log(error.message);
@@ -418,34 +440,86 @@ const addReview = async (req, res) => {
     const { productId, comment, rating } = req.body;
     const errors = [];
 
-    if (!rating) errors.push("Please select a rating star.");
-    if (!comment || comment.trim() === "") errors.push("Please add a comment.");
-    if (!productId) errors.push("Product ID is missing.");
+    // Validate inputs
+    if (!rating || rating === "0") {
+      errors.push("Please select a rating star.");
+    }
+    if (!comment || comment.trim() === "") {
+      errors.push("Please add a comment.");
+    }
+    if (!productId) {
+      errors.push("Product ID is missing.");
+    }
 
     if (errors.length > 0) {
-      return res.status(400).json({ message: errors.join(" ") });
+      return res.status(400).json({ 
+        success: false,
+        message: errors.join(" ") 
+      });
     }
 
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false,
+        message: "Please log in to add a review." 
+      });
+    }
+
+    // Check if product exists
     const findProduct = await Products.findById(productId);
     if (!findProduct) {
-      return res.status(404).json({ message: "Product not found." });
+      return res.status(404).json({ 
+        success: false,
+        message: "Product not found." 
+      });
     }
 
+  
+    const userPurchase = await Order.findOne({
+      userId: userId,
+      "products.productId": productId,
+      orderStatus: "Delivered" 
+    });
+
+    if (!userPurchase) {
+      return res.status(403).json({ 
+        success: false,
+        message: "You can only review products you have purchased and received." 
+      });
+    }
+
+    // Check if user has already reviewed this product
+    const hasReviewed = findProduct.review.some(
+      (review) => review.userId && review.userId.toString() === userId.toString()
+    );
+
+    if (hasReviewed) {
+      return res.status(400).json({ 
+        success: false,
+        message: "You have already reviewed this product." 
+      });
+    }
+
+    // Add the review
     findProduct.review.push({
       rating: parseInt(rating, 10),
-      comment,
+      comment: comment.trim(),
       userId,
     });
 
     await findProduct.save();
-    return res
-      .status(200)
-      .json({ message: "Thank you for your valuable feedback." });
+
+    return res.status(200).json({ 
+      success: true,
+      message: "Thank you for your valuable feedback!" 
+    });
   } catch (error) {
     console.error("Error submitting review:", error);
-    return res
-      .status(500)
-      .json({ message: "An error occurred. Please try again." });
+    return res.status(500).json({ 
+      success: false,
+      message: "An error occurred. Please try again." 
+    });
   }
 };
 

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const addressSchema = new mongoose.Schema({
   addressName: {
     type: String,
@@ -32,11 +31,10 @@ const addressSchema = new mongoose.Schema({
   },
 });
 
-
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Reference to the User model
+    ref: "User",
     required: true,
   },
   orderId: {
@@ -47,7 +45,7 @@ const orderSchema = new mongoose.Schema({
     {
       productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product", // Reference to the Product model
+        ref: "Product",
         required: true,
       },
       quantity: {
@@ -61,7 +59,7 @@ const orderSchema = new mongoose.Schema({
     },
   ],
   address: {
-    type: addressSchema, 
+    type: addressSchema,
     required: true,
   },
   orderDate: {
@@ -81,7 +79,6 @@ const orderSchema = new mongoose.Schema({
       default: 0,
     },
   },
-
   orderStatus: {
     type: String,
     enum: [
@@ -107,13 +104,19 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ["COD", "Online", "Wallet"],
   },
-  returnReason:{
+  returnReason: {
     type: String,
-  }
+  },
+  cancellationReason: {
+    type: String,
+  },
+  cancellationDate: {
+    type: Date,
+  },
+  returnDate: {
+    type: Date,
+  },
 });
 
-
-
 const Order = mongoose.model("Order", orderSchema);
-
 module.exports = Order;
