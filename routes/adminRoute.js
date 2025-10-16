@@ -118,19 +118,14 @@ adminRoute.post(
 
 adminRoute.get("/loadCoupon", Auth.isLogin, adminController.loadCouponPage);
 adminRoute.post("/addCoupon", Auth.isLogin, adminController.addCoupon);
-adminRoute.get("/couponEdit", Auth.isLogin, adminController.loadEditCoupon);
 adminRoute.post("/editCoupon", Auth.isLogin, adminController.editCoupon);
-adminRoute.get("/couponBlock", Auth.isLogin, adminController.blockCoupon);
-adminRoute.get("/couponUnblock", Auth.isLogin, adminController.unblockCoupon);
+adminRoute.get("/blockCoupon", Auth.isLogin, adminController.blockCoupon);
+adminRoute.get("/unblockCoupon", Auth.isLogin, adminController.unblockCoupon);
 adminRoute.post("/couponDelete", Auth.isLogin, adminController.deleteCoupon);
-
 //offer
 adminRoute.get("/loadOffer", Auth.isLogin, productController.loadOffer);
 adminRoute.post("/addOffer", Auth.isLogin, productController.addOffer);
-adminRoute.get("/editOffer", Auth.isLogin, productController.loadEditOffer);
 adminRoute.post("/updateOffer", Auth.isLogin, productController.updateOffer);
-// adminRoute.get('/blockOffer',Auth.isLogin,productController.blockOffer)
-// adminRoute.get('/unblockOffer',Auth.isLogin,productController.unblockOffer)
 adminRoute.delete("/deleteOffer", Auth.isLogin, productController.deleteOffer);
 
 // adminRoute.get('/find',productController.findThePage)

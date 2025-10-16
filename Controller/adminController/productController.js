@@ -326,13 +326,35 @@ const removeImageEditProduct = async (req, res) => {
   }
 };
 
+
 const productBlocking = async (req, res) => {
   try {
     const productId = req.query.id;
+    
+    // Block the product
     await toggleProductStatus(productId, false);
+    
+    
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+      return res.json({ 
+        success: true, 
+        message: "Product blocked successfully",
+        isActive: false 
+      });
+    }
+    
+    
     res.redirect("/admin/productsView");
   } catch (error) {
     console.error("Error in productBlocking:", error);
+    
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+      return res.status(500).json({ 
+        success: false, 
+        message: "Error blocking product" 
+      });
+    }
+    
     res.status(500).send("Error blocking product");
   }
 };
@@ -340,10 +362,31 @@ const productBlocking = async (req, res) => {
 const productUnblocking = async (req, res) => {
   try {
     const productId = req.query.id;
+    
+    // Unblock the product
     await toggleProductStatus(productId, true);
+    
+    // Check if it's an AJAX request
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+      return res.json({ 
+        success: true, 
+        message: "Product unblocked successfully",
+        isActive: true 
+      });
+    }
+    
+    // Redirect for non-AJAX requests
     res.redirect("/admin/productsView");
   } catch (error) {
     console.error("Error in productUnblocking:", error);
+    
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+      return res.status(500).json({ 
+        success: false, 
+        message: "Error unblocking product" 
+      });
+    }
+    
     res.status(500).send("Error unblocking product");
   }
 };
@@ -404,16 +447,6 @@ const addOffer = async (req, res) => {
       success: false,
       message: "Server error",
     });
-  }
-};
-
-const loadEditOffer = async (req, res) => {
-  try {
-    const offer = await getOfferById(req.query.id);
-    res.render("editOffer", { offer });
-  } catch (error) {
-    console.error("Error in loadEditOffer:", error);
-    res.status(500).send("Server Error");
   }
 };
 
@@ -487,7 +520,6 @@ module.exports = {
   deleteProduct,
   loadOffer,
   addOffer,
-  loadEditOffer,
   updateOffer,
   deleteOffer,
 };

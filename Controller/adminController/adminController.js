@@ -2,15 +2,20 @@ const User = require("../../Model/userModel");
 const Address = require("../../Model/addressModel");
 
 // Import services
-const { authenticateAdmin } = require("../../helper/services/adminServices/authService");
-const { getAllUsers, toggleUserStatus } = require("../../helper/services/adminServices/userManagementService");
-const { 
-  getDashboardData, 
-  getYearlyOrderCounts, 
-  getYearlyProductCounts, 
-  getYearlyTotalAmounts, 
-  getBestSellingProducts, 
-  getBestSellingCategories 
+const {
+  authenticateAdmin,
+} = require("../../helper/services/adminServices/authService");
+const {
+  getAllUsers,
+  toggleUserStatus,
+} = require("../../helper/services/adminServices/userManagementService");
+const {
+  getDashboardData,
+  getYearlyOrderCounts,
+  getYearlyProductCounts,
+  getYearlyTotalAmounts,
+  getBestSellingProducts,
+  getBestSellingCategories,
 } = require("../../helper/services/adminServices/dashboardService");
 const {
   validateCouponData,
@@ -20,10 +25,16 @@ const {
   createCoupon,
   updateCoupon,
   toggleCouponStatus,
-  deleteCoupon
+  deleteCoupon,
 } = require("../../helper/services/adminServices/couponService");
-const { getPaginatedOrders, getOrderDetails, updateOrderStatus } = require("../../helper/services/adminServices/orderManagementService");
-const { generateSalesReport } = require("../../helper/services/adminServices/reportService");
+const {
+  getPaginatedOrders,
+  getOrderDetails,
+  updateOrderStatus,
+} = require("../../helper/services/adminServices/orderManagementService");
+const {
+  generateSalesReport,
+} = require("../../helper/services/adminServices/reportService");
 
 // auth controller
 
@@ -42,22 +53,22 @@ const verifyAdminLogin = async (req, res) => {
     const result = await authenticateAdmin(email, password);
 
     if (!result.success) {
-      return res.status(result.statusCode).json({ 
-        success: false, 
-        message: result.message 
+      return res.status(result.statusCode).json({
+        success: false,
+        message: result.message,
       });
     }
 
     req.session.adminData = result.adminData._id;
-    return res.status(200).json({ 
-      success: true, 
-      redirectUrl: "/admin/Home" 
+    return res.status(200).json({
+      success: true,
+      redirectUrl: "/admin/Home",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Internal server error" 
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
     });
   }
 };
@@ -86,14 +97,14 @@ const adminLoad = async (req, res) => {
       productCountsByYear,
       totalAmountByYear,
       bestSellingProduct,
-      bestSellingCategories
+      bestSellingCategories,
     ] = await Promise.all([
       getDashboardData(),
       getYearlyOrderCounts(),
       getYearlyProductCounts(),
       getYearlyTotalAmounts(),
       getBestSellingProducts(),
-      getBestSellingCategories()
+      getBestSellingCategories(),
     ]);
 
     res.render("dashboard", {
@@ -124,24 +135,24 @@ const loadUsers = async (req, res) => {
 const userBlocking = async (req, res) => {
   try {
     const userId = req.query.id;
-    
+
     if (!userId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'User ID is required' 
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
       });
     }
-    
+
     await toggleUserStatus(userId, false);
-    res.status(200).json({ 
-      success: true, 
-      message: 'User blocked successfully' 
+    res.status(200).json({
+      success: true,
+      message: "User blocked successfully",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error blocking user' 
+    res.status(500).json({
+      success: false,
+      message: "Error blocking user",
     });
   }
 };
@@ -149,31 +160,104 @@ const userBlocking = async (req, res) => {
 const userUnblocking = async (req, res) => {
   try {
     const userId = req.query.id;
-    
+
     if (!userId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'User ID is required' 
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
       });
     }
-    
+
     await toggleUserStatus(userId, true);
-    res.status(200).json({ 
-      success: true, 
-      message: 'User unblocked successfully' 
+    res.status(200).json({
+      success: true,
+      message: "User unblocked successfully",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error unblocking user' 
+    res.status(500).json({
+      success: false,
+      message: "Error unblocking user",
     });
   }
 };
 
+// coupon management
 
-// coupon management 
+const blockCoupon = async (req, res) => {
+  try {
+    const couponId = req.query.id;
 
+    if (!couponId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Coupon ID is required" });
+    }
+
+    // console.log("Blocking coupon:", couponId);
+    const result = await toggleCouponStatus(couponId, false);
+
+    return res.json({
+      success: true,
+      message: "Coupon blocked successfully",
+      isActive: false,
+    });
+  } catch (error) {
+    console.error("Error blocking coupon:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error blocking coupon" });
+  }
+};
+
+const unblockCoupon = async (req, res) => {
+  try {
+    const couponId = req.query.id;
+
+    if (!couponId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Coupon ID is required" });
+    }
+
+    // console.log("Unblocking coupon:", couponId);
+    const result = await toggleCouponStatus(couponId, true);
+
+    return res.json({
+      success: true,
+      message: "Coupon unblocked successfully",
+      isActive: true,
+    });
+  } catch (error) {
+    console.error("Error unblocking coupon:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error unblocking coupon" });
+  }
+};
+
+const editCoupon = async (req, res) => {
+  try {
+    const errors = validateEditCouponData(req.body);
+
+    if (errors.length > 0) {
+      return res.json({ success: false, errors });
+    }
+
+    const { couponId } = req.body;
+    await updateCoupon(couponId, req.body);
+
+    // Always return JSON for this endpoint (used for AJAX)
+    return res.json({ success: true, message: "Coupon Updated Successfully." });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// Keep other existing functions unchanged
 const loadCouponPage = async (req, res) => {
   try {
     const findCoupon = await getAllCoupons();
@@ -186,11 +270,9 @@ const loadCouponPage = async (req, res) => {
 const addCoupon = async (req, res) => {
   try {
     const errors = validateCouponData(req.body);
-
     if (errors.length > 0) {
       return res.json({ success: false, errors });
     }
-
     await createCoupon(req.body);
     return res.json({ success: true, message: "Coupon added successfully" });
   } catch (error) {
@@ -209,44 +291,6 @@ const loadEditCoupon = async (req, res) => {
   try {
     const findCoupon = await getCouponById(req.query.id);
     res.render("editCoupon", { coupon: findCoupon });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const editCoupon = async (req, res) => {
-  try {
-    const errors = validateEditCouponData(req.body);
-
-    if (errors.length > 0) {
-      return res.json({ success: false, errors });
-    }
-
-    const { couponId } = req.body;
-    await updateCoupon(couponId, req.body);
-    
-    return res.json({ success: true, message: "Coupon Updated Successfully." });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-};
-
-const blockCoupon = async (req, res) => {
-  try {
-    const couponId = req.query.id;
-    await toggleCouponStatus(couponId, false);
-    res.redirect("/admin/loadCoupon");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const unblockCoupon = async (req, res) => {
-  try {
-    const couponId = req.query.id;
-    await toggleCouponStatus(couponId, true);
-    res.redirect("/admin/loadCoupon");
   } catch (error) {
     console.log(error);
   }
@@ -272,7 +316,7 @@ const adminOrderMng = async (req, res) => {
 
     const [{ orderedData, totalPages }, findUser] = await Promise.all([
       getPaginatedOrders(page),
-      User.findById(userId)
+      User.findById(userId),
     ]);
 
     res.render("adminOrderList", { orderedData, findUser, page, totalPages });
@@ -289,7 +333,7 @@ const orderDetailsOfUser = async (req, res) => {
     const [findUser, addresses, orderedData] = await Promise.all([
       User.findById(userId),
       Address.find({ userId }),
-      getOrderDetails(orderId)
+      getOrderDetails(orderId),
     ]);
 
     if (!orderedData) {
@@ -308,18 +352,22 @@ const updateOrderStatusController = async (req, res) => {
     const { orderId, newStatus } = req.body;
 
     const updatedOrder = await updateOrderStatus(orderId, newStatus);
-    res.json({ success: true, message: "Order status updated", order: updatedOrder });
+    res.json({
+      success: true,
+      message: "Order status updated",
+      order: updatedOrder,
+    });
   } catch (error) {
     console.log(error);
-    
+
     if (error.message === "Invalid order status") {
       return res.json({ success: false, message: "Invalid order status" });
     }
-    
+
     if (error.message === "Order not found") {
       return res.json({ success: false, message: "Order not found" });
     }
-    
+
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -330,52 +378,55 @@ const salesReport = async (req, res) => {
   try {
     const workbook = await generateSalesReport();
 
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=delivered_orders_report.xlsx');
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=delivered_orders_report.xlsx"
+    );
 
     await workbook.xlsx.write(res);
     res.status(200).end();
   } catch (error) {
-    console.error('Error generating sales report:', error);
-    
-    if (error.message === 'No delivered orders found') {
+    console.error("Error generating sales report:", error);
+
+    if (error.message === "No delivered orders found") {
       return res.status(404).json({ message: error.message });
     }
-    
-    res.status(500).json({ message: 'Internal server error' });
+
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 module.exports = {
   // Authentication
   adminLogin,
   verifyAdminLogin,
   adminLogout,
-  
+
   // Dashboard
   adminLoad,
-  
+
   // User Management
   loadUsers,
   userBlocking,
   userUnblocking,
-  
+
   // Coupon Management
   loadCouponPage,
   addCoupon,
-  loadEditCoupon,
   editCoupon,
   blockCoupon,
   unblockCoupon,
   deleteCoupon: deleteCouponController,
-  
+
   // Order Management
   adminOrderMng,
   orderDetailsOfUser,
   updateOrderStatus: updateOrderStatusController,
-  
+
   // Reports
   salesReport,
 };
