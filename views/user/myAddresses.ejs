@@ -17,72 +17,7 @@
    
 </head>
 <body>
-    <!-- Header -->
-    <header class="header-section d-none d-xl-block">
-        <div class="header-wrapper">
-            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--Black blackbg">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 d-flex align-items-center justify-content-between color--Black blackbg">
-                            <div class="header-logo">
-                                <div class="logo">
-                                    <a href="/"><img src="/userMng-assets/images/logo/1.png" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="main-menu menu-color--black menu-hover-color--Black">
-                                <nav>
-                                    <ul>
-                                        <li><a href="/">Home</a></li>
-                                        <li><a href="/Shop">Shop</a></li>
-                                        <li><a href="/Blog">Blog</a></li>
-                                        <li><a href="/About">About Us</a></li>
-                                        <li><a href="/Contact">Contact Us</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <ul class="header-action-link action-color--black action-hover-color--white">
-                                <li>
-                                    <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
-                                        <i class="icon-menu"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Mobile Header -->
-    <div class="mobile-header mobile-header-bg-color--black section-fluid d-lg-block d-xl-none">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 d-flex align-items-center justify-content-between">
-                    <div class="mobile-header-left">
-                        <ul class="mobile-menu-logo">
-                            <li>
-                                <a href="/">
-                                    <div class="logo">
-                                        <img src="/userMng-assets/images/logo/1.png" alt="">
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="mobile-right-side">
-                        <ul class="header-action-link action-color--black action-hover-color--white">
-                            <li>
-                                <a href="#mobile-menu-offcanvas" class="offcanvas-toggle offside-menu">
-                                    <i class="icon-menu"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <%- include('./partials/userMngHeader.ejs') %>
 
     <!-- Breadcrumb -->
     <div class="breadcrumb-section breadcrumb-bg-color--white">
