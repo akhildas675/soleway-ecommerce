@@ -39,14 +39,15 @@ userRoute.get("/logOut", userAuthController.userLogOut);
 // Google Authentication
 userRoute.get(
   "/login/google",
-  passport.authenticate("google", { scope: ["email", "profile"] }),
-  userAuthController.googleAuth
+  passport.authenticate("google", { scope: ["email", "profile"] })
 );
+
 userRoute.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/Login" }),
   userAuthController.googleAuth
 );
+
 
 // Password Reset
 userRoute.get("/emailVerify", Auth.isLogOut, userAuthController.verifyEmail);
