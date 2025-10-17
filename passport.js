@@ -18,7 +18,7 @@ passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.NODE_ENV === "production"
-    ? "http://soleway.shop/auth/google/callback" 
+    ? "https://soleway.shop/auth/google/callback" 
     : "http://localhost:3000/auth/google/callback",
 
     passReqToCallback: true
