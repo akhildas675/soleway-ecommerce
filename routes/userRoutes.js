@@ -43,7 +43,7 @@ userRoute.get(
 );
 
 userRoute.get(
-  "/auth/google/callback",  // ✓ This matches
+  "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/Login" }),
   userAuthController.googleAuth
 );
