@@ -2,10 +2,10 @@
 const User = require("../../../Model/userModel");
 const Cart = require("../../../Model/cartModel");
 const Address = require("../../../Model/addressModel");
-const { previewCouponDiscount, redeemCoupon } = require("../user/couponServices");
-const { handleCODPayment } = require("../user/paymentHandlers/codPaymentHandler");
-const { handleWalletPayment } = require("../user/paymentHandlers/walletPaymentHandler");
-const { handleOnlinePayment } = require("../user/paymentHandlers/onlinePaymentHandler");
+const { previewCouponDiscount, redeemCoupon } = require("../userServices/couponServices");
+const { handleCODPayment } = require("../userServices/paymentHandlers/codPaymentHandler");
+const { handleWalletPayment } = require("../userServices/paymentHandlers/walletPaymentHandler");
+const { handleOnlinePayment } = require("../userServices/paymentHandlers/onlinePaymentHandler");
 
 const processPurchase = async (purchaseData) => {
   const {

@@ -11,7 +11,7 @@ const {
   createUser,
   authenticateUser,
   updateUserPassword,
-} = require("../../helper/services/user/authService");
+} = require("../../helper/services/userServices/authService");
 
 const loadRegister = async (req, res) => {
   try {

@@ -12,18 +12,18 @@ const {
 } = require("../../helper/utils/userUtils/validationUtils");
 const {
   getCommonPageData,
-} = require("../../helper/services/user/userDataService");
+} = require("../../helper/services/userServices/userDataService");
 const {
   getActiveProducts,
   getNewArrivals,
   getProductWithDetails,
   getRelatedProducts,
   searchAndFilterProducts,
-} = require("../../helper/services/user/productService");
+} = require("../../helper/services/userServices/productService");
 const {
   createRazorpayOrder,
   processWalletPayment,
-} = require("../../helper/services/user/walletService");
+} = require("../../helper/services/userServices/walletService");
 
 const loadHome = async (req, res) => {
   try {

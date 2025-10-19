@@ -8,9 +8,9 @@ const Coupon = require("../../Model/couponModel");
 const puppeteer = require("puppeteer");
 
 // Import services
-const { processPurchase } = require('../../helper/services/user/purchaseServices');
+const { processPurchase } = require('../../helper/services/userServices/purchaseServices');
 const { updateProductStock } = require("../../helper/utils/userUtils/productUtils");
-const { previewCouponDiscount, redeemCoupon } = require("../../helper/services/user/couponServices");
+const { previewCouponDiscount, redeemCoupon } = require("../../helper/services/userServices/couponServices");
 
 // Razorpay configuration
 const Razorpay = require("razorpay");
