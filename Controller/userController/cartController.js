@@ -82,7 +82,12 @@ const addToCart = async (req, res) => {
       }
     }
 
-    return res.json({ success: true });
+     const updatedCart = await Cart.findOne({ userId });
+    const cartCount = updatedCart && updatedCart.cartProducts 
+      ? updatedCart.cartProducts.length 
+      : 0;
+
+    return res.json({ success: true, cartCount: cartCount });
   } catch (error) {
     console.log(error);
     return res.send("cart error");

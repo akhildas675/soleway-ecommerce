@@ -51,7 +51,7 @@ $(".js-pscroll").each(function () {
   });
 });
 
-// Function to update cart count in header
+// Function to update cart count in header (receives count from backend)
 function updateCartCount(newCount) {
   const cartIcons = document.querySelectorAll('.icon-header-noti[href="/Cart"]');
   cartIcons.forEach((icon) => {
@@ -289,8 +289,10 @@ document.getElementById("addToCartBtn").addEventListener("click", function () {
       .then((data) => {
         let nameProduct = document.getElementById("productName").innerText;
         if (data.success) {
-          // Update cart count immediately after successful addition
-          updateCartCount();
+          
+          if (data.cartCount !== undefined) {
+            updateCartCount(data.cartCount);
+          }
           
           Swal.fire({
             title: nameProduct,
